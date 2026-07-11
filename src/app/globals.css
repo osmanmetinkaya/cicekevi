@@ -1,26 +1,121 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Soft & romantic botanical palette */
+  --color-cream: #fbf8f4;
+  --color-cream-deep: #f4ece2;
+
+  --color-blush-50: #fdf2f6;
+  --color-blush-100: #fbeaf0;
+  --color-blush-200: #f4c0d1;
+  --color-blush-300: #ed93b1;
+  --color-rose-500: #d4537e;
+  --color-rose-600: #b24a6b;
+  --color-rose-700: #993556;
+  --color-rose-900: #4b1528;
+
+  --color-leaf-400: #97c459;
+  --color-leaf-500: #639922;
+  --color-leaf-600: #3b6d11;
+  --color-leaf-900: #173404;
+
+  --color-ink: #44413b;
+  --color-ink-muted: #8a8378;
+  --color-line: #ece5dc;
 }
 
+/* Fonts reference runtime next/font variables, so they must be `inline`
+   for Tailwind's font-sans / font-serif utilities to resolve them. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: var(--color-cream);
+  --foreground: var(--color-ink);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Thin, elegant scrollbar for the cart drawer */
+.scroll-soft::-webkit-scrollbar {
+  width: 6px;
+}
+.scroll-soft::-webkit-scrollbar-thumb {
+  background: var(--color-blush-200);
+  border-radius: 9999px;
+}
+
+/* Route transition splash — CSS-only. Petals draw themselves via
+   stroke-dashoffset (each path uses pathLength="1" so 1 → 0 = fully drawn). */
+.route-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: var(--color-cream);
+  pointer-events: none;
+  will-change: opacity;
+  animation: splash-fade 1250ms ease forwards;
+}
+.route-splash__flower {
+  overflow: visible;
+}
+.route-splash [data-draw] {
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: splash-draw 360ms ease forwards;
+}
+.route-splash .s-petal {
+  stroke: var(--color-rose-600);
+}
+.route-splash .s-center {
+  stroke: var(--color-rose-700);
+}
+.route-splash .s-stem,
+.route-splash .s-leaf {
+  stroke: var(--color-leaf-600);
+}
+.route-splash__word {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  letter-spacing: 0.01em;
+  color: var(--color-leaf-600);
+  animation: splash-word 1250ms ease forwards;
+}
+
+@keyframes splash-fade {
+  0% { opacity: 0; }
+  8% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes splash-draw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes splash-word {
+  0%, 56% { opacity: 0; transform: translateY(7px); }
+  74% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 1; }
+}
+
+/* Reduced motion: skip the splash entirely. */
+@media (prefers-reduced-motion: reduce) {
+  .route-splash {
+    display: none;
+  }
 }

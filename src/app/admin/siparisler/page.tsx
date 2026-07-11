@@ -1,0 +1,80 @@
+import { Gift } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { formatDateTR, formatKurus } from "@/lib/format";
+import type { AdminOrderRow } from "@/lib/orders/types";
+import { StatusSelect } from "@/components/admin/status-select";
+
+export default async function AdminOrdersPage() {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("orders")
+    .select(
+      "id, stripe_session_id, email, amount_total, items, delivery_date, delivery_window, gift_note, status, created_at",
+    )
+    .order("created_at", { ascending: false })
+    .limit(200)
+    .returns<AdminOrderRow[]>();
+
+  const orders = data ?? [];
+
+  if (orders.length === 0) {
+    return (
+      <div className="rounded-2xl border border-line bg-white p-10 text-center text-ink-muted">
+        Henüz sipariş yok.
+      </div>
+    );
+  }
+
+  return (
+    <ul className="space-y-4">
+      {orders.map((o) => (
+        <li key={o.id} className="rounded-2xl border border-line bg-white p-5">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="font-medium text-ink">
+                  #{o.stripe_session_id.slice(-8).toUpperCase()}
+                </span>
+                <span className="text-sm text-ink-muted">{o.email}</span>
+                <span className="text-xs text-ink-muted">
+                  {new Intl.DateTimeFormat("tr-TR", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  }).format(new Date(o.created_at))}
+                </span>
+              </div>
+
+              <p className="mt-2 text-sm text-ink">
+                {o.items
+                  .map((item) => `${item.name} × ${item.qty}`)
+                  .join(" · ")}
+              </p>
+
+              {(o.delivery_date || o.delivery_window) && (
+                <p className="mt-1 text-sm text-ink-muted">
+                  Teslimat:{" "}
+                  {o.delivery_date ? formatDateTR(o.delivery_date) : "—"}
+                  {o.delivery_window && ` · ${o.delivery_window}`}
+                </p>
+              )}
+
+              {o.gift_note && (
+                <p className="mt-1 flex items-start gap-1.5 text-sm text-ink-muted">
+                  <Gift size={15} className="mt-0.5 shrink-0 text-rose-700" />
+                  <span className="font-serif italic">“{o.gift_note}”</span>
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col items-end gap-2">
+              <span className="font-serif text-xl text-ink">
+                {formatKurus(o.amount_total)}
+              </span>
+              <StatusSelect orderId={o.id} status={o.status} />
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
