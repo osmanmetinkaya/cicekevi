@@ -1,5 +1,6 @@
 import { getStripe } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 import type Stripe from "stripe";
 
 /** Ödemesi tamamlanan oturumu orders tablosuna yazar (varsa). */
@@ -44,6 +45,18 @@ async function persistOrder(session: Stripe.Checkout.Session) {
 // Webhook-first: treat Stripe events as the source of truth for payment
 // state, not the API response the browser saw.
 export async function POST(request: Request) {
+  // İmza doğrulaması ZATEN sahte istekleri reddeder; bu limit yalnızca kaba bir
+  // flood/DoS emniyet valfidir. Gerçek Stripe trafiği (az sayıda IP, makul hız)
+  // bu tavanın çok altında kalır. Cömert tutuldu ki meşru retry'lar kesilmesin.
+  const ip = clientIp(request);
+  const limit = rateLimit(`webhook:${ip}`, 100, 60_000);
+  if (!limit.ok) {
+    return new Response("Too many requests", {
+      status: 429,
+      headers: { "Retry-After": String(limit.retryAfter) },
+    });
+  }
+
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!secret) {
     console.error("[webhook] STRIPE_WEBHOOK_SECRET not set");

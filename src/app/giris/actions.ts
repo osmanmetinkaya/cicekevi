@@ -2,8 +2,18 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { rateLimit } from "@/lib/rate-limit";
+
+/** Server Action içinden istemci IP'sini oku (Vercel/proxy: x-forwarded-for). */
+async function requestIp(): Promise<string> {
+  const h = await headers();
+  const xff = h.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0]!.trim();
+  return h.get("x-real-ip")?.trim() || "unknown";
+}
 
 export interface AuthState {
   error: string | null;
@@ -29,6 +39,15 @@ export async function signIn(
   const { email, password, next } = fields(formData);
   if (!email || !password) {
     return { error: "E-posta ve şifre gerekli." };
+  }
+
+  // Brute-force koruması: IP+e-posta başına dakikada 5 giriş denemesi.
+  const ip = await requestIp();
+  const limit = rateLimit(`signin:${ip}:${email.toLowerCase()}`, 5, 60_000);
+  if (!limit.ok) {
+    return {
+      error: "Çok fazla giriş denemesi. Lütfen biraz sonra tekrar dene.",
+    };
   }
 
   const supabase = await createClient();
@@ -65,6 +84,15 @@ export async function signUp(
   }
   if (password.length < 8) {
     return { error: "Şifre en az 8 karakter olmalı." };
+  }
+
+  // Spam/suistimal koruması: IP başına dakikada 5 kayıt denemesi.
+  const ip = await requestIp();
+  const limit = rateLimit(`signup:${ip}`, 5, 60_000);
+  if (!limit.ok) {
+    return {
+      error: "Çok fazla kayıt denemesi. Lütfen biraz sonra tekrar dene.",
+    };
   }
 
   const marketingConsent = formData.get("marketingConsent") === "on";

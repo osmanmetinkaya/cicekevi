@@ -4,6 +4,7 @@ import { getStripe } from "@/lib/stripe";
 import { getProductById } from "@/lib/products";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 interface IncomingItem {
   id: string;
@@ -37,6 +38,17 @@ function siteUrl(request: Request): string {
 }
 
 export async function POST(request: Request) {
+  // Hız sınırı: aynı IP dakikada en fazla 10 checkout oturumu oluşturabilir.
+  // Stripe oturum oluşturma maliyet/suistimal riskidir; spam'i keser.
+  const ip = clientIp(request);
+  const limit = rateLimit(`checkout:${ip}`, 10, 60_000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Çok fazla deneme. Lütfen biraz sonra tekrar dene." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } },
+    );
+  }
+
   let body: {
     items?: IncomingItem[];
     delivery?: IncomingDelivery;
