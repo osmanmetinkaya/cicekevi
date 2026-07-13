@@ -156,30 +156,40 @@ body {
   animation: intro-word 1900ms ease forwards;
 }
 
-/* Soft flowing lines drifting behind the flower — echoes the same
-   hand-drawn feel as the stroke-draw animation, but as a continuous,
-   looping motion rather than a one-shot reveal. */
+/* Soft flowing lines behind the flower — a repeating (tiled) wave pattern
+   whose background-position is animated. Because the tile repeats
+   edge-to-edge (background-repeat: repeat-x) the line has no start/end
+   point that can ever show mid-screen, unlike a single fixed-length SVG
+   path being translated: it flows continuously regardless of viewport
+   width. */
 .intro-splash__lines {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  overflow: hidden;
 }
 .i-line {
-  fill: none;
-  stroke: color-mix(in srgb, var(--color-rose-900) 22%, transparent);
-  stroke-width: 1.5;
-  stroke-linecap: round;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  background-repeat: repeat-x;
+  background-size: 220px 48px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='48' viewBox='0 0 220 48'%3E%3Cpath d='M0 24 Q 55 4 110 24 T 220 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 .i-line-1 {
-  animation: line-drift 7s linear infinite;
+  top: 22%;
+  color: color-mix(in srgb, var(--color-rose-900) 24%, transparent);
+  animation: line-flow 7s linear infinite;
 }
 .i-line-2 {
-  stroke: color-mix(in srgb, var(--color-cream) 55%, transparent);
-  animation: line-drift 9s linear infinite reverse;
+  top: 50%;
+  color: color-mix(in srgb, var(--color-cream) 55%, transparent);
+  animation: line-flow 9s linear infinite reverse;
 }
 .i-line-3 {
-  animation: line-drift 11s linear infinite;
+  top: 78%;
+  color: color-mix(in srgb, var(--color-rose-900) 24%, transparent);
+  animation: line-flow 11s linear infinite;
 }
 
 @keyframes intro-fade {
@@ -193,9 +203,9 @@ body {
   68% { opacity: 1; transform: translateY(0); }
   100% { opacity: 1; }
 }
-@keyframes line-drift {
-  from { transform: translateX(0); }
-  to { transform: translateX(-200px); }
+@keyframes line-flow {
+  from { background-position-x: 0; }
+  to { background-position-x: -220px; }
 }
 
 /* Reduced motion: skip the splashes entirely. */

@@ -28,25 +28,11 @@ export function IntroSplash() {
         if (e.animationName === "intro-fade") setShow(false);
       }}
     >
-      <svg
-        className="intro-splash__lines"
-        viewBox="0 0 400 120"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <path
-          className="i-line i-line-1"
-          d="M-100 30 Q 0 5 100 30 T 300 30 T 500 30"
-        />
-        <path
-          className="i-line i-line-2"
-          d="M-100 62 Q 0 90 100 62 T 300 62 T 500 62"
-        />
-        <path
-          className="i-line i-line-3"
-          d="M-100 96 Q 0 72 100 96 T 300 96 T 500 96"
-        />
-      </svg>
+      <div className="intro-splash__lines" aria-hidden="true">
+        <span className="i-line i-line-1" />
+        <span className="i-line i-line-2" />
+        <span className="i-line i-line-3" />
+      </div>
       <svg
         className="intro-splash__flower"
         viewBox="0 0 100 100"
