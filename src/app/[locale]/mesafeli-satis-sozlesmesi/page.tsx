@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { LegalPage, LegalSection } from "@/components/legal/legal-page";
 import { LEGAL_ENTITY, LEGAL_ENTITY_EN } from "@/lib/legal-info";
+import { SITE_NAME } from "@/lib/site";
 
 const TITLE = {
   tr: "Mesafeli Satış Sözleşmesi ve Ön Bilgilendirme Formu",
@@ -15,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const title = locale === "en" ? TITLE.en : TITLE.tr;
-  return { title: `${title} — Çiçekevi` };
+  return { title: `${title} — ${SITE_NAME}` };
 }
 
 export default async function DistanceSalesPage({

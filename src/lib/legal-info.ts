@@ -1,3 +1,5 @@
+import { SITE_NAME } from "@/lib/site";
+
 /**
  * Yasal metinlerde (KVKK, gizlilik, sözleşmeler) kullanılan ortak şirket
  * bilgileri. Şu an PLACEHOLDER değerler içerir — siteyi yayına almadan önce
@@ -6,7 +8,7 @@
  * güncelleme buradan tüm sayfalara yansır.
  */
 export const LEGAL_ENTITY = {
-  brandName: "Çiçekevi",
+  brandName: SITE_NAME,
   // TODO: gerçek ticaret unvanı ile değiştir (ör. "Çiçekevi Perakende Tic. Ltd. Şti.")
   legalName: "[TİCARET UNVANI GİRİLECEK]",
   mersisNo: "[MERSİS NO GİRİLECEK]",

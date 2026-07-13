@@ -14,6 +14,7 @@ import { getProductsByCategory, getProductsByGroup } from "@/lib/products";
 import { pick, type Locale } from "@/lib/types";
 import { CategoryListing } from "@/components/category/category-listing";
 import { CategoryChips } from "@/components/category/category-chips";
+import { SITE_NAME } from "@/lib/site";
 
 export function generateStaticParams() {
   return [
@@ -31,10 +32,10 @@ export async function generateMetadata({
   const loc = locale as Locale;
   const group = getGroupBySlug(slug);
   const label = group ? pick(group.label, loc) : categoryLabel(slug, loc);
-  if (!label) return { title: "Çiçekevi" };
+  if (!label) return { title: SITE_NAME };
   const t = await getTranslations({ locale, namespace: "category" });
   return {
-    title: `${label} — Çiçekevi`,
+    title: `${label} — ${SITE_NAME}`,
     description: t("metaDescription", { label }),
   };
 }

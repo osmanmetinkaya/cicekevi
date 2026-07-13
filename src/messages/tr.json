@@ -1,15 +1,19 @@
 {
   "meta": {
-    "homeTitle": "Çiçekevi — Taze çiçekler, aynı gün teslimat",
+    "homeTitle": "Denizli Çiçekevi — Taze çiçekler, aynı gün teslimat",
     "homeDescription": "Mevsiminde toplanan, elde hazırlanan buketler. Denizli içi aynı gün çiçek teslimatı."
   },
   "header": {
     "favorites": "Favoriler",
+    "favoritesLabel": "Favoriler, {count} ürün",
     "account": "Hesabım",
     "branchToggle": "Denizli · Yenişafak",
     "categories": "Kategoriler",
     "sameDay": "Aynı gün teslimat",
-    "languageGroup": "Dil seçimi"
+    "languageGroup": "Dil seçimi",
+    "openMenu": "Menüyü aç",
+    "closeMenu": "Menüyü kapat",
+    "menuTitle": "Menü"
   },
   "branch": {
     "name": "Yenişafak Şubesi",
@@ -122,6 +126,8 @@
     "cardBadgeBestseller": "Çok satan",
     "addToCart": "Sepete ekle",
     "addToCartLabel": "{name} sepete ekle",
+    "addToFavoritesLabel": "{name} favorilere ekle",
+    "removeFromFavoritesLabel": "{name} favorilerden çıkar",
     "decrease": "Adet azalt",
     "increase": "Adet artır",
     "contents": "İçindekiler",
@@ -148,6 +154,12 @@
     "emptyText": "Şu an burada gösterilecek ürün yok. Çok yakında özenle seçilmiş çiçeklerle karşında olacağız.",
     "metaDescription": "{label} kategorisindeki taze çiçekler ve aynı gün teslimat seçenekleri."
   },
+  "favorites": {
+    "title": "Favorilerim",
+    "empty": "Henüz favori eklemedin.",
+    "emptyCta": "Alışverişe başla",
+    "count": "{count} ürün"
+  },
   "orderSummary": {
     "title": "Sipariş özeti",
     "total": "Toplam",
@@ -172,7 +184,7 @@
     "fallbackItem": "Ürün"
   },
   "auth": {
-    "loginTitle": "Giriş yap — Çiçekevi",
+    "loginTitle": "Giriş yap — Denizli Çiçekevi",
     "welcome": "Hoş geldin",
     "welcomeSubtitle": "Siparişlerini görmek ve hızlı ödeme için hesabına gir.",
     "googleError": "Google ile giriş tamamlanamadı. Lütfen tekrar dene.",
@@ -202,7 +214,7 @@
     "googleStartError": "Google ile giriş başlatılamadı. Sağlayıcı aktif olmayabilir."
   },
   "account": {
-    "title": "Hesabım — Çiçekevi",
+    "title": "Hesabım — Denizli Çiçekevi",
     "heading": "Hesabım",
     "notConfigured": "Üyelik altyapısı henüz yapılandırılmadı. Supabase anahtarları eklendiğinde bu sayfa aktifleşecek.",
     "adminPanel": "Yönetim paneli",

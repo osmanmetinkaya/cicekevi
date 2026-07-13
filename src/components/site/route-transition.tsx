@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "@/i18n/navigation";
+import { SITE_NAME } from "@/lib/site";
 
 /**
  * Sayfanın ait olduğu üst bölüm. Animasyon yalnızca bölümler arasında geçerken
@@ -121,7 +122,7 @@ export function RouteTransition() {
           />
         </g>
       </svg>
-      <span className="route-splash__word">Çiçekevi</span>
+      <span className="route-splash__word">{SITE_NAME}</span>
     </div>
   );
 }

@@ -1,15 +1,19 @@
 {
   "meta": {
-    "homeTitle": "Çiçekevi — Fresh flowers, same-day delivery",
+    "homeTitle": "Denizli Çiçekevi — Fresh flowers, same-day delivery",
     "homeDescription": "Seasonal, hand-arranged bouquets. Same-day flower delivery across Denizli."
   },
   "header": {
     "favorites": "Favourites",
+    "favoritesLabel": "Favourites, {count} items",
     "account": "My account",
     "branchToggle": "Denizli · Yenişafak",
     "categories": "Categories",
     "sameDay": "Same-day delivery",
-    "languageGroup": "Language selection"
+    "languageGroup": "Language selection",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menuTitle": "Menu"
   },
   "branch": {
     "name": "Yenişafak Branch",
@@ -122,6 +126,8 @@
     "cardBadgeBestseller": "Bestseller",
     "addToCart": "Add to cart",
     "addToCartLabel": "Add {name} to cart",
+    "addToFavoritesLabel": "Add {name} to favourites",
+    "removeFromFavoritesLabel": "Remove {name} from favourites",
     "decrease": "Decrease quantity",
     "increase": "Increase quantity",
     "contents": "What's inside",
@@ -148,6 +154,12 @@
     "emptyText": "There are no products to show here yet. We'll be here very soon with carefully selected flowers.",
     "metaDescription": "Fresh flowers in the {label} category with same-day delivery options."
   },
+  "favorites": {
+    "title": "My Favourites",
+    "empty": "You haven't added any favourites yet.",
+    "emptyCta": "Start shopping",
+    "count": "{count} items"
+  },
   "orderSummary": {
     "title": "Order summary",
     "total": "Total",
@@ -172,7 +184,7 @@
     "fallbackItem": "Item"
   },
   "auth": {
-    "loginTitle": "Sign in — Çiçekevi",
+    "loginTitle": "Sign in — Denizli Çiçekevi",
     "welcome": "Welcome",
     "welcomeSubtitle": "Sign in to view your orders and check out faster.",
     "googleError": "Google sign-in could not be completed. Please try again.",
@@ -202,7 +214,7 @@
     "googleStartError": "Could not start Google sign-in. The provider may not be enabled."
   },
   "account": {
-    "title": "My account — Çiçekevi",
+    "title": "My account — Denizli Çiçekevi",
     "heading": "My account",
     "notConfigured": "Membership infrastructure isn't configured yet. This page will activate once Supabase keys are added.",
     "adminPanel": "Admin panel",

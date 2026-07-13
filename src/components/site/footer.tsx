@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/site/logo";
+import { SITE_NAME } from "@/lib/site";
 
 export function Footer() {
   const t = useTranslations("footer");
@@ -63,7 +64,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-line py-5 text-center text-xs text-ink-muted">
-        © {new Date().getFullYear()} Çiçekevi. {t("rights")}
+        © {new Date().getFullYear()} {SITE_NAME}. {t("rights")}
       </div>
     </footer>
   );

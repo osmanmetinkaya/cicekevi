@@ -6,6 +6,7 @@ import { LayoutDashboard, Package } from "lucide-react";
 import "../globals.css";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { SITE_NAME } from "@/lib/site";
 
 const manrope = localFont({
   src: "../fonts/Manrope-Variable.ttf",
@@ -22,7 +23,7 @@ const cormorant = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Yönetim — Çiçekevi",
+  title: `Yönetim — ${SITE_NAME}`,
 };
 
 // Yönetim paneli locale dışıdır ve kendi kök layout'unu (html/body) taşır;

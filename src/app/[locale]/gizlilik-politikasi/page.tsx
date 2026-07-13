@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { LegalPage, LegalSection } from "@/components/legal/legal-page";
 import { LEGAL_ENTITY } from "@/lib/legal-info";
+import { SITE_NAME } from "@/lib/site";
 
 const TITLE = { tr: "Gizlilik Politikası", en: "Privacy Policy" };
 
@@ -13,7 +14,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const title = locale === "en" ? TITLE.en : TITLE.tr;
-  return { title: `${title} — Çiçekevi` };
+  return { title: `${title} — ${SITE_NAME}` };
 }
 
 export default async function PrivacyPage({
