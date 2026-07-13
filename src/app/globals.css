@@ -120,7 +120,9 @@ body {
 
 /* Intro splash — plays once on the site's first (hard) page load. Shares
    the flower-draw mechanics above but with its own, slightly longer and
-   more deliberate timing to feel like an entrance rather than a transition. */
+   more deliberate timing to feel like an entrance rather than a transition.
+   Kept deliberately quiet: cream ground, the same brand flower mark, and a
+   soft breathing glow behind it — no extra motifs competing for attention. */
 .intro-splash {
   position: fixed;
   inset: 0;
@@ -130,8 +132,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.85rem;
-  overflow: hidden;
-  background: var(--color-blush-300);
+  background: var(--color-cream);
   pointer-events: none;
   will-change: opacity;
   animation: intro-fade 1900ms ease forwards;
@@ -140,43 +141,20 @@ body {
   overflow: visible;
   position: relative;
 }
-.intro-splash .s-petal,
-.intro-splash .s-center {
-  stroke: var(--color-rose-900);
-}
-.intro-splash .s-stem,
-.intro-splash .s-leaf {
-  stroke: var(--color-leaf-900);
+.intro-splash__glow {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--color-blush-200) 0%, transparent 68%);
+  animation: glow-breathe 1900ms ease forwards;
 }
 .intro-splash__word {
   font-family: var(--font-serif);
-  font-size: 1.75rem;
-  letter-spacing: 0.01em;
-  color: var(--color-rose-900);
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+  color: var(--color-leaf-600);
   animation: intro-word 1900ms ease forwards;
-}
-
-/* Soft flowing lines behind the flower — irregular, asymmetric wave
-   tiles generated randomly per page load (see intro-splash.tsx) and
-   animated via background-position. Each tile's start/end points share
-   the same baseline, so background-repeat: repeat-x tiles them with no
-   visible seam or endpoint, regardless of viewport width — the line
-   simply flows continuously. A random negative animation-delay per
-   line means each visit also starts mid-cycle at a different phase. */
-.intro-splash__lines {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-.i-line {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  color: var(--color-blush-100);
-  background-repeat: repeat-x;
-  animation-name: line-flow;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
 }
 
 @keyframes intro-fade {
@@ -190,9 +168,10 @@ body {
   68% { opacity: 1; transform: translateY(0); }
   100% { opacity: 1; }
 }
-@keyframes line-flow {
-  from { background-position-x: 0; }
-  to { background-position-x: calc(-1 * var(--tile-w, 220px)); }
+@keyframes glow-breathe {
+  0% { opacity: 0; transform: scale(0.85); }
+  55% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 0.55; transform: scale(1); }
 }
 
 /* Reduced motion: skip the splashes entirely. */
