@@ -12,6 +12,7 @@ import { SearchProvider } from "@/components/search/search-context";
 import { SearchOverlay } from "@/components/search/search-overlay";
 import { PageShell } from "@/components/site/page-shell";
 import { RouteTransition } from "@/components/site/route-transition";
+import { IntroSplash } from "@/components/site/intro-splash";
 import { CookieNotice } from "@/components/site/cookie-notice";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
@@ -66,6 +67,7 @@ export default async function LocaleLayout({
       className={`${manrope.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <IntroSplash />
         <NextIntlClientProvider>
           <CartProvider>
             <FavoritesProvider>

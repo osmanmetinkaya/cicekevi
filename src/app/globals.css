@@ -80,14 +80,18 @@ body {
   stroke-dashoffset: 1;
   animation: splash-draw 360ms ease forwards;
 }
-.route-splash .s-petal {
+.route-splash .s-petal,
+.intro-splash .s-petal {
   stroke: var(--color-rose-600);
 }
-.route-splash .s-center {
+.route-splash .s-center,
+.intro-splash .s-center {
   stroke: var(--color-rose-700);
 }
 .route-splash .s-stem,
-.route-splash .s-leaf {
+.route-splash .s-leaf,
+.intro-splash .s-stem,
+.intro-splash .s-leaf {
   stroke: var(--color-leaf-600);
 }
 .route-splash__word {
@@ -113,9 +117,50 @@ body {
   100% { opacity: 1; }
 }
 
-/* Reduced motion: skip the splash entirely. */
+/* Intro splash — plays once on the site's first (hard) page load. Shares
+   the flower-draw mechanics above but with its own, slightly longer and
+   more deliberate timing to feel like an entrance rather than a transition. */
+.intro-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  background: var(--color-cream);
+  pointer-events: none;
+  will-change: opacity;
+  animation: intro-fade 1900ms ease forwards;
+}
+.intro-splash__flower {
+  overflow: visible;
+}
+.intro-splash__word {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  letter-spacing: 0.01em;
+  color: var(--color-leaf-600);
+  animation: intro-word 1900ms ease forwards;
+}
+
+@keyframes intro-fade {
+  0% { opacity: 0; }
+  6% { opacity: 1; }
+  84% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes intro-word {
+  0%, 50% { opacity: 0; transform: translateY(8px); }
+  68% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 1; }
+}
+
+/* Reduced motion: skip the splashes entirely. */
 @media (prefers-reduced-motion: reduce) {
-  .route-splash {
+  .route-splash,
+  .intro-splash {
     display: none;
   }
 }
