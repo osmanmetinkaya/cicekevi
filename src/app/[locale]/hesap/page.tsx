@@ -19,6 +19,7 @@ export async function generateMetadata({
 
 interface OrderRow {
   id: string;
+  order_number: string;
   stripe_session_id: string;
   amount_total: number;
   items: { name: string; qty: number; amount: number }[];
@@ -59,7 +60,7 @@ export default async function AccountPage({
   const { data: orders } = await supabase
     .from("orders")
     .select(
-      "id, stripe_session_id, amount_total, items, delivery_date, delivery_window, gift_note, created_at",
+      "id, order_number, stripe_session_id, amount_total, items, delivery_date, delivery_window, gift_note, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(20)
@@ -133,7 +134,7 @@ export default async function AccountPage({
 async function OrderSummaryWithDate({ row }: { row: OrderRow }) {
   const locale = await getLocale();
   const order: OrderView = {
-    ref: row.stripe_session_id.slice(-8).toUpperCase(),
+    ref: row.order_number,
     items: row.items,
     totalKurus: row.amount_total,
     deliveryDate: row.delivery_date ?? undefined,

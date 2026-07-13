@@ -9,7 +9,7 @@ export default async function AdminDashboard() {
   const { data } = await supabase
     .from("orders")
     .select(
-      "id, stripe_session_id, email, amount_total, items, delivery_date, delivery_window, gift_note, status, created_at",
+      "id, order_number, stripe_session_id, email, amount_total, items, delivery_date, delivery_window, gift_note, status, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(200)
@@ -64,7 +64,7 @@ export default async function AdminDashboard() {
             >
               <div>
                 <span className="text-sm font-medium text-ink">
-                  #{o.stripe_session_id.slice(-8).toUpperCase()}
+                  #{o.order_number}
                 </span>
                 <span className="ml-3 text-sm text-ink-muted">{o.email}</span>
                 {o.delivery_date && (

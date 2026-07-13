@@ -28,7 +28,7 @@ export default async function SuccessPage({
       const md = session.metadata ?? {};
       email = session.customer_details?.email ?? null;
       order = {
-        ref: session.id.slice(-8).toUpperCase(),
+        ref: md.order_number || session.id.slice(-8).toUpperCase(),
         items: (session.line_items?.data ?? []).map((li) => ({
           name: li.description ?? t("fallbackItem"),
           qty: li.quantity ?? 1,

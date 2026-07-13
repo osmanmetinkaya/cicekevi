@@ -9,7 +9,7 @@ export default async function AdminOrdersPage() {
   const { data } = await supabase
     .from("orders")
     .select(
-      "id, stripe_session_id, email, amount_total, items, delivery_date, delivery_window, gift_note, status, created_at",
+      "id, order_number, stripe_session_id, email, amount_total, items, delivery_date, delivery_window, gift_note, status, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(200)
@@ -33,7 +33,7 @@ export default async function AdminOrdersPage() {
             <div>
               <div className="flex flex-wrap items-center gap-3">
                 <span className="font-medium text-ink">
-                  #{o.stripe_session_id.slice(-8).toUpperCase()}
+                  #{o.order_number}
                 </span>
                 <span className="text-sm text-ink-muted">{o.email}</span>
                 <span className="text-xs text-ink-muted">

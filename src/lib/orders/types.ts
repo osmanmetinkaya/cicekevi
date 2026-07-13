@@ -2,6 +2,7 @@ import type { OrderStatus } from "@/lib/orders/status";
 
 export interface AdminOrderRow {
   id: string;
+  order_number: string;
   stripe_session_id: string;
   email: string;
   amount_total: number;

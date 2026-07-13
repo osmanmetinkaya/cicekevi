@@ -22,6 +22,9 @@ async function persistOrder(session: Stripe.Checkout.Session) {
     user_id: md.user_id || null,
     email: session.customer_details?.email ?? "",
     stripe_session_id: session.id,
+    // Checkout API tarafından rezerve edilir; metadata hiç gelmezse (ör.
+    // bu özellikten önce açılmış eski bir oturum) sipariş numarasız kalmasın.
+    order_number: md.order_number || `DC-${session.id.slice(-8).toUpperCase()}`,
     amount_total: session.amount_total ?? 0,
     currency: session.currency ?? "try",
     items: lineItems.data.map((li) => ({

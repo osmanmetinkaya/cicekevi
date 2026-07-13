@@ -116,7 +116,11 @@
     "errorSelectDelivery": "Please choose a delivery date and time window.",
     "errorContract": "You must accept the Distance Sales Agreement to continue.",
     "errorCheckoutFailed": "Could not start checkout.",
-    "errorGeneric": "Something went wrong."
+    "errorGeneric": "Something went wrong.",
+    "authGateText": "We recommend signing in so you can track your order. You can also continue without an account.",
+    "loginCta": "Sign in",
+    "guestCta": "Continue without an account",
+    "cancelGate": "Cancel"
   },
   "product": {
     "breadcrumbHome": "Home",

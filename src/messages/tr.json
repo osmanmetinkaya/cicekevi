@@ -116,7 +116,11 @@
     "errorSelectDelivery": "Lütfen teslimat tarihi ve saat aralığını seç.",
     "errorContract": "Devam etmek için Mesafeli Satış Sözleşmesi'ni onaylamalısın.",
     "errorCheckoutFailed": "Ödeme başlatılamadı.",
-    "errorGeneric": "Bir şeyler ters gitti."
+    "errorGeneric": "Bir şeyler ters gitti.",
+    "authGateText": "Siparişini takip edebilmen için giriş yapmanı öneririz. İstersen üye olmadan da devam edebilirsin.",
+    "loginCta": "Giriş yap",
+    "guestCta": "Üye olmadan devam et",
+    "cancelGate": "Vazgeç"
   },
   "product": {
     "breadcrumbHome": "Ana sayfa",

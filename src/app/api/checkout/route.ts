@@ -36,6 +36,23 @@ function siteUrl(request: Request): string {
   ).replace(/\/$/, "");
 }
 
+/** Okunabilir sipariş numarası (ör. DC-1042), Postgres sequence üzerinden
+ * rezerve edilir. RPC başarısız olursa rastgele bir yedek üretilir ki
+ * sipariş numarasız kalmasın. */
+async function nextOrderNumber(
+  supabase: Awaited<ReturnType<typeof createClient>> | null,
+): Promise<string> {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.rpc("next_order_number");
+      if (!error && typeof data === "string" && data) return data;
+    } catch {
+      // aşağıdaki yedeğe düş
+    }
+  }
+  return `DC-${randomUUID().slice(0, 8).toUpperCase()}`;
+}
+
 export async function POST(request: Request) {
   // Hız sınırı: aynı IP dakikada en fazla 10 checkout oturumu oluşturabilir.
   // Stripe oturum oluşturma maliyet/suistimal riskidir; spam'i keser.
@@ -123,8 +140,8 @@ export async function POST(request: Request) {
   // Girişli kullanıcıyı siparişe bağla (webhook orders.user_id doldurur).
   let userId = "";
   let userEmail: string | undefined;
-  if (isSupabaseConfigured()) {
-    const supabase = await createClient();
+  const supabase = isSupabaseConfigured() ? await createClient() : null;
+  if (supabase) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -133,6 +150,7 @@ export async function POST(request: Request) {
       userEmail = user.email ?? undefined;
     }
   }
+  const orderNumber = await nextOrderNumber(supabase);
 
   try {
     const session = await getStripe().checkout.sessions.create(
@@ -150,6 +168,7 @@ export async function POST(request: Request) {
         metadata: {
           source: "web",
           user_id: userId,
+          order_number: orderNumber,
           delivery_date: delivery?.date ?? "",
           delivery_window: delivery?.window ?? "",
           gift_note: giftNote,

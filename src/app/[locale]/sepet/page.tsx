@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CalendarDays,
   Clock4,
   Gift,
+  LogIn,
   Minus,
   Plus,
   ShoppingBag,
   Trash2,
+  UserRound,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -18,6 +20,12 @@ import { Artwork } from "@/components/product/artwork";
 import { formatKurus } from "@/lib/format";
 import { pick, type Locale } from "@/lib/types";
 import { DELIVERY_WINDOWS } from "@/lib/delivery";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { createClient } from "@/lib/supabase/client";
+
+/** Girişli mi, misafir mi bilinmiyorsa "checking" — o sırada ödeme
+ * kapısı gösterilmez, kontrol bitene kadar buton normal davranır. */
+type AuthStatus = "checking" | "authed" | "guest";
 
 function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
@@ -34,8 +42,26 @@ export default function CartPage() {
   const [contractAccepted, setContractAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [authStatus, setAuthStatus] = useState<AuthStatus>(
+    isSupabaseConfigured() ? "checking" : "authed",
+  );
+  const [showAuthGate, setShowAuthGate] = useState(false);
+  const [guestConfirmed, setGuestConfirmed] = useState(false);
 
-  async function checkout() {
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    let cancelled = false;
+    createClient()
+      .auth.getUser()
+      .then(({ data }) => {
+        if (!cancelled) setAuthStatus(data.user ? "authed" : "guest");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  function handleCheckoutClick() {
     if (!date || !win) {
       setError(t("errorSelectDelivery"));
       return;
@@ -44,6 +70,16 @@ export default function CartPage() {
       setError(t("errorContract"));
       return;
     }
+    // Üye değil ve henüz "üye olmadan devam et" demediyse, önce seçim sun.
+    if (authStatus === "guest" && !guestConfirmed) {
+      setError(null);
+      setShowAuthGate(true);
+      return;
+    }
+    submitOrder();
+  }
+
+  async function submitOrder() {
     setLoading(true);
     setError(null);
     try {
@@ -236,14 +272,42 @@ export default function CartPage() {
             </p>
           )}
 
-          <button
-            onClick={checkout}
-            disabled={loading}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-rose-700 py-3.5 text-sm font-medium text-white transition-colors hover:bg-rose-900 disabled:opacity-60"
-          >
-            <ShoppingBag size={17} />
-            {loading ? t("redirecting") : t("secureCheckout")}
-          </button>
+          {showAuthGate ? (
+            <div className="mt-4 space-y-3 rounded-2xl border border-line bg-cream p-4">
+              <p className="text-sm text-ink">{t("authGateText")}</p>
+              <Link
+                href="/giris?next=/sepet"
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-rose-700 py-3 text-sm font-medium text-white transition-colors hover:bg-rose-900"
+              >
+                <LogIn size={16} /> {t("loginCta")}
+              </Link>
+              <button
+                onClick={() => {
+                  setGuestConfirmed(true);
+                  setShowAuthGate(false);
+                  submitOrder();
+                }}
+                className="flex w-full items-center justify-center gap-2 rounded-full border border-line py-3 text-sm font-medium text-ink transition-colors hover:border-blush-300 hover:text-rose-700"
+              >
+                <UserRound size={16} /> {t("guestCta")}
+              </button>
+              <button
+                onClick={() => setShowAuthGate(false)}
+                className="w-full text-center text-xs text-ink-muted transition-colors hover:text-ink"
+              >
+                {t("cancelGate")}
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleCheckoutClick}
+              disabled={loading || authStatus === "checking"}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-rose-700 py-3.5 text-sm font-medium text-white transition-colors hover:bg-rose-900 disabled:opacity-60"
+            >
+              <ShoppingBag size={17} />
+              {loading ? t("redirecting") : t("secureCheckout")}
+            </button>
+          )}
           <p className="mt-3 text-center text-xs text-ink-muted">
             {t("sslNote")}
           </p>
