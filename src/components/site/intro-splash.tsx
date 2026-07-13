@@ -8,8 +8,8 @@ import { SITE_NAME } from "@/lib/site";
  * RouteTransition ile aynı çizim tekniğini paylaşır, fakat ayrı bir
  * bileşendir: RouteTransition kasıtlı olarak ilk render'da hiçbir şey
  * göstermez (yalnızca bölümler arası geçişlere özeldir). Kasıtlı olarak
- * sade: krem zemin, tek bir çizgi-çiçek ve arkasında yumuşak bir ışık
- * halesi — premium markaların tercih ettiği "az hareket, çok his" dili.
+ * sade: krem zemin ve tek bir çizgi-çiçek — premium markaların tercih
+ * ettiği "az hareket, çok his" dili.
  */
 export function IntroSplash() {
   const [show, setShow] = useState(true);
@@ -30,7 +30,6 @@ export function IntroSplash() {
         if (e.animationName === "intro-fade") setShow(false);
       }}
     >
-      <div className="intro-splash__glow" />
       <svg
         className="intro-splash__flower"
         viewBox="0 0 100 100"
