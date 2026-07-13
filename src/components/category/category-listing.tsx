@@ -58,7 +58,7 @@ export function CategoryListing({ products }: { products: Product[] }) {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as Sort)}
-            className="cursor-pointer rounded-full border border-line bg-white px-3 py-1.5 text-sm text-ink outline-none transition-colors hover:border-blush-300 focus:border-rose-500"
+            className="cursor-pointer rounded-full border border-line bg-white px-3 py-1.5 text-base text-ink outline-none transition-colors hover:border-blush-300 focus:border-rose-500 sm:text-sm"
           >
             {sortOptions.map((s) => (
               <option key={s.value} value={s.value}>

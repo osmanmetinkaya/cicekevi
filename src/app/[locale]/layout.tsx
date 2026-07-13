@@ -7,6 +7,7 @@ import "../globals.css";
 import { routing } from "@/i18n/routing";
 import { CartProvider } from "@/components/cart/cart-context";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { FavoritesProvider } from "@/components/favorites/favorites-context";
 import { SearchProvider } from "@/components/search/search-context";
 import { SearchOverlay } from "@/components/search/search-overlay";
 import { PageShell } from "@/components/site/page-shell";
@@ -67,17 +68,19 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
           <CartProvider>
-            <SearchProvider>
-              <PageShell>
-                <Header />
-                <main className="flex-1">{children}</main>
-                <Footer />
-              </PageShell>
-              <SearchOverlay />
-              <CartDrawer />
-              <RouteTransition />
-              <CookieNotice />
-            </SearchProvider>
+            <FavoritesProvider>
+              <SearchProvider>
+                <PageShell>
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                </PageShell>
+                <SearchOverlay />
+                <CartDrawer />
+                <RouteTransition />
+                <CookieNotice />
+              </SearchProvider>
+            </FavoritesProvider>
           </CartProvider>
         </NextIntlClientProvider>
       </body>

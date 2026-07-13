@@ -61,7 +61,7 @@ export function CategoryNav() {
     <nav
       ref={ref}
       aria-label={tHeader("categories")}
-      className="border-b border-line bg-white"
+      className="hidden border-b border-line bg-white md:block"
     >
       <ul className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-2.5 sm:px-6">
         {CATEGORY_GROUPS.map((group) => {
