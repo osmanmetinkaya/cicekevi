@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { Cookie } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 const KEY = "cicekevi-cerez-bildirimi";
 
 export function CookieNotice() {
+  const t = useTranslations("cookieNotice");
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -25,13 +27,12 @@ export function CookieNotice() {
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-4 text-center sm:flex-row sm:justify-between sm:text-left sm:px-6">
         <p className="flex items-center gap-2 text-sm text-ink-muted">
           <Cookie size={17} className="shrink-0 text-leaf-600" />
-          Sitemizde yalnızca sitenin çalışması için gerekli çerezleri
-          kullanıyoruz.{" "}
+          {t("text")}{" "}
           <Link
             href="/cerez-politikasi"
             className="text-rose-700 underline underline-offset-2"
           >
-            Çerez Politikası
+            {t("policyLink")}
           </Link>
         </p>
         <button
@@ -39,7 +40,7 @@ export function CookieNotice() {
           onClick={dismiss}
           className="shrink-0 rounded-full bg-rose-700 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-900"
         >
-          Anladım
+          {t("accept")}
         </button>
       </div>
     </div>

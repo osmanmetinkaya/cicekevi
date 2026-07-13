@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Flower2 } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 
 /**
  * Marka logosu — her sayfada ana sayfaya dönüş linki olarak kullanılır.

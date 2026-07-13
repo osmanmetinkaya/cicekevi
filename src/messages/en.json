@@ -1,0 +1,232 @@
+{
+  "meta": {
+    "homeTitle": "Çiçekevi — Fresh flowers, same-day delivery",
+    "homeDescription": "Seasonal, hand-arranged bouquets. Same-day flower delivery across Denizli."
+  },
+  "header": {
+    "favorites": "Favourites",
+    "account": "My account",
+    "branchToggle": "Denizli · Yenişafak",
+    "categories": "Categories",
+    "sameDay": "Same-day delivery",
+    "languageGroup": "Language selection"
+  },
+  "branch": {
+    "name": "Yenişafak Branch",
+    "address": "1029 Sk. No:9 D:B, 20040 Merkezefendi/Denizli"
+  },
+  "hero": {
+    "eyebrow": "SAME-DAY DELIVERY · WITHIN DENİZLİ",
+    "titleLine1": "Fresh flowers,",
+    "titleLine2": "at your door today.",
+    "subtitle": "Seasonal bouquets, arranged by hand by our florists. Orders placed by 4 p.m. arrive the same day.",
+    "ctaExplore": "Explore bouquets",
+    "ctaBestsellers": "Bestsellers"
+  },
+  "features": {
+    "sameDay": "Same-day delivery",
+    "window": "Choose a delivery window",
+    "fresh": "Seasonal and fresh",
+    "securePayment": "Secure payment"
+  },
+  "home": {
+    "bestsellersEyebrow": "Bestsellers",
+    "bestsellersTitle": "Customer favourites",
+    "allEyebrow": "Collection",
+    "allTitle": "All flowers"
+  },
+  "footer": {
+    "tagline": "Seasonal, hand-arranged bouquets. Same-day delivery across Denizli.",
+    "shop": "Shop",
+    "help": "Help",
+    "corporate": "Company",
+    "bouquets": "Bouquets",
+    "pottedPlants": "Potted Plants",
+    "orchids": "Orchids",
+    "giftCard": "Gift card",
+    "delivery": "Delivery",
+    "returns": "Returns & cancellation",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "about": "About us",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "rights": "All rights reserved."
+  },
+  "legalLinks": {
+    "privacy": "Privacy Policy",
+    "kvkk": "GDPR/KVKK Privacy Notice",
+    "cookies": "Cookie Policy",
+    "distanceSales": "Distance Sales Agreement",
+    "cancellation": "Cancellation & Refund Terms",
+    "terms": "Terms of Use"
+  },
+  "cookieNotice": {
+    "text": "We only use cookies that are strictly necessary for the site to function.",
+    "policyLink": "Cookie Policy",
+    "accept": "Got it"
+  },
+  "search": {
+    "trigger": "Search",
+    "close": "Close search",
+    "closeShort": "Close",
+    "dialogLabel": "Site search",
+    "placeholder": "Search flowers, bouquets, orchids…",
+    "popular": "POPULAR SEARCHES",
+    "popularTerms": ["Red rose", "Orchid", "Birthday", "Daisy", "Arrangement"]
+  },
+  "cart": {
+    "openLabel": "Cart, {count} items",
+    "drawerLabel": "Cart",
+    "yourCart": "Your cart",
+    "closeCart": "Close cart",
+    "emptyDrawerTitle": "Your cart is empty",
+    "emptyDrawerText": "Browse our bouquets and add your favourite.",
+    "startShopping": "Start shopping",
+    "remove": "Remove {name}",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "subtotal": "Subtotal",
+    "drawerNote": "You'll choose the delivery date, time and gift note in the next step.",
+    "goToCart": "Go to cart"
+  },
+  "cartPage": {
+    "emptyTitle": "Your cart is empty",
+    "emptyText": "Browse our bouquets and add your favourite to the cart.",
+    "startShopping": "Start shopping",
+    "title": "Cart",
+    "delivery": "Delivery",
+    "deliveryDate": "Delivery date",
+    "timeWindow": "Time window",
+    "select": "Select…",
+    "giftNote": "Gift note",
+    "optional": "(optional)",
+    "giftPlaceholder": "Write the message you'd like on the card here…",
+    "orderSummary": "Order summary",
+    "subtotal": "Subtotal",
+    "deliveryAtCheckout": "At checkout",
+    "total": "Total",
+    "secureCheckout": "Proceed to secure checkout",
+    "redirecting": "Redirecting…",
+    "sslNote": "Secure payment with 256-bit SSL · Stripe",
+    "errorSelectDelivery": "Please choose a delivery date and time window.",
+    "errorContract": "You must accept the Distance Sales Agreement to continue.",
+    "errorCheckoutFailed": "Could not start checkout.",
+    "errorGeneric": "Something went wrong."
+  },
+  "product": {
+    "breadcrumbHome": "Home",
+    "badgeNew": "New arrivals",
+    "badgeBestseller": "Bestseller",
+    "cardBadgeNew": "New",
+    "cardBadgeBestseller": "Bestseller",
+    "addToCart": "Add to cart",
+    "addToCartLabel": "Add {name} to cart",
+    "decrease": "Decrease quantity",
+    "increase": "Increase quantity",
+    "contents": "What's inside",
+    "related": "Similar flowers",
+    "delivery": {
+      "sameDay": "Same-day delivery within Denizli",
+      "cutoff": "Orders placed by 4 p.m. arrive today",
+      "fresh": "Fresh, seasonally picked flowers",
+      "ssl": "Secure payment with 256-bit SSL"
+    }
+  },
+  "category": {
+    "breadcrumbHome": "Home",
+    "groupIntro": "All flowers under {label}. Same-day delivery across Denizli.",
+    "leafIntro": "Flowers arranged with care for {label}. Same-day delivery across Denizli.",
+    "categoriesLabel": "{label} categories",
+    "productCount": "{count} products",
+    "sort": "Sort",
+    "sortRecommended": "Recommended",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low",
+    "sortNewest": "Newest first",
+    "emptyTitle": "This category will fill up soon",
+    "emptyText": "There are no products to show here yet. We'll be here very soon with carefully selected flowers.",
+    "metaDescription": "Fresh flowers in the {label} category with same-day delivery options."
+  },
+  "orderSummary": {
+    "title": "Order summary",
+    "total": "Total",
+    "recipient": "Recipient",
+    "deliveryDate": "Delivery date",
+    "timeWindow": "Time window",
+    "giftNote": "Gift note"
+  },
+  "contractConsent": {
+    "distanceSales": "Distance Sales Agreement",
+    "kvkk": "GDPR/KVKK Privacy Notice",
+    "readAccept": " and the",
+    "readAcceptEnd": ". Since fresh flowers are perishable goods, they fall under the",
+    "withdrawalException": "right-of-withdrawal exception",
+    "withdrawalEnd": "."
+  },
+  "success": {
+    "title": "Your order is confirmed 🌸",
+    "thanks": "Thank you! We're preparing your flowers with care.",
+    "emailSent": "A confirmation email has been sent to {email}.",
+    "continueShopping": "Continue shopping",
+    "fallbackItem": "Item"
+  },
+  "auth": {
+    "loginTitle": "Sign in — Çiçekevi",
+    "welcome": "Welcome",
+    "welcomeSubtitle": "Sign in to view your orders and check out faster.",
+    "googleError": "Google sign-in could not be completed. Please try again.",
+    "notConfigured": "Membership infrastructure isn't configured yet. This page will activate once Supabase keys are added.",
+    "tabsLabel": "Sign in or register",
+    "signIn": "Sign in",
+    "signUp": "Register",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "phone": "Phone",
+    "email": "Email",
+    "password": "Password",
+    "passwordHintSignup": "At least 8 characters",
+    "firstNamePlaceholder": "Jane",
+    "lastNamePlaceholder": "Doe",
+    "phonePlaceholder": "0555 123 45 67",
+    "emailPlaceholder": "example@email.com",
+    "marketingConsent": "I'd like to hear about campaigns and offers by email/SMS.",
+    "marketingOptional": "(optional)",
+    "waiting": "Please wait…",
+    "kvkkConsentPre": "By registering, you accept the",
+    "kvkkConsentLink": "GDPR/KVKK Privacy Notice",
+    "kvkkConsentPost": ".",
+    "or": "or",
+    "googleContinue": "Continue with Google",
+    "googleRedirecting": "Redirecting…",
+    "googleStartError": "Could not start Google sign-in. The provider may not be enabled."
+  },
+  "account": {
+    "title": "My account — Çiçekevi",
+    "heading": "My account",
+    "notConfigured": "Membership infrastructure isn't configured yet. This page will activate once Supabase keys are added.",
+    "adminPanel": "Admin panel",
+    "signOut": "Sign out",
+    "orderHistory": "Order history",
+    "noOrders": "You don't have any orders yet.",
+    "startShopping": "Start shopping"
+  },
+  "legal": {
+    "home": "Home",
+    "lastUpdated": "Last updated",
+    "authoritativeNote": "This is an English translation of the Turkish text and is provided for information only. The binding, legally authoritative version is the Turkish one.",
+    "authoritativeLink": "View the Turkish version"
+  },
+  "authErrors": {
+    "notConfigured": "Membership infrastructure isn't configured yet.",
+    "emailPasswordRequired": "Email and password are required.",
+    "tooManySignin": "Too many sign-in attempts. Please try again shortly.",
+    "invalidCredentials": "Incorrect email or password.",
+    "nameRequired": "First and last name are required.",
+    "invalidPhone": "Enter a valid phone number (e.g. 0555 123 45 67).",
+    "shortPassword": "Password must be at least 8 characters.",
+    "tooManySignup": "Too many sign-up attempts. Please try again shortly.",
+    "signupFailed": "Could not create the account. This email may already be in use.",
+    "verifyEmail": "Registration received. Click the verification link sent to your email."
+  }
+}

@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { ChevronDown, ChevronRight, Truck } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { CATEGORY_GROUPS } from "@/lib/categories";
+import { pick, type Locale } from "@/lib/types";
 import {
   CATEGORY_ICONS,
   FALLBACK_CATEGORY_ICON,
@@ -37,6 +39,8 @@ function MenuItem({
 }
 
 export function CategoryNav() {
+  const locale = useLocale() as Locale;
+  const tHeader = useTranslations("header");
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [openSub, setOpenSub] = useState<string | null>(null);
   const ref = useRef<HTMLElement>(null);
@@ -56,17 +60,17 @@ export function CategoryNav() {
   return (
     <nav
       ref={ref}
-      aria-label="Kategoriler"
+      aria-label={tHeader("categories")}
       className="border-b border-line bg-white"
     >
       <ul className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-2.5 sm:px-6">
         {CATEGORY_GROUPS.map((group) => {
-          const isOpen = openGroup === group.label;
+          const isOpen = openGroup === group.slug;
           return (
             <li
-              key={group.label}
+              key={group.slug}
               className="relative"
-              onMouseEnter={() => setOpenGroup(group.label)}
+              onMouseEnter={() => setOpenGroup(group.slug)}
               onMouseLeave={() => {
                 setOpenGroup(null);
                 setOpenSub(null);
@@ -74,12 +78,12 @@ export function CategoryNav() {
             >
               <button
                 type="button"
-                onClick={() => setOpenGroup(isOpen ? null : group.label)}
+                onClick={() => setOpenGroup(isOpen ? null : group.slug)}
                 aria-expanded={isOpen}
                 aria-haspopup="true"
                 className="flex items-center gap-1 text-sm font-medium text-ink transition-colors hover:text-rose-700"
               >
-                {group.label}
+                {pick(group.label, locale)}
                 <ChevronDown
                   size={14}
                   className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
@@ -98,7 +102,10 @@ export function CategoryNav() {
                     if (!item.children) {
                       return (
                         <li key={item.slug}>
-                          <MenuItem slug={item.slug} label={item.label} />
+                          <MenuItem
+                            slug={item.slug}
+                            label={pick(item.label, locale)}
+                          />
                         </li>
                       );
                     }
@@ -114,7 +121,7 @@ export function CategoryNav() {
                       >
                         <MenuItem
                           slug={item.slug}
-                          label={item.label}
+                          label={pick(item.label, locale)}
                           trailing={
                             <ChevronRight
                               size={15}
@@ -135,7 +142,7 @@ export function CategoryNav() {
                               <li key={child.slug}>
                                 <MenuItem
                                   slug={child.slug}
-                                  label={child.label}
+                                  label={pick(child.label, locale)}
                                 />
                               </li>
                             ))}
@@ -152,7 +159,7 @@ export function CategoryNav() {
 
         <li className="ml-auto hidden items-center gap-1.5 text-xs text-ink-muted sm:flex">
           <Truck size={14} className="text-leaf-500" />
-          Aynı gün teslimat
+          {tHeader("sameDay")}
         </li>
       </ul>
     </nav>

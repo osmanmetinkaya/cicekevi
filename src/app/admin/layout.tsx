@@ -1,14 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import localFont from "next/font/local";
 import { LayoutDashboard, Package } from "lucide-react";
+import "../globals.css";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+
+const manrope = localFont({
+  src: "../fonts/Manrope-Variable.ttf",
+  variable: "--font-manrope",
+  weight: "200 800",
+  display: "swap",
+});
+
+const cormorant = localFont({
+  src: "../fonts/CormorantGaramond-Variable.ttf",
+  variable: "--font-cormorant",
+  weight: "300 700",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Yönetim — Çiçekevi",
 };
 
+// Yönetim paneli locale dışıdır ve kendi kök layout'unu (html/body) taşır;
+// müşteri sitesinden ayrı bir ağaç olduğu için ayrı bir root layout'tur.
 export default async function AdminLayout({
   children,
 }: {
@@ -24,7 +42,12 @@ export default async function AdminLayout({
   if (user.app_metadata?.role !== "admin") redirect("/");
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <html
+      lang="tr"
+      className={`${manrope.variable} ${cormorant.variable} h-full antialiased`}
+    >
+      <body className="flex min-h-full flex-col">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-serif text-3xl text-ink">Yönetim</h1>
         <nav aria-label="Yönetim menüsü" className="flex gap-2 text-sm">
@@ -42,7 +65,9 @@ export default async function AdminLayout({
           </Link>
         </nav>
       </div>
-      <div className="mt-8">{children}</div>
-    </div>
+          <div className="mt-8">{children}</div>
+        </div>
+      </body>
+    </html>
   );
 }

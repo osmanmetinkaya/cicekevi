@@ -1,14 +1,16 @@
 "use client";
 
 import { ShoppingBag } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/components/cart/cart-context";
 
 export function CartButton() {
   const { count, open } = useCart();
+  const t = useTranslations("cart");
   return (
     <button
       onClick={open}
-      aria-label={`Sepet, ${count} ürün`}
+      aria-label={t("openLabel", { count })}
       className="relative rounded-full p-2 text-ink transition-colors hover:bg-blush-100"
     >
       <ShoppingBag size={20} />

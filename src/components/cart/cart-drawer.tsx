@@ -1,13 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useCart } from "@/components/cart/cart-context";
 import { Artwork } from "@/components/product/artwork";
 import { formatKurus } from "@/lib/format";
+import { pick, type Locale } from "@/lib/types";
 
 export function CartDrawer() {
   const { lines, isOpen, close, setQty, remove, totalKurus, count } = useCart();
+  const t = useTranslations("cart");
+  const locale = useLocale() as Locale;
 
   return (
     <div
@@ -25,7 +29,7 @@ export function CartDrawer() {
       {/* Panel */}
       <aside
         role="dialog"
-        aria-label="Sepet"
+        aria-label={t("drawerLabel")}
         aria-modal="true"
         className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-cream shadow-xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
@@ -33,14 +37,14 @@ export function CartDrawer() {
       >
         <header className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 className="flex items-center gap-2 font-serif text-xl text-ink">
-            <ShoppingBag size={20} /> Sepetin
+            <ShoppingBag size={20} /> {t("yourCart")}
             {count > 0 && (
               <span className="text-sm text-ink-muted">({count})</span>
             )}
           </h2>
           <button
             onClick={close}
-            aria-label="Sepeti kapat"
+            aria-label={t("closeCart")}
             className="rounded-full p-1 text-ink-muted hover:bg-blush-100 hover:text-ink"
           >
             <X size={22} />
@@ -50,15 +54,15 @@ export function CartDrawer() {
         {lines.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
             <Artwork accent="blush" size={40} className="size-20 rounded-full" />
-            <p className="font-serif text-lg text-ink">Sepetin henüz boş</p>
-            <p className="text-sm text-ink-muted">
-              Buketlerimize göz at, en sevdiğini ekle.
+            <p className="font-serif text-lg text-ink">
+              {t("emptyDrawerTitle")}
             </p>
+            <p className="text-sm text-ink-muted">{t("emptyDrawerText")}</p>
             <button
               onClick={close}
               className="mt-2 rounded-full bg-rose-700 px-5 py-2.5 text-sm text-white hover:bg-rose-900"
             >
-              Alışverişe başla
+              {t("startShopping")}
             </button>
           </div>
         ) : (
@@ -74,24 +78,26 @@ export function CartDrawer() {
                   <div className="flex flex-1 flex-col">
                     <div className="flex justify-between gap-2">
                       <span className="font-serif text-ink">
-                        {l.product.name}
+                        {pick(l.product.name, locale)}
                       </span>
                       <button
                         onClick={() => remove(l.product.id)}
-                        aria-label={`${l.product.name} kaldır`}
+                        aria-label={t("remove", {
+                          name: pick(l.product.name, locale),
+                        })}
                         className="text-ink-muted hover:text-rose-700"
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
                     <span className="text-xs text-ink-muted">
-                      {l.product.tagline}
+                      {pick(l.product.tagline, locale)}
                     </span>
                     <div className="mt-auto flex items-center justify-between pt-2">
                       <div className="flex items-center gap-2 rounded-full border border-line bg-white px-1">
                         <button
                           onClick={() => setQty(l.product.id, l.qty - 1)}
-                          aria-label="Adet azalt"
+                          aria-label={t("decrease")}
                           className="rounded-full p-1 text-ink hover:bg-blush-100"
                         >
                           <Minus size={14} />
@@ -99,7 +105,7 @@ export function CartDrawer() {
                         <span className="w-5 text-center text-sm">{l.qty}</span>
                         <button
                           onClick={() => setQty(l.product.id, l.qty + 1)}
-                          aria-label="Adet artır"
+                          aria-label={t("increase")}
                           className="rounded-full p-1 text-ink hover:bg-blush-100"
                         >
                           <Plus size={14} />
@@ -116,21 +122,18 @@ export function CartDrawer() {
 
             <footer className="border-t border-line px-5 py-4">
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-ink-muted">Ara toplam</span>
+                <span className="text-ink-muted">{t("subtotal")}</span>
                 <span className="font-serif text-xl text-ink">
                   {formatKurus(totalKurus)}
                 </span>
               </div>
-              <p className="mb-3 text-xs text-ink-muted">
-                Teslimat tarihi, saat ve hediye notunu bir sonraki adımda
-                belirleyeceksin.
-              </p>
+              <p className="mb-3 text-xs text-ink-muted">{t("drawerNote")}</p>
               <Link
                 href="/sepet"
                 onClick={close}
                 className="block w-full rounded-full bg-rose-700 py-3 text-center text-sm font-medium text-white transition-colors hover:bg-rose-900"
               >
-                Sepete git
+                {t("goToCart")}
               </Link>
             </footer>
           </>

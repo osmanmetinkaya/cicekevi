@@ -1,6 +1,9 @@
+import type { Locale, Localized } from "@/lib/types";
+import { pick } from "@/lib/types";
+
 export interface CategoryLeaf {
   slug: string;
-  label: string;
+  label: Localized;
 }
 
 export interface CategoryNode extends CategoryLeaf {
@@ -9,8 +12,14 @@ export interface CategoryNode extends CategoryLeaf {
 
 export interface CategoryGroup {
   slug: string;
-  label: string;
+  label: Localized;
   items: CategoryNode[];
+}
+
+/** Locale'e göre çözülmüş kategori (görünen ad string olarak). */
+export interface ResolvedLeaf {
+  slug: string;
+  label: string;
 }
 
 /**
@@ -20,59 +29,83 @@ export interface CategoryGroup {
 export const CATEGORY_GROUPS: CategoryGroup[] = [
   {
     slug: "duruma-gore",
-    label: "Duruma Göre",
+    label: { tr: "Duruma Göre", en: "By Occasion" },
     items: [
-      { slug: "sevgiliye-cicek", label: "Sevgiliye Çiçek" },
-      { slug: "dogum-gunu", label: "Doğum Günü" },
-      { slug: "is-tebrik", label: "İş Tebrik" },
-      { slug: "gecmis-olsun", label: "Geçmiş Olsun" },
-      { slug: "ozur-dilerim", label: "Özür Dilerim" },
+      {
+        slug: "sevgiliye-cicek",
+        label: { tr: "Sevgiliye Çiçek", en: "Flowers for Your Love" },
+      },
+      { slug: "dogum-gunu", label: { tr: "Doğum Günü", en: "Birthday" } },
+      {
+        slug: "is-tebrik",
+        label: { tr: "İş Tebrik", en: "Business Congratulations" },
+      },
+      { slug: "gecmis-olsun", label: { tr: "Geçmiş Olsun", en: "Get Well Soon" } },
+      { slug: "ozur-dilerim", label: { tr: "Özür Dilerim", en: "I'm Sorry" } },
       {
         slug: "ozel-gunler",
-        label: "Özel Günler",
+        label: { tr: "Özel Günler", en: "Special Days" },
         children: [
-          { slug: "sevgililer-gunu", label: "Sevgililer Günü" },
-          { slug: "anneler-gunu", label: "Anneler Günü" },
-          { slug: "babalar-gunu", label: "Babalar Günü" },
-          { slug: "ogretmenler-gunu", label: "Öğretmenler Günü" },
+          {
+            slug: "sevgililer-gunu",
+            label: { tr: "Sevgililer Günü", en: "Valentine's Day" },
+          },
+          {
+            slug: "anneler-gunu",
+            label: { tr: "Anneler Günü", en: "Mother's Day" },
+          },
+          {
+            slug: "babalar-gunu",
+            label: { tr: "Babalar Günü", en: "Father's Day" },
+          },
+          {
+            slug: "ogretmenler-gunu",
+            label: { tr: "Öğretmenler Günü", en: "Teachers' Day" },
+          },
         ],
       },
     ],
   },
   {
     slug: "cicekler",
-    label: "Çiçekler",
+    label: { tr: "Çiçekler", en: "Flowers" },
     items: [
-      { slug: "buketler", label: "Buketler" },
-      { slug: "papatyalar", label: "Papatyalar" },
-      { slug: "orkideler", label: "Orkideler" },
-      { slug: "aranjmanlar", label: "Aranjmanlar" },
-      { slug: "saksi-cicekleri", label: "Saksı Çiçekleri" },
-      { slug: "celenkler", label: "Çelenkler" },
-      { slug: "gelin-arabasi", label: "Gelin Arabası" },
+      { slug: "buketler", label: { tr: "Buketler", en: "Bouquets" } },
+      { slug: "papatyalar", label: { tr: "Papatyalar", en: "Daisies" } },
+      { slug: "orkideler", label: { tr: "Orkideler", en: "Orchids" } },
+      { slug: "aranjmanlar", label: { tr: "Aranjmanlar", en: "Arrangements" } },
+      {
+        slug: "saksi-cicekleri",
+        label: { tr: "Saksı Çiçekleri", en: "Potted Plants" },
+      },
+      { slug: "celenkler", label: { tr: "Çelenkler", en: "Wreaths" } },
+      { slug: "gelin-arabasi", label: { tr: "Gelin Arabası", en: "Wedding Car" } },
     ],
   },
 ];
 
 /** slug → görünen ad (alt kategoriler dahil), kategori sayfası başlığı için. */
-export function categoryLabel(slug: string): string | undefined {
+export function categoryLabel(slug: string, locale: Locale): string | undefined {
   for (const group of CATEGORY_GROUPS) {
     for (const item of group.items) {
-      if (item.slug === slug) return item.label;
+      if (item.slug === slug) return pick(item.label, locale);
       const child = item.children?.find((ch) => ch.slug === slug);
-      if (child) return child.label;
+      if (child) return pick(child.label, locale);
     }
   }
   return undefined;
 }
 
 /** Breadcrumb için: kategorinin grubu (link için slug + ad), üst kategori ve kendisi. */
-export function categoryTrail(slug: string):
+export function categoryTrail(
+  slug: string,
+  locale: Locale,
+):
   | {
       groupSlug: string;
       groupLabel: string;
-      parent?: CategoryLeaf;
-      self: CategoryLeaf;
+      parent?: ResolvedLeaf;
+      self: ResolvedLeaf;
     }
   | undefined {
   for (const group of CATEGORY_GROUPS) {
@@ -80,17 +113,17 @@ export function categoryTrail(slug: string):
       if (item.slug === slug) {
         return {
           groupSlug: group.slug,
-          groupLabel: group.label,
-          self: { slug: item.slug, label: item.label },
+          groupLabel: pick(group.label, locale),
+          self: { slug: item.slug, label: pick(item.label, locale) },
         };
       }
       const child = item.children?.find((c) => c.slug === slug);
       if (child) {
         return {
           groupSlug: group.slug,
-          groupLabel: group.label,
-          parent: { slug: item.slug, label: item.label },
-          self: child,
+          groupLabel: pick(group.label, locale),
+          parent: { slug: item.slug, label: pick(item.label, locale) },
+          self: { slug: child.slug, label: pick(child.label, locale) },
         };
       }
     }

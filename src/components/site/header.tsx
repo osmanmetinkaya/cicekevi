@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { Heart, UserRound } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { CartButton } from "@/components/cart/cart-button";
 import { SearchTrigger } from "@/components/search/search-trigger";
 import { LanguageSwitcher } from "@/components/site/language-switcher";
@@ -8,6 +9,7 @@ import { CategoryNav } from "@/components/site/category-nav";
 import { Logo } from "@/components/site/logo";
 
 export function Header() {
+  const t = useTranslations("header");
   return (
     <header className="sticky top-0 z-40 bg-cream/90 backdrop-blur">
       {/* Üst satır: logo + bilgi · arama · sepet · dil */}
@@ -22,14 +24,14 @@ export function Header() {
           <div className="flex items-center gap-1 text-ink">
             <SearchTrigger />
             <button
-              aria-label="Favoriler"
+              aria-label={t("favorites")}
               className="rounded-full p-2 transition-colors hover:bg-blush-100"
             >
               <Heart size={20} />
             </button>
             <Link
               href="/hesap"
-              aria-label="Hesabım"
+              aria-label={t("account")}
               className="rounded-full p-2 transition-colors hover:bg-blush-100"
             >
               <UserRound size={20} />

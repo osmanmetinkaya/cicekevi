@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 export function GoogleButton({ next }: { next: string }) {
+  const t = useTranslations("auth");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +20,7 @@ export function GoogleButton({ next }: { next: string }) {
       },
     });
     if (error) {
-      setError("Google ile giriş başlatılamadı. Sağlayıcı aktif olmayabilir.");
+      setError(t("googleStartError"));
       setPending(false);
     }
     // Başarıdaysa tarayıcı Google'a yönlenir; state sıfırlamaya gerek yok.
@@ -33,7 +35,7 @@ export function GoogleButton({ next }: { next: string }) {
         className="flex w-full items-center justify-center gap-2.5 rounded-full border border-line bg-white py-3 text-sm font-medium text-ink transition-colors hover:border-blush-300 hover:bg-blush-50 disabled:opacity-60"
       >
         <GoogleIcon />
-        {pending ? "Yönlendiriliyor…" : "Google ile devam et"}
+        {pending ? t("googleRedirecting") : t("googleContinue")}
       </button>
       {error && (
         <p className="mt-2 text-center text-sm text-rose-700" role="alert">

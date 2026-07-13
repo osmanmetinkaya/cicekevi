@@ -1,5 +1,7 @@
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { CategoryGroup } from "@/lib/categories";
+import { pick, type Locale } from "@/lib/types";
 import {
   CATEGORY_ICONS,
   FALLBACK_CATEGORY_ICON,
@@ -16,8 +18,13 @@ export function CategoryChips({
   group: CategoryGroup;
   activeSlug?: string;
 }) {
+  const locale = useLocale() as Locale;
+  const t = useTranslations("category");
   return (
-    <nav aria-label={`${group.label} kategorileri`} className="mt-6">
+    <nav
+      aria-label={t("categoriesLabel", { label: pick(group.label, locale) })}
+      className="mt-6"
+    >
       <ul className="flex flex-wrap gap-2">
         {group.items.map((item) => {
           const Icon = CATEGORY_ICONS[item.slug] ?? FALLBACK_CATEGORY_ICON;
@@ -34,7 +41,7 @@ export function CategoryChips({
                 }`}
               >
                 <Icon size={16} strokeWidth={1.7} />
-                {item.label}
+                {pick(item.label, locale)}
               </Link>
             </li>
           );

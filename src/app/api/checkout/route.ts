@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { getStripe } from "@/lib/stripe";
 import { getProductById } from "@/lib/products";
+import { pick, type Locale } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
+import { DELIVERY_WINDOWS } from "@/lib/delivery";
 
 interface IncomingItem {
   id: string;
@@ -15,9 +17,6 @@ interface IncomingDelivery {
   date?: string;
   window?: string;
 }
-
-// Kabul edilen teslimat saat pencereleri (sunucuda doğrulanır).
-const DELIVERY_WINDOWS = ["11:00 - 14:00", "14:00 - 17:00", "17:00 - 20:00"];
 
 function cleanDelivery(d: IncomingDelivery | undefined): {
   date: string;
@@ -54,6 +53,7 @@ export async function POST(request: Request) {
     delivery?: IncomingDelivery;
     giftNote?: string;
     contractAccepted?: boolean;
+    locale?: string;
   };
   try {
     body = await request.json();
@@ -74,6 +74,9 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
+
+  // Stripe hosted Checkout dilini kullanıcının site dilinden türet.
+  const stripeLocale = body.locale === "en" ? "en" : "tr";
 
   const delivery = cleanDelivery(body.delivery);
   // Gift note is free text; cap it so it fits Stripe metadata (500 char limit).
@@ -98,8 +101,8 @@ export async function POST(request: Request) {
         currency: "try",
         unit_amount: product.priceKurus,
         product_data: {
-          name: product.name,
-          description: product.tagline,
+          name: pick(product.name, stripeLocale as Locale),
+          description: pick(product.tagline, stripeLocale as Locale),
           metadata: { product_id: product.id },
         },
       },
@@ -114,6 +117,8 @@ export async function POST(request: Request) {
   }
 
   const base = siteUrl(request);
+  // Locale öneki: tr (varsayılan) kök URL'de, en /en altında.
+  const localePrefix = stripeLocale === "en" ? "/en" : "";
 
   // Girişli kullanıcıyı siparişe bağla (webhook orders.user_id doldurur).
   let userId = "";
@@ -137,9 +142,9 @@ export async function POST(request: Request) {
         // Collect a shipping address — flowers need somewhere to go.
         shipping_address_collection: { allowed_countries: ["TR"] },
         phone_number_collection: { enabled: true },
-        locale: "tr",
-        success_url: `${base}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${base}/sepet?checkout=cancelled`,
+        locale: stripeLocale,
+        success_url: `${base}${localePrefix}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${base}${localePrefix}/sepet?checkout=cancelled`,
         // Order details the florist needs — surfaced on the session + webhook.
         customer_email: userEmail,
         metadata: {

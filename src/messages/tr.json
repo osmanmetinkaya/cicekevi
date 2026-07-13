@@ -1,0 +1,232 @@
+{
+  "meta": {
+    "homeTitle": "Çiçekevi — Taze çiçekler, aynı gün teslimat",
+    "homeDescription": "Mevsiminde toplanan, elde hazırlanan buketler. Denizli içi aynı gün çiçek teslimatı."
+  },
+  "header": {
+    "favorites": "Favoriler",
+    "account": "Hesabım",
+    "branchToggle": "Denizli · Yenişafak",
+    "categories": "Kategoriler",
+    "sameDay": "Aynı gün teslimat",
+    "languageGroup": "Dil seçimi"
+  },
+  "branch": {
+    "name": "Yenişafak Şubesi",
+    "address": "1029 Sk. No:9 D:B, 20040 Merkezefendi/Denizli"
+  },
+  "hero": {
+    "eyebrow": "AYNI GÜN TESLİMAT · DENİZLİ İÇİ",
+    "titleLine1": "Taze çiçekler,",
+    "titleLine2": "bugün kapında.",
+    "subtitle": "Mevsiminde toplanan buketler ustalarımızın elinden çıkar. Saat 16.00'ya kadar verilen siparişler aynı gün ulaşır.",
+    "ctaExplore": "Buketleri keşfet",
+    "ctaBestsellers": "Çok satanlar"
+  },
+  "features": {
+    "sameDay": "Aynı gün teslimat",
+    "window": "Teslimat penceresi seç",
+    "fresh": "Mevsiminde ve taze",
+    "securePayment": "Güvenli ödeme"
+  },
+  "home": {
+    "bestsellersEyebrow": "Çok satanlar",
+    "bestsellersTitle": "Sevilenler",
+    "allEyebrow": "Koleksiyon",
+    "allTitle": "Tüm çiçekler"
+  },
+  "footer": {
+    "tagline": "Mevsiminde, elde hazırlanan buketler. Denizli içi aynı gün teslimat.",
+    "shop": "Mağaza",
+    "help": "Yardım",
+    "corporate": "Kurumsal",
+    "bouquets": "Buketler",
+    "pottedPlants": "Saksı Çiçekleri",
+    "orchids": "Orkideler",
+    "giftCard": "Hediye kartı",
+    "delivery": "Teslimat",
+    "returns": "İade ve iptal",
+    "faq": "Sıkça sorulanlar",
+    "contact": "İletişim",
+    "about": "Hakkımızda",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Kullanım Koşulları",
+    "rights": "Tüm hakları saklıdır."
+  },
+  "legalLinks": {
+    "privacy": "Gizlilik Politikası",
+    "kvkk": "KVKK Aydınlatma Metni",
+    "cookies": "Çerez Politikası",
+    "distanceSales": "Mesafeli Satış Sözleşmesi",
+    "cancellation": "İptal ve İade Koşulları",
+    "terms": "Kullanım Koşulları"
+  },
+  "cookieNotice": {
+    "text": "Sitemizde yalnızca sitenin çalışması için gerekli çerezleri kullanıyoruz.",
+    "policyLink": "Çerez Politikası",
+    "accept": "Anladım"
+  },
+  "search": {
+    "trigger": "Ara",
+    "close": "Aramayı kapat",
+    "closeShort": "Kapat",
+    "dialogLabel": "Site içi arama",
+    "placeholder": "Çiçek, buket, orkide ara…",
+    "popular": "POPÜLER ARAMALAR",
+    "popularTerms": ["Kırmızı gül", "Orkide", "Doğum günü", "Papatya", "Aranjman"]
+  },
+  "cart": {
+    "openLabel": "Sepet, {count} ürün",
+    "drawerLabel": "Sepet",
+    "yourCart": "Sepetin",
+    "closeCart": "Sepeti kapat",
+    "emptyDrawerTitle": "Sepetin henüz boş",
+    "emptyDrawerText": "Buketlerimize göz at, en sevdiğini ekle.",
+    "startShopping": "Alışverişe başla",
+    "remove": "{name} kaldır",
+    "decrease": "Adet azalt",
+    "increase": "Adet artır",
+    "subtotal": "Ara toplam",
+    "drawerNote": "Teslimat tarihi, saat ve hediye notunu bir sonraki adımda belirleyeceksin.",
+    "goToCart": "Sepete git"
+  },
+  "cartPage": {
+    "emptyTitle": "Sepetin boş",
+    "emptyText": "Buketlerimize göz at, en sevdiğini sepete ekle.",
+    "startShopping": "Alışverişe başla",
+    "title": "Sepet",
+    "delivery": "Teslimat",
+    "deliveryDate": "Teslimat tarihi",
+    "timeWindow": "Saat aralığı",
+    "select": "Seç…",
+    "giftNote": "Hediye notu",
+    "optional": "(isteğe bağlı)",
+    "giftPlaceholder": "Kartın üzerine yazılmasını istediğin mesajı buraya yaz…",
+    "orderSummary": "Sipariş özeti",
+    "subtotal": "Ara toplam",
+    "deliveryAtCheckout": "Ödeme adımında",
+    "total": "Toplam",
+    "secureCheckout": "Güvenli ödemeye geç",
+    "redirecting": "Yönlendiriliyor…",
+    "sslNote": "256-bit SSL ile güvenli ödeme · Stripe",
+    "errorSelectDelivery": "Lütfen teslimat tarihi ve saat aralığını seç.",
+    "errorContract": "Devam etmek için Mesafeli Satış Sözleşmesi'ni onaylamalısın.",
+    "errorCheckoutFailed": "Ödeme başlatılamadı.",
+    "errorGeneric": "Bir şeyler ters gitti."
+  },
+  "product": {
+    "breadcrumbHome": "Ana sayfa",
+    "badgeNew": "Yeni gelenler",
+    "badgeBestseller": "Çok satan",
+    "cardBadgeNew": "Yeni",
+    "cardBadgeBestseller": "Çok satan",
+    "addToCart": "Sepete ekle",
+    "addToCartLabel": "{name} sepete ekle",
+    "decrease": "Adet azalt",
+    "increase": "Adet artır",
+    "contents": "İçindekiler",
+    "related": "Benzer çiçekler",
+    "delivery": {
+      "sameDay": "Denizli içi aynı gün teslimat",
+      "cutoff": "Saat 16.00'ya kadar verilen siparişler bugün ulaşır",
+      "fresh": "Mevsiminde toplanan taze çiçekler",
+      "ssl": "256-bit SSL ile güvenli ödeme"
+    }
+  },
+  "category": {
+    "breadcrumbHome": "Ana sayfa",
+    "groupIntro": "{label} kapsamındaki tüm çiçekler. Denizli içi aynı gün teslimat.",
+    "leafIntro": "{label} için özenle hazırlanmış çiçekler. Denizli içi aynı gün teslimat.",
+    "categoriesLabel": "{label} kategorileri",
+    "productCount": "{count} ürün",
+    "sort": "Sırala",
+    "sortRecommended": "Önerilen",
+    "sortPriceAsc": "Fiyat: artan",
+    "sortPriceDesc": "Fiyat: azalan",
+    "sortNewest": "Yeniler önce",
+    "emptyTitle": "Bu kategori yakında dolacak",
+    "emptyText": "Şu an burada gösterilecek ürün yok. Çok yakında özenle seçilmiş çiçeklerle karşında olacağız.",
+    "metaDescription": "{label} kategorisindeki taze çiçekler ve aynı gün teslimat seçenekleri."
+  },
+  "orderSummary": {
+    "title": "Sipariş özeti",
+    "total": "Toplam",
+    "recipient": "Alıcı",
+    "deliveryDate": "Teslimat tarihi",
+    "timeWindow": "Saat aralığı",
+    "giftNote": "Hediye notu"
+  },
+  "contractConsent": {
+    "distanceSales": "Mesafeli Satış Sözleşmesi",
+    "kvkk": "KVKK Aydınlatma Metni",
+    "readAccept": "'ni ve",
+    "readAcceptEnd": "'ni okudum, onaylıyorum. Taze çiçekler çabuk bozulabilir ürün olduğundan",
+    "withdrawalException": "cayma hakkı istisnası",
+    "withdrawalEnd": "kapsamındadır."
+  },
+  "success": {
+    "title": "Siparişin alındı 🌸",
+    "thanks": "Teşekkürler! Çiçeklerini özenle hazırlıyoruz.",
+    "emailSent": "Onay e-postası {email} adresine gönderildi.",
+    "continueShopping": "Alışverişe devam et",
+    "fallbackItem": "Ürün"
+  },
+  "auth": {
+    "loginTitle": "Giriş yap — Çiçekevi",
+    "welcome": "Hoş geldin",
+    "welcomeSubtitle": "Siparişlerini görmek ve hızlı ödeme için hesabına gir.",
+    "googleError": "Google ile giriş tamamlanamadı. Lütfen tekrar dene.",
+    "notConfigured": "Üyelik altyapısı henüz yapılandırılmadı. Supabase anahtarları eklendiğinde bu sayfa aktifleşecek.",
+    "tabsLabel": "Giriş veya kayıt",
+    "signIn": "Giriş yap",
+    "signUp": "Üye ol",
+    "firstName": "Ad",
+    "lastName": "Soyad",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "password": "Şifre",
+    "passwordHintSignup": "En az 8 karakter",
+    "firstNamePlaceholder": "Ayşe",
+    "lastNamePlaceholder": "Yılmaz",
+    "phonePlaceholder": "0555 123 45 67",
+    "emailPlaceholder": "ornek@eposta.com",
+    "marketingConsent": "Kampanya ve fırsatlardan e-posta/SMS ile haberdar olmak istiyorum.",
+    "marketingOptional": "(isteğe bağlı)",
+    "waiting": "Bekleniyor…",
+    "kvkkConsentPre": "Üye olarak",
+    "kvkkConsentLink": "KVKK Aydınlatma Metni",
+    "kvkkConsentPost": "'ni kabul etmiş olursun.",
+    "or": "veya",
+    "googleContinue": "Google ile devam et",
+    "googleRedirecting": "Yönlendiriliyor…",
+    "googleStartError": "Google ile giriş başlatılamadı. Sağlayıcı aktif olmayabilir."
+  },
+  "account": {
+    "title": "Hesabım — Çiçekevi",
+    "heading": "Hesabım",
+    "notConfigured": "Üyelik altyapısı henüz yapılandırılmadı. Supabase anahtarları eklendiğinde bu sayfa aktifleşecek.",
+    "adminPanel": "Yönetim paneli",
+    "signOut": "Çıkış yap",
+    "orderHistory": "Sipariş geçmişi",
+    "noOrders": "Henüz bir siparişin yok.",
+    "startShopping": "Alışverişe başla"
+  },
+  "legal": {
+    "home": "Ana sayfa",
+    "lastUpdated": "Son güncelleme",
+    "authoritativeNote": "Bu, Türkçe metnin İngilizce çevirisidir ve yalnızca bilgilendirme amaçlıdır. Bağlayıcı ve hukuken geçerli olan metin Türkçe sürümdür.",
+    "authoritativeLink": "Türkçe sürümü görüntüle"
+  },
+  "authErrors": {
+    "notConfigured": "Üyelik altyapısı henüz yapılandırılmadı.",
+    "emailPasswordRequired": "E-posta ve şifre gerekli.",
+    "tooManySignin": "Çok fazla giriş denemesi. Lütfen biraz sonra tekrar dene.",
+    "invalidCredentials": "E-posta veya şifre hatalı.",
+    "nameRequired": "Ad ve soyad gerekli.",
+    "invalidPhone": "Geçerli bir telefon numarası gir (örn. 0555 123 45 67).",
+    "shortPassword": "Şifre en az 8 karakter olmalı.",
+    "tooManySignup": "Çok fazla kayıt denemesi. Lütfen biraz sonra tekrar dene.",
+    "signupFailed": "Kayıt oluşturulamadı. Bu e-posta kullanımda olabilir.",
+    "verifyEmail": "Kayıt alındı. E-postana gelen doğrulama bağlantısına tıkla."
+  }
+}

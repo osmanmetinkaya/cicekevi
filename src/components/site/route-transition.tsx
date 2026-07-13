@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/navigation";
 
 /**
  * Sayfanın ait olduğu üst bölüm. Animasyon yalnızca bölümler arasında geçerken

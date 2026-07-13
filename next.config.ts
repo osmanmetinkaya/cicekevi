@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -66,4 +67,9 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// next-intl: request config'i (src/i18n/request.ts) bağlar. Mevcut güvenlik
+// başlıkları, CSP ve poweredByHeader ayarları olduğu gibi korunur — plugin
+// yalnızca çeviri altyapısını sarmalar.
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+
+export default withNextIntl(nextConfig);

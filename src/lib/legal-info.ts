@@ -13,11 +13,27 @@ export const LEGAL_ENTITY = {
   tradeRegistryNo: "[TİCARET SİCİL NO GİRİLECEK]",
   taxOffice: "[VERGİ DAİRESİ GİRİLECEK]",
   taxId: "[VERGİ NUMARASI GİRİLECEK]",
-  address: "[AÇIK ADRES GİRİLECEK], İstanbul, Türkiye",
+  address:
+    "Yenişafak, 1029 Sk. No:9 D:B, 20040 Merkezefendi/Denizli, Türkiye",
   email: "kvkk@cicekevi.com",
   supportEmail: "destek@cicekevi.com",
-  phone: "[MÜŞTERİ HİZMETLERİ TELEFONU GİRİLECEK]",
+  phone: "0545 729 01 08",
   kepAddress: "[KEP ADRESİ GİRİLECEK]",
 } as const;
 
+/**
+ * İngilizce yasal sayfalarda gösterilecek placeholder karşılıkları. Türkçe
+ * köşeli parantezli TODO'larla aynı bilgiyi taşır (henüz doldurulmadı), fakat
+ * İngilizce metinde okunabilir dursun diye ayrı tutulur.
+ */
+export const LEGAL_ENTITY_EN = {
+  legalName: "[LEGAL ENTITY NAME TO BE ADDED]",
+  mersisNo: "[MERSIS NO TO BE ADDED]",
+  tradeRegistryNo: "[TRADE REGISTRY NO TO BE ADDED]",
+  taxOffice: "[TAX OFFICE TO BE ADDED]",
+  taxId: "[TAX ID TO BE ADDED]",
+  kepAddress: "[KEP (REGISTERED E-MAIL) ADDRESS TO BE ADDED]",
+} as const;
+
 export const LEGAL_LAST_UPDATED = "9 Temmuz 2026";
+export const LEGAL_LAST_UPDATED_EN = "9 July 2026";

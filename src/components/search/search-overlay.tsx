@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSearch } from "@/components/search/search-context";
-
-const POPULAR = ["Kırmızı gül", "Orkide", "Doğum günü", "Papatya", "Aranjman"];
 
 export function SearchOverlay() {
   const { open, setOpen } = useSearch();
+  const t = useTranslations("search");
+  const popular = t.raw("popularTerms") as string[];
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -35,7 +36,7 @@ export function SearchOverlay() {
       {/* İnce örtü — asıl bulanıklık sayfa gövdesine uygulanır (PageShell). */}
       <button
         type="button"
-        aria-label="Aramayı kapat"
+        aria-label={t("close")}
         onClick={() => setOpen(false)}
         className="absolute inset-0 h-full w-full cursor-default bg-ink/10"
       />
@@ -45,7 +46,7 @@ export function SearchOverlay() {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Site içi arama"
+          aria-label={t("dialogLabel")}
           className={`w-full max-w-xl rounded-3xl border border-line bg-cream p-2 shadow-2xl shadow-rose-900/10 transition-all duration-300 ${
             open
               ? "translate-y-0 scale-100 opacity-100"
@@ -60,13 +61,13 @@ export function SearchOverlay() {
               onChange={(e) => setQuery(e.target.value)}
               type="search"
               enterKeyHint="search"
-              placeholder="Çiçek, buket, orkide ara…"
+              placeholder={t("placeholder")}
               className="w-full bg-transparent text-lg text-ink outline-none placeholder:text-ink-muted"
             />
             <button
               type="button"
               onClick={() => setOpen(false)}
-              aria-label="Kapat"
+              aria-label={t("closeShort")}
               className="rounded-full p-1 text-ink-muted transition-colors hover:bg-blush-100 hover:text-ink"
             >
               <X size={20} />
@@ -75,10 +76,10 @@ export function SearchOverlay() {
 
           <div className="px-4 py-4">
             <p className="mb-2 text-xs font-medium tracking-widest text-ink-muted">
-              POPÜLER ARAMALAR
+              {t("popular")}
             </p>
             <div className="flex flex-wrap gap-2">
-              {POPULAR.map((term) => (
+              {popular.map((term) => (
                 <button
                   key={term}
                   type="button"

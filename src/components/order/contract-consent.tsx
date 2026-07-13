@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 export function ContractConsent({
   checked,
@@ -9,6 +10,7 @@ export function ContractConsent({
   checked: boolean;
   onChange: (v: boolean) => void;
 }) {
+  const t = useTranslations("contractConsent");
   return (
     <label className="flex items-start gap-2.5 text-sm text-ink-muted">
       <input
@@ -24,26 +26,25 @@ export function ContractConsent({
           target="_blank"
           className="text-rose-700 underline underline-offset-2"
         >
-          Mesafeli Satış Sözleşmesi
+          {t("distanceSales")}
         </Link>
-        &rsquo;ni ve{" "}
+        {t("readAccept")}{" "}
         <Link
           href="/kvkk-aydinlatma-metni"
           target="_blank"
           className="text-rose-700 underline underline-offset-2"
         >
-          KVKK Aydınlatma Metni
+          {t("kvkk")}
         </Link>
-        &rsquo;ni okudum, onaylıyorum. Taze çiçekler çabuk bozulabilir ürün
-        olduğundan{" "}
+        {t("readAcceptEnd")}{" "}
         <Link
           href="/iptal-iade-kosullari"
           target="_blank"
           className="text-rose-700 underline underline-offset-2"
         >
-          cayma hakkı istisnası
+          {t("withdrawalException")}
         </Link>{" "}
-        kapsamındadır.
+        {t("withdrawalEnd")}
       </span>
     </label>
   );

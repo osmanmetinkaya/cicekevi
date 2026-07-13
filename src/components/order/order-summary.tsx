@@ -1,5 +1,6 @@
 import { CalendarDays, Clock4, Gift, MapPin } from "lucide-react";
-import { formatDateTR, formatKurus } from "@/lib/format";
+import { useLocale, useTranslations } from "next-intl";
+import { formatDate, formatKurus } from "@/lib/format";
 
 export interface OrderView {
   ref: string;
@@ -12,12 +13,14 @@ export interface OrderView {
 }
 
 export function OrderSummary({ order }: { order: OrderView }) {
+  const t = useTranslations("orderSummary");
+  const locale = useLocale();
   const hasDelivery = order.deliveryDate || order.deliveryWindow;
 
   return (
     <div className="mt-8 overflow-hidden rounded-2xl border border-line bg-white text-left">
       <div className="flex items-center justify-between border-b border-line px-5 py-4">
-        <span className="font-serif text-lg text-ink">Sipariş özeti</span>
+        <span className="font-serif text-lg text-ink">{t("title")}</span>
         <span className="text-xs text-ink-muted">#{order.ref}</span>
       </div>
 
@@ -38,7 +41,7 @@ export function OrderSummary({ order }: { order: OrderView }) {
 
       {order.totalKurus !== null && (
         <div className="flex items-center justify-between border-t border-line px-5 py-4">
-          <span className="font-medium text-ink">Toplam</span>
+          <span className="font-medium text-ink">{t("total")}</span>
           <span className="font-serif text-2xl text-ink">
             {formatKurus(order.totalKurus)}
           </span>
@@ -49,22 +52,22 @@ export function OrderSummary({ order }: { order: OrderView }) {
       {(hasDelivery || order.giftNote || order.recipientName) && (
         <div className="space-y-3 border-t border-line bg-cream px-5 py-4">
           {order.recipientName && (
-            <Row Icon={MapPin} label="Alıcı">
+            <Row Icon={MapPin} label={t("recipient")}>
               {order.recipientName}
             </Row>
           )}
           {order.deliveryDate && (
-            <Row Icon={CalendarDays} label="Teslimat tarihi">
-              {formatDateTR(order.deliveryDate)}
+            <Row Icon={CalendarDays} label={t("deliveryDate")}>
+              {formatDate(order.deliveryDate, locale)}
             </Row>
           )}
           {order.deliveryWindow && (
-            <Row Icon={Clock4} label="Saat aralığı">
+            <Row Icon={Clock4} label={t("timeWindow")}>
               {order.deliveryWindow}
             </Row>
           )}
           {order.giftNote && (
-            <Row Icon={Gift} label="Hediye notu">
+            <Row Icon={Gift} label={t("giftNote")}>
               <span className="font-serif italic text-ink">
                 “{order.giftNote}”
               </span>
