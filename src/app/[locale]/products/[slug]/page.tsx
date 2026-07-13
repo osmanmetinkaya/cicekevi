@@ -15,6 +15,8 @@ import { pick, pickList, type Locale } from "@/lib/types";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { ProductPurchase } from "@/components/product/product-purchase";
 import { ProductCard } from "@/components/product/product-card";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { SITE_NAME } from "@/lib/site";
 
 export function generateStaticParams() {
   return PRODUCTS.map((p) => ({ slug: p.slug }));
@@ -27,10 +29,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   const product = getProduct(slug);
-  if (!product) return { title: "Çiçekevi" };
+  if (!product) return { title: SITE_NAME };
   const loc = locale as Locale;
   return {
-    title: `${pick(product.name, loc)} — Çiçekevi`,
+    title: `${pick(product.name, loc)} — ${SITE_NAME}`,
     description: pick(product.description, loc),
   };
 }
@@ -104,8 +106,13 @@ export default async function ProductPage({
             {pick(product.description, loc)}
           </p>
 
-          <div className="mt-7">
+          <div className="mt-7 flex items-center gap-3">
             <ProductPurchase product={product} />
+            <FavoriteButton
+              productId={product.id}
+              name={name}
+              variant="solid"
+            />
           </div>
 
           <ul className="mt-7 space-y-2.5 rounded-2xl bg-white p-4 ring-1 ring-line">

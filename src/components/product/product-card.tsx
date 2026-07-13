@@ -7,6 +7,7 @@ import { pick, type Locale, type Product } from "@/lib/types";
 import { formatKurus } from "@/lib/format";
 import { useCart } from "@/components/cart/cart-context";
 import { Artwork } from "@/components/product/artwork";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 
 export function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
@@ -15,7 +16,7 @@ export function ProductCard({ product }: { product: Product }) {
   const name = pick(product.name, locale);
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-white transition-shadow hover:shadow-lg hover:shadow-blush-100">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white transition-shadow hover:shadow-lg hover:shadow-blush-100">
       <Link
         href={`/products/${product.slug}`}
         className="relative block"
@@ -32,6 +33,7 @@ export function ProductCard({ product }: { product: Product }) {
           </span>
         )}
       </Link>
+      <FavoriteButton productId={product.id} name={name} />
 
       <div className="flex flex-1 flex-col p-4">
         <Link href={`/products/${product.slug}`}>
