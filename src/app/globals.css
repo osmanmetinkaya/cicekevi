@@ -143,8 +143,8 @@ body {
 }
 .intro-splash__glow {
   position: absolute;
-  width: 260px;
-  height: 260px;
+  width: 150px;
+  height: 150px;
   border-radius: 9999px;
   background: radial-gradient(circle, var(--color-blush-200) 0%, transparent 68%);
   animation: glow-breathe 1900ms ease forwards;
