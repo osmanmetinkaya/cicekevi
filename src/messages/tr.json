@@ -111,6 +111,7 @@
     "deliveryAtCheckout": "Ödeme adımında",
     "total": "Toplam",
     "secureCheckout": "Güvenli ödemeye geç",
+    "completeOrderDetails": "Sipariş bilgilerini tamamla",
     "redirecting": "Yönlendiriliyor…",
     "sslNote": "256-bit SSL ile güvenli ödeme · Stripe",
     "errorSelectDelivery": "Lütfen teslimat tarihi ve saat aralığını seç.",
@@ -120,7 +121,21 @@
     "authGateText": "Siparişini takip edebilmen için giriş yapmanı öneririz. İstersen üye olmadan da devam edebilirsin.",
     "loginCta": "Giriş yap",
     "guestCta": "Üye olmadan devam et",
-    "cancelGate": "Vazgeç"
+    "cancelGate": "Vazgeç",
+    "senderInfo": "Gönderen bilgileri",
+    "senderName": "Ad soyad",
+    "senderNamePlaceholder": "Adın ve soyadın",
+    "senderPhone": "Telefon numarası",
+    "senderEmail": "E-posta",
+    "senderEmailPlaceholder": "Sipariş teslim edildiğinde haber verelim",
+    "recipientInfo": "Alıcı bilgileri",
+    "recipientName": "Ad soyad",
+    "recipientNamePlaceholder": "Teslim edilecek kişinin adı soyadı",
+    "recipientPhone": "Telefon numarası",
+    "recipientAddress": "Teslimat adresi",
+    "recipientAddressPlaceholder": "Mahalle, sokak, kapı no ve varsa diğer tarif bilgilerini yaz…",
+    "errorSender": "Gönderen adı ve telefon numarasını eksiksiz gir.",
+    "errorRecipient": "Alıcı adı, telefon numarası ve adresini eksiksiz gir."
   },
   "product": {
     "breadcrumbHome": "Ana sayfa",
@@ -168,6 +183,7 @@
     "title": "Sipariş özeti",
     "total": "Toplam",
     "recipient": "Alıcı",
+    "recipientAddress": "Teslimat adresi",
     "deliveryDate": "Teslimat tarihi",
     "timeWindow": "Saat aralığı",
     "giftNote": "Hediye notu"

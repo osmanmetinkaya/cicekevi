@@ -111,6 +111,7 @@
     "deliveryAtCheckout": "At checkout",
     "total": "Total",
     "secureCheckout": "Proceed to secure checkout",
+    "completeOrderDetails": "Complete order details",
     "redirecting": "Redirecting…",
     "sslNote": "Secure payment with 256-bit SSL · Stripe",
     "errorSelectDelivery": "Please choose a delivery date and time window.",
@@ -120,7 +121,21 @@
     "authGateText": "We recommend signing in so you can track your order. You can also continue without an account.",
     "loginCta": "Sign in",
     "guestCta": "Continue without an account",
-    "cancelGate": "Cancel"
+    "cancelGate": "Cancel",
+    "senderInfo": "Sender details",
+    "senderName": "Full name",
+    "senderNamePlaceholder": "Your full name",
+    "senderPhone": "Phone number",
+    "senderEmail": "Email",
+    "senderEmailPlaceholder": "We'll let you know once it's delivered",
+    "recipientInfo": "Recipient details",
+    "recipientName": "Full name",
+    "recipientNamePlaceholder": "Full name of the person receiving it",
+    "recipientPhone": "Phone number",
+    "recipientAddress": "Delivery address",
+    "recipientAddressPlaceholder": "Neighbourhood, street, door number, and any other directions…",
+    "errorSender": "Please fill in the sender's name and phone number.",
+    "errorRecipient": "Please fill in the recipient's name, phone number, and address."
   },
   "product": {
     "breadcrumbHome": "Home",
@@ -168,6 +183,7 @@
     "title": "Order summary",
     "total": "Total",
     "recipient": "Recipient",
+    "recipientAddress": "Delivery address",
     "deliveryDate": "Delivery date",
     "timeWindow": "Time window",
     "giftNote": "Gift note"

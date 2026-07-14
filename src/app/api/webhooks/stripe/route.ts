@@ -35,6 +35,12 @@ async function persistOrder(session: Stripe.Checkout.Session) {
     delivery_date: md.delivery_date || null,
     delivery_window: md.delivery_window || null,
     gift_note: md.gift_note || null,
+    sender_name: md.sender_name || null,
+    sender_phone: md.sender_phone || null,
+    sender_email: md.sender_email || null,
+    recipient_name: md.recipient_name || null,
+    recipient_phone: md.recipient_phone || null,
+    recipient_address: md.recipient_address || null,
   });
 
   // unique(stripe_session_id) sayesinde tekrar denemeler idempotent;

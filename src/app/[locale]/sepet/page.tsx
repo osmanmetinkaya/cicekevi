@@ -6,7 +6,10 @@ import {
   Clock4,
   Gift,
   LogIn,
+  Mail,
+  MapPin,
   Minus,
+  Phone,
   Plus,
   ShoppingBag,
   Trash2,
@@ -22,6 +25,7 @@ import { pick, type Locale } from "@/lib/types";
 import { DELIVERY_WINDOWS } from "@/lib/delivery";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/client";
+import { isValidPhone } from "@/lib/phone";
 
 /** Girişli mi, misafir mi bilinmiyorsa "checking" — o sırada ödeme
  * kapısı gösterilmez, kontrol bitene kadar buton normal davranır. */
@@ -39,6 +43,12 @@ export default function CartPage() {
   const [date, setDate] = useState("");
   const [win, setWin] = useState("");
   const [note, setNote] = useState("");
+  const [senderName, setSenderName] = useState("");
+  const [senderPhone, setSenderPhone] = useState("");
+  const [senderEmail, setSenderEmail] = useState("");
+  const [recipientName, setRecipientName] = useState("");
+  const [recipientPhone, setRecipientPhone] = useState("");
+  const [recipientAddress, setRecipientAddress] = useState("");
   const [contractAccepted, setContractAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +72,18 @@ export default function CartPage() {
   }, []);
 
   function handleCheckoutClick() {
+    if (!senderName.trim() || !isValidPhone(senderPhone)) {
+      setError(t("errorSender"));
+      return;
+    }
+    if (
+      !recipientName.trim() ||
+      !isValidPhone(recipientPhone) ||
+      !recipientAddress.trim()
+    ) {
+      setError(t("errorRecipient"));
+      return;
+    }
     if (!date || !win) {
       setError(t("errorSelectDelivery"));
       return;
@@ -89,6 +111,16 @@ export default function CartPage() {
         body: JSON.stringify({
           items: lines.map((l) => ({ id: l.product.id, qty: l.qty })),
           delivery: { date, window: win },
+          sender: {
+            name: senderName.trim(),
+            phone: senderPhone.trim(),
+            email: senderEmail.trim(),
+          },
+          recipient: {
+            name: recipientName.trim(),
+            phone: recipientPhone.trim(),
+            address: recipientAddress.trim(),
+          },
           giftNote: note,
           contractAccepted,
           locale,
@@ -183,6 +215,109 @@ export default function CartPage() {
               </li>
             ))}
           </ul>
+
+          {/* Gönderen bilgileri */}
+          <section className="rounded-2xl border border-line bg-white p-5">
+            <h2 className="flex items-center gap-2 font-serif text-xl text-ink">
+              <UserRound size={18} className="text-rose-700" />{" "}
+              {t("senderInfo")}
+            </h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-sm text-ink-muted">
+                  {t("senderName")}
+                </span>
+                <input
+                  type="text"
+                  value={senderName}
+                  onChange={(e) => setSenderName(e.target.value.slice(0, 120))}
+                  placeholder={t("senderNamePlaceholder")}
+                  className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 flex items-center gap-1.5 text-sm text-ink-muted">
+                  <Phone size={14} /> {t("senderPhone")}
+                </span>
+                <input
+                  type="tel"
+                  value={senderPhone}
+                  onChange={(e) =>
+                    setSenderPhone(e.target.value.slice(0, 20))
+                  }
+                  placeholder="0555 123 45 67"
+                  className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
+                />
+              </label>
+              <label className="block sm:col-span-2">
+                <span className="mb-1.5 flex items-center gap-1.5 text-sm text-ink-muted">
+                  <Mail size={14} /> {t("senderEmail")}{" "}
+                  <span className="text-xs">{t("optional")}</span>
+                </span>
+                <input
+                  type="email"
+                  value={senderEmail}
+                  onChange={(e) =>
+                    setSenderEmail(e.target.value.slice(0, 200))
+                  }
+                  placeholder={t("senderEmailPlaceholder")}
+                  className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
+                />
+              </label>
+            </div>
+          </section>
+
+          {/* Alıcı bilgileri */}
+          <section className="rounded-2xl border border-line bg-white p-5">
+            <h2 className="flex items-center gap-2 font-serif text-xl text-ink">
+              <MapPin size={18} className="text-rose-700" />{" "}
+              {t("recipientInfo")}
+            </h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <label className="block">
+                <span className="mb-1.5 block text-sm text-ink-muted">
+                  {t("recipientName")}
+                </span>
+                <input
+                  type="text"
+                  value={recipientName}
+                  onChange={(e) =>
+                    setRecipientName(e.target.value.slice(0, 120))
+                  }
+                  placeholder={t("recipientNamePlaceholder")}
+                  className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
+                />
+              </label>
+              <label className="block">
+                <span className="mb-1.5 flex items-center gap-1.5 text-sm text-ink-muted">
+                  <Phone size={14} /> {t("recipientPhone")}
+                </span>
+                <input
+                  type="tel"
+                  value={recipientPhone}
+                  onChange={(e) =>
+                    setRecipientPhone(e.target.value.slice(0, 20))
+                  }
+                  placeholder="0555 123 45 67"
+                  className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
+                />
+              </label>
+              <label className="block sm:col-span-2">
+                <span className="mb-1.5 block text-sm text-ink-muted">
+                  {t("recipientAddress")}
+                </span>
+                <textarea
+                  value={recipientAddress}
+                  onChange={(e) =>
+                    setRecipientAddress(e.target.value.slice(0, 400))
+                  }
+                  rows={3}
+                  placeholder={t("recipientAddressPlaceholder")}
+                  className="w-full resize-none rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
+                />
+              </label>
+            </div>
+          </section>
 
           {/* Teslimat */}
           <section className="rounded-2xl border border-line bg-white p-5">
@@ -305,7 +440,7 @@ export default function CartPage() {
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-rose-700 py-3.5 text-sm font-medium text-white transition-colors hover:bg-rose-900 disabled:opacity-60"
             >
               <ShoppingBag size={17} />
-              {loading ? t("redirecting") : t("secureCheckout")}
+              {loading ? t("redirecting") : t("completeOrderDetails")}
             </button>
           )}
           <p className="mt-3 text-center text-xs text-ink-muted">

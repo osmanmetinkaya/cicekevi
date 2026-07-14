@@ -38,7 +38,9 @@ export default async function SuccessPage({
         deliveryDate: md.delivery_date || undefined,
         deliveryWindow: md.delivery_window || undefined,
         giftNote: md.gift_note || undefined,
-        recipientName: session.customer_details?.name ?? null,
+        recipientName: md.recipient_name || null,
+        recipientPhone: md.recipient_phone || null,
+        recipientAddress: md.recipient_address || null,
       };
     } catch {
       // Stale or invalid session id — show a generic confirmation.

@@ -26,6 +26,9 @@ interface OrderRow {
   delivery_date: string | null;
   delivery_window: string | null;
   gift_note: string | null;
+  recipient_name: string | null;
+  recipient_phone: string | null;
+  recipient_address: string | null;
   created_at: string;
 }
 
@@ -60,7 +63,7 @@ export default async function AccountPage({
   const { data: orders } = await supabase
     .from("orders")
     .select(
-      "id, order_number, stripe_session_id, amount_total, items, delivery_date, delivery_window, gift_note, created_at",
+      "id, order_number, stripe_session_id, amount_total, items, delivery_date, delivery_window, gift_note, recipient_name, recipient_phone, recipient_address, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(20)
@@ -140,6 +143,9 @@ async function OrderSummaryWithDate({ row }: { row: OrderRow }) {
     deliveryDate: row.delivery_date ?? undefined,
     deliveryWindow: row.delivery_window ?? undefined,
     giftNote: row.gift_note ?? undefined,
+    recipientName: row.recipient_name,
+    recipientPhone: row.recipient_phone,
+    recipientAddress: row.recipient_address,
   };
   return (
     <div>

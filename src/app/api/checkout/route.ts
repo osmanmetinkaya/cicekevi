@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { DELIVERY_WINDOWS } from "@/lib/delivery";
+import { isValidPhone, digitsOnly } from "@/lib/phone";
 
 interface IncomingItem {
   id: string;
@@ -16,6 +17,18 @@ interface IncomingItem {
 interface IncomingDelivery {
   date?: string;
   window?: string;
+}
+
+interface IncomingSender {
+  name?: string;
+  phone?: string;
+  email?: string;
+}
+
+interface IncomingRecipient {
+  name?: string;
+  phone?: string;
+  address?: string;
 }
 
 function cleanDelivery(d: IncomingDelivery | undefined): {
@@ -28,6 +41,30 @@ function cleanDelivery(d: IncomingDelivery | undefined): {
   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(date);
   if (!validDate || !DELIVERY_WINDOWS.includes(win)) return null;
   return { date, window: win };
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function cleanSender(
+  s: IncomingSender | undefined,
+): { name: string; phone: string; email: string } | null {
+  const name = typeof s?.name === "string" ? s.name.trim().slice(0, 120) : "";
+  const phone = typeof s?.phone === "string" ? digitsOnly(s.phone) : "";
+  const email = typeof s?.email === "string" ? s.email.trim().slice(0, 200) : "";
+  if (!name || !isValidPhone(phone)) return null;
+  if (email && !EMAIL_RE.test(email)) return null;
+  return { name, phone, email };
+}
+
+function cleanRecipient(
+  r: IncomingRecipient | undefined,
+): { name: string; phone: string; address: string } | null {
+  const name = typeof r?.name === "string" ? r.name.trim().slice(0, 120) : "";
+  const phone = typeof r?.phone === "string" ? digitsOnly(r.phone) : "";
+  const address =
+    typeof r?.address === "string" ? r.address.trim().slice(0, 400) : "";
+  if (!name || !isValidPhone(phone) || !address) return null;
+  return { name, phone, address };
 }
 
 function siteUrl(request: Request): string {
@@ -68,6 +105,8 @@ export async function POST(request: Request) {
   let body: {
     items?: IncomingItem[];
     delivery?: IncomingDelivery;
+    sender?: IncomingSender;
+    recipient?: IncomingRecipient;
     giftNote?: string;
     contractAccepted?: boolean;
     locale?: string;
@@ -99,6 +138,24 @@ export async function POST(request: Request) {
   // Gift note is free text; cap it so it fits Stripe metadata (500 char limit).
   const giftNote =
     typeof body.giftNote === "string" ? body.giftNote.trim().slice(0, 400) : "";
+
+  // Gönderen ve alıcı bilgileri artık Stripe'ın kendi adres/telefon
+  // toplama alanları yerine bizim formumuzdan geliyor — istemci tarafı
+  // atlatılabileceği için sunucuda da doğrulanır.
+  const sender = cleanSender(body.sender);
+  if (!sender) {
+    return NextResponse.json(
+      { error: "Gönderen adı ve telefon numarasını eksiksiz gir." },
+      { status: 400 },
+    );
+  }
+  const recipient = cleanRecipient(body.recipient);
+  if (!recipient) {
+    return NextResponse.json(
+      { error: "Alıcı adı, telefon numarası ve adresini eksiksiz gir." },
+      { status: 400 },
+    );
+  }
 
   // Never trust client-supplied prices: resolve every line from our own
   // catalogue and build the amounts server-side.
@@ -157,14 +214,13 @@ export async function POST(request: Request) {
       {
         mode: "payment",
         line_items: lineItems,
-        // Collect a shipping address — flowers need somewhere to go.
-        shipping_address_collection: { allowed_countries: ["TR"] },
-        phone_number_collection: { enabled: true },
+        // Adres ve telefon artık bizim formumuzdan (gönderen/alıcı) geliyor;
+        // Stripe'a aynı bilgiyi ikinci kez sordurmuyoruz.
         locale: stripeLocale,
         success_url: `${base}${localePrefix}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${base}${localePrefix}/sepet?checkout=cancelled`,
         // Order details the florist needs — surfaced on the session + webhook.
-        customer_email: userEmail,
+        customer_email: userEmail || sender.email || undefined,
         metadata: {
           source: "web",
           user_id: userId,
@@ -172,6 +228,12 @@ export async function POST(request: Request) {
           delivery_date: delivery?.date ?? "",
           delivery_window: delivery?.window ?? "",
           gift_note: giftNote,
+          sender_name: sender.name,
+          sender_phone: sender.phone,
+          sender_email: sender.email,
+          recipient_name: recipient.name,
+          recipient_phone: recipient.phone,
+          recipient_address: recipient.address,
           // Denetim izi: sözleşme onayının ne zaman verildiği.
           contract_accepted_at: new Date().toISOString(),
         },

@@ -1,4 +1,4 @@
-import { Gift } from "lucide-react";
+import { Gift, MapPin, Phone, UserRound } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { formatDateTR, formatKurus } from "@/lib/format";
 import type { AdminOrderRow } from "@/lib/orders/types";
@@ -9,7 +9,7 @@ export default async function AdminOrdersPage() {
   const { data } = await supabase
     .from("orders")
     .select(
-      "id, order_number, stripe_session_id, email, amount_total, items, delivery_date, delivery_window, gift_note, status, created_at",
+      "id, order_number, stripe_session_id, email, amount_total, items, delivery_date, delivery_window, gift_note, sender_name, sender_phone, sender_email, recipient_name, recipient_phone, recipient_address, status, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(200)
@@ -62,6 +62,35 @@ export default async function AdminOrdersPage() {
                 <p className="mt-1 flex items-start gap-1.5 text-sm text-ink-muted">
                   <Gift size={15} className="mt-0.5 shrink-0 text-rose-700" />
                   <span className="font-serif italic">“{o.gift_note}”</span>
+                </p>
+              )}
+
+              {(o.recipient_name || o.recipient_phone || o.recipient_address) && (
+                <div className="mt-3 rounded-xl bg-cream p-3">
+                  <p className="text-xs font-medium text-ink-muted">Alıcı</p>
+                  <p className="mt-1 flex items-center gap-1.5 text-sm text-ink">
+                    <UserRound size={14} className="shrink-0 text-leaf-600" />
+                    {o.recipient_name}
+                    {o.recipient_phone && (
+                      <span className="inline-flex items-center gap-1 text-ink-muted">
+                        <Phone size={13} /> {o.recipient_phone}
+                      </span>
+                    )}
+                  </p>
+                  {o.recipient_address && (
+                    <p className="mt-1 flex items-start gap-1.5 text-sm text-ink-muted">
+                      <MapPin size={14} className="mt-0.5 shrink-0 text-leaf-600" />
+                      {o.recipient_address}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {(o.sender_name || o.sender_phone) && (
+                <p className="mt-2 text-xs text-ink-muted">
+                  Gönderen: {o.sender_name}
+                  {o.sender_phone && ` · ${o.sender_phone}`}
+                  {o.sender_email && ` · ${o.sender_email}`}
                 </p>
               )}
             </div>

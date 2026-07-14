@@ -1,4 +1,4 @@
-import { CalendarDays, Clock4, Gift, MapPin } from "lucide-react";
+import { CalendarDays, Clock4, Gift, MapPin, UserRound } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { formatDate, formatKurus } from "@/lib/format";
 
@@ -10,6 +10,8 @@ export interface OrderView {
   deliveryWindow?: string;
   giftNote?: string;
   recipientName?: string | null;
+  recipientPhone?: string | null;
+  recipientAddress?: string | null;
 }
 
 export function OrderSummary({ order }: { order: OrderView }) {
@@ -49,11 +51,20 @@ export function OrderSummary({ order }: { order: OrderView }) {
       )}
 
       {/* Teslimat + hediye */}
-      {(hasDelivery || order.giftNote || order.recipientName) && (
+      {(hasDelivery ||
+        order.giftNote ||
+        order.recipientName ||
+        order.recipientAddress) && (
         <div className="space-y-3 border-t border-line bg-cream px-5 py-4">
           {order.recipientName && (
-            <Row Icon={MapPin} label={t("recipient")}>
+            <Row Icon={UserRound} label={t("recipient")}>
               {order.recipientName}
+              {order.recipientPhone && ` · ${order.recipientPhone}`}
+            </Row>
+          )}
+          {order.recipientAddress && (
+            <Row Icon={MapPin} label={t("recipientAddress")}>
+              {order.recipientAddress}
             </Row>
           )}
           {order.deliveryDate && (

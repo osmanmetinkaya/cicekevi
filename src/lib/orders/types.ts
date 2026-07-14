@@ -10,6 +10,12 @@ export interface AdminOrderRow {
   delivery_date: string | null;
   delivery_window: string | null;
   gift_note: string | null;
+  sender_name: string | null;
+  sender_phone: string | null;
+  sender_email: string | null;
+  recipient_name: string | null;
+  recipient_phone: string | null;
+  recipient_address: string | null;
   status: OrderStatus;
   created_at: string;
 }
