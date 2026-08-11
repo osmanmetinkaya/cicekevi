@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Script from "next/script";
 import {
   CalendarDays,
   Clock4,
@@ -31,6 +32,13 @@ import { isValidPhone } from "@/lib/phone";
  * kapısı gösterilmez, kontrol bitene kadar buton normal davranır. */
 type AuthStatus = "checking" | "authed" | "guest";
 
+// PayTR'ın iframeResizer script'i global olarak bu fonksiyonu tanımlar.
+declare global {
+  interface Window {
+    iFrameResize?: (options: object, target: string) => void;
+  }
+}
+
 function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
 }
@@ -57,6 +65,8 @@ export default function CartPage() {
   );
   const [showAuthGate, setShowAuthGate] = useState(false);
   const [guestConfirmed, setGuestConfirmed] = useState(false);
+  // PayTR iframe token'ı — dolu olduğunda ödeme formu sepetin içine gömülür.
+  const [paytrToken, setPaytrToken] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isSupabaseConfigured()) return;
@@ -105,7 +115,7 @@ export default function CartPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/checkout", {
+      const res = await fetch("/api/paytr/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -127,14 +137,55 @@ export default function CartPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.url) {
+      if (!res.ok || !data.token) {
         throw new Error(data.error ?? t("errorCheckoutFailed"));
       }
-      window.location.href = data.url as string;
+      // Artık yönlendirme yok: PayTR ödeme formu iframe olarak gömülür.
+      setPaytrToken(data.token as string);
+      setLoading(false);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("errorGeneric"));
       setLoading(false);
     }
+  }
+
+  // Token alındıysa sipariş bilgileri tamamlanmış demektir; ödeme formu
+  // (PayTR iframe) sepetin yerine geçer. "Vazgeç" ile forma dönülebilir.
+  if (paytrToken) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <h1 className="font-serif text-3xl text-ink">{t("paymentTitle")}</h1>
+        <p className="mt-2 text-sm text-ink-muted">{t("paymentText")}</p>
+
+        <div className="mt-6 overflow-hidden rounded-2xl border border-line bg-white p-2 sm:p-4">
+          <iframe
+            id="paytriframe"
+            title={t("paymentTitle")}
+            src={`https://www.paytr.com/odeme/guvenli/${paytrToken}`}
+            scrolling="no"
+            style={{ width: "100%", border: 0, minHeight: 560 }}
+          />
+        </div>
+
+        <Script
+          src="https://www.paytr.com/js/iframeResizer.min.js"
+          strategy="afterInteractive"
+          onLoad={() => window.iFrameResize?.({}, "#paytriframe")}
+        />
+
+        <button
+          onClick={() => {
+            setPaytrToken(null);
+            setError(null);
+          }}
+          className="mt-6 text-sm text-ink-muted underline underline-offset-4 transition-colors hover:text-rose-700"
+        >
+          {t("cancelPayment")}
+        </button>
+
+        <p className="mt-6 text-center text-xs text-ink-muted">{t("sslNote")}</p>
+      </div>
+    );
   }
 
   if (lines.length === 0) {

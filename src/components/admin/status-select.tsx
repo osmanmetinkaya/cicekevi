@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { updateOrderStatus } from "@/app/admin/actions";
 import {
-  ORDER_STATUSES,
+  ADMIN_SELECTABLE_STATUSES,
   STATUS_LABELS,
   type OrderStatus,
 } from "@/lib/orders/status";
@@ -34,7 +34,14 @@ export function StatusSelect({
         }}
         className="cursor-pointer rounded-full border border-line bg-white px-3 py-1.5 text-sm text-ink outline-none transition-colors hover:border-blush-300 focus:border-rose-500 disabled:opacity-50"
       >
-        {ORDER_STATUSES.map((s) => (
+        {/* "Ödeme bekleniyor" yalnızca sistem tarafından atanır; admin elle
+            seçemesin diye devre dışı, ama mevcut durum oysa görünür kalsın. */}
+        {status === "pending" && (
+          <option value="pending" disabled>
+            {STATUS_LABELS.pending}
+          </option>
+        )}
+        {ADMIN_SELECTABLE_STATUSES.map((s) => (
           <option key={s} value={s}>
             {STATUS_LABELS[s]}
           </option>

@@ -105,7 +105,7 @@ function KvkkTr() {
         <p>
           Kişisel verileriniz, yukarıda belirtilen amaçlarla sınırlı olarak;
           ödeme işlemlerinin gerçekleştirilmesi için ödeme kuruluşuna
-          (Stripe), üyelik ve veritabanı altyapısının sağlanması için bulut
+          (PayTR), üyelik ve veritabanı altyapısının sağlanması için bulut
           hizmet sağlayıcısına (Supabase), teslimat için anlaşmalı kurye/lojistik
           firmalarına ve yasal zorunluluk hâlinde yetkili kamu kurum ve
           kuruluşlarına, KVKK&rsquo;nın 8. ve 9. maddelerinde belirtilen
@@ -252,7 +252,7 @@ function KvkkEn() {
       <LegalSection title="4. Transfer of Personal Data">
         <p>
           Limited to the purposes stated above, your personal data may be
-          transferred to the payment institution (Stripe) for processing
+          transferred to the payment institution (PayTR) for processing
           payments, to the cloud service provider (Supabase) for membership and
           database infrastructure, to contracted courier/logistics firms for
           delivery, and, where legally required, to authorised public

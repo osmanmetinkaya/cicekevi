@@ -3,7 +3,10 @@ import type { OrderStatus } from "@/lib/orders/status";
 export interface AdminOrderRow {
   id: string;
   order_number: string;
-  stripe_session_id: string;
+  /** Eski Stripe siparişlerinde dolu; PayTR siparişlerinde null. */
+  stripe_session_id: string | null;
+  paytr_merchant_oid: string | null;
+  payment_provider: string | null;
   email: string;
   amount_total: number;
   items: { name: string; qty: number; amount: number }[];

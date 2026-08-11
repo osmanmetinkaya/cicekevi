@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
-import { getStripe } from "@/lib/stripe";
 import { getProductById } from "@/lib/products";
 import { pick, type Locale } from "@/lib/types";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { DELIVERY_WINDOWS } from "@/lib/delivery";
 import { isValidPhone, digitsOnly } from "@/lib/phone";
+import {
+  PAYTR_TOKEN_URL,
+  encodeBasket,
+  getPaytrCredentials,
+  newMerchantOid,
+  paytrTokenHash,
+} from "@/lib/paytr";
 
 interface IncomingItem {
   id: string;
@@ -75,7 +82,10 @@ function siteUrl(request: Request): string {
 
 /** Okunabilir sipariş numarası (ör. DC-1042), Postgres sequence üzerinden
  * rezerve edilir. RPC başarısız olursa rastgele bir yedek üretilir ki
- * sipariş numarasız kalmasın. */
+ * sipariş numarasız kalmasın.
+ *
+ * NOT: Bu değer müşteriye gösterilen SIRALI numaradır; PayTR'e giden
+ * merchant_oid ile aynı olmamalı (tahmin edilebilir olurdu). */
 async function nextOrderNumber(
   supabase: Awaited<ReturnType<typeof createClient>> | null,
 ): Promise<string> {
@@ -91,8 +101,8 @@ async function nextOrderNumber(
 }
 
 export async function POST(request: Request) {
-  // Hız sınırı: aynı IP dakikada en fazla 10 checkout oturumu oluşturabilir.
-  // Stripe oturum oluşturma maliyet/suistimal riskidir; spam'i keser.
+  // Hız sınırı: aynı IP dakikada en fazla 10 ödeme oturumu başlatabilir.
+  // Token alma maliyet/suistimal riskidir; spam'i keser.
   const ip = clientIp(request);
   const limit = rateLimit(`checkout:${ip}`, 10, 60_000);
   if (!limit.ok) {
@@ -131,16 +141,13 @@ export async function POST(request: Request) {
     );
   }
 
-  // Stripe hosted Checkout dilini kullanıcının site dilinden türet.
-  const stripeLocale = body.locale === "en" ? "en" : "tr";
+  const locale: Locale = body.locale === "en" ? "en" : "tr";
 
   const delivery = cleanDelivery(body.delivery);
-  // Gift note is free text; cap it so it fits Stripe metadata (500 char limit).
   const giftNote =
     typeof body.giftNote === "string" ? body.giftNote.trim().slice(0, 400) : "";
 
-  // Gönderen ve alıcı bilgileri artık Stripe'ın kendi adres/telefon
-  // toplama alanları yerine bizim formumuzdan geliyor — istemci tarafı
+  // Gönderen ve alıcı bilgileri bizim formumuzdan geliyor — istemci tarafı
   // atlatılabileceği için sunucuda da doğrulanır.
   const sender = cleanSender(body.sender);
   if (!sender) {
@@ -159,7 +166,9 @@ export async function POST(request: Request) {
 
   // Never trust client-supplied prices: resolve every line from our own
   // catalogue and build the amounts server-side.
-  const lineItems = [];
+  const orderItems: { name: string; qty: number; amount: number }[] = [];
+  const basketItems: { name: string; priceKurus: number; qty: number }[] = [];
+  let amountTotal = 0;
   for (const item of items) {
     const product = getProductById(item.id);
     const qty = Math.floor(Number(item.qty));
@@ -169,34 +178,35 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    lineItems.push({
-      quantity: qty,
-      price_data: {
-        currency: "try",
-        unit_amount: product.priceKurus,
-        product_data: {
-          name: pick(product.name, stripeLocale as Locale),
-          description: pick(product.tagline, stripeLocale as Locale),
-          metadata: { product_id: product.id },
-        },
-      },
-    });
+    const name = pick(product.name, locale);
+    amountTotal += product.priceKurus * qty;
+    orderItems.push({ name, qty, amount: product.priceKurus * qty });
+    basketItems.push({ name, priceKurus: product.priceKurus, qty });
   }
 
-  if (!process.env.STRIPE_SECRET_KEY) {
+  const creds = getPaytrCredentials();
+  if (!creds) {
     return NextResponse.json(
-      { error: "Ödeme altyapısı henüz yapılandırılmadı (STRIPE_SECRET_KEY)." },
+      { error: "Ödeme altyapısı henüz yapılandırılmadı (PAYTR_*)." },
+      { status: 503 },
+    );
+  }
+
+  const admin = createAdminClient();
+  if (!admin) {
+    return NextResponse.json(
+      { error: "Sipariş altyapısı henüz yapılandırılmadı." },
       { status: 503 },
     );
   }
 
   const base = siteUrl(request);
   // Locale öneki: tr (varsayılan) kök URL'de, en /en altında.
-  const localePrefix = stripeLocale === "en" ? "/en" : "";
+  const localePrefix = locale === "en" ? "/en" : "";
 
-  // Girişli kullanıcıyı siparişe bağla (webhook orders.user_id doldurur).
+  // Girişli kullanıcıyı siparişe bağla.
   let userId = "";
-  let userEmail: string | undefined;
+  let userEmail = "";
   const supabase = isSupabaseConfigured() ? await createClient() : null;
   if (supabase) {
     const {
@@ -204,53 +214,143 @@ export async function POST(request: Request) {
     } = await supabase.auth.getUser();
     if (user) {
       userId = user.id;
-      userEmail = user.email ?? undefined;
+      userEmail = user.email ?? "";
     }
   }
+
   const orderNumber = await nextOrderNumber(supabase);
+  const merchantOid = newMerchantOid();
+
+  // PayTR e-posta alanını zorunlu tutar; gönderen e-postası isteğe bağlı
+  // olduğundan boşsa telefon numarasından türetilmiş bir yedek kullanılır.
+  const email = (
+    sender.email ||
+    userEmail ||
+    `${sender.phone}@misafir.denizlicicekevi.online`
+  ).slice(0, 100);
+
+  // PayTR bizim gönderdiğimiz metadata'yı callback'te geri yansıtmadığı için
+  // sipariş detayları ödeme BAŞLAMADAN önce kendi tablomuza yazılır; callback
+  // geldiğinde yalnızca status güncellenir.
+  const { error: insertError } = await admin.from("orders").insert({
+    user_id: userId || null,
+    email,
+    payment_provider: "paytr",
+    paytr_merchant_oid: merchantOid,
+    order_number: orderNumber,
+    amount_total: amountTotal,
+    currency: "try",
+    items: orderItems,
+    delivery_date: delivery?.date || null,
+    delivery_window: delivery?.window || null,
+    gift_note: giftNote || null,
+    sender_name: sender.name,
+    sender_phone: sender.phone,
+    sender_email: sender.email || null,
+    recipient_name: recipient.name,
+    recipient_phone: recipient.phone,
+    recipient_address: recipient.address,
+    status: "pending",
+  });
+
+  if (insertError) {
+    console.error("[paytr/checkout] order insert failed", insertError);
+    return NextResponse.json(
+      { error: "Sipariş oluşturulamadı. Lütfen tekrar dene." },
+      { status: 500 },
+    );
+  }
+
+  /** Ödeme başlatılamazsa yarım kalan pending satırı temizle (best-effort). */
+  async function cleanupPendingOrder() {
+    try {
+      const { error } = await admin!
+        .from("orders")
+        .delete()
+        .eq("paytr_merchant_oid", merchantOid)
+        .eq("status", "pending");
+      if (error) console.error("[paytr/checkout] cleanup failed", error);
+    } catch (err) {
+      console.error("[paytr/checkout] cleanup threw", err);
+    }
+  }
+
+  const userBasket = encodeBasket(basketItems);
+  const noInstallment = "0";
+  const maxInstallment = "0";
+  const currency = "TL";
+  // Kullanıcı test modunda kurulum istedi; canlıya geçerken "0" yapılacak.
+  const testMode = "1";
+
+  const paytrToken = paytrTokenHash(creds, {
+    merchantOid,
+    userIp: ip,
+    email,
+    paymentAmount: amountTotal,
+    userBasket,
+    noInstallment,
+    maxInstallment,
+    currency,
+    testMode,
+  });
+
+  const okUrl = `${base}${localePrefix}/checkout/success?merchant_oid=${merchantOid}`;
+
+  const form = new URLSearchParams({
+    merchant_id: creds.merchantId,
+    user_ip: ip.slice(0, 39),
+    merchant_oid: merchantOid,
+    email,
+    payment_amount: String(amountTotal),
+    user_basket: userBasket,
+    no_installment: noInstallment,
+    max_installment: maxInstallment,
+    currency,
+    user_name: sender.name.slice(0, 60),
+    user_address: recipient.address.slice(0, 400),
+    user_phone: sender.phone.slice(0, 20),
+    merchant_ok_url: okUrl.slice(0, 400),
+    merchant_fail_url: okUrl.slice(0, 400),
+    test_mode: testMode,
+    debug_on: "1",
+    timeout_limit: "30",
+    lang: locale === "en" ? "en" : "tr",
+    paytr_token: paytrToken,
+  });
 
   try {
-    const session = await getStripe().checkout.sessions.create(
-      {
-        mode: "payment",
-        line_items: lineItems,
-        // Adres ve telefon artık bizim formumuzdan (gönderen/alıcı) geliyor;
-        // Stripe'a aynı bilgiyi ikinci kez sordurmuyoruz.
-        locale: stripeLocale,
-        success_url: `${base}${localePrefix}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${base}${localePrefix}/sepet?checkout=cancelled`,
-        // Order details the florist needs — surfaced on the session + webhook.
-        customer_email: userEmail || sender.email || undefined,
-        metadata: {
-          source: "web",
-          user_id: userId,
-          order_number: orderNumber,
-          delivery_date: delivery?.date ?? "",
-          delivery_window: delivery?.window ?? "",
-          gift_note: giftNote,
-          sender_name: sender.name,
-          sender_phone: sender.phone,
-          sender_email: sender.email,
-          recipient_name: recipient.name,
-          recipient_phone: recipient.phone,
-          recipient_address: recipient.address,
-          // Denetim izi: sözleşme onayının ne zaman verildiği.
-          contract_accepted_at: new Date().toISOString(),
-        },
-        custom_text: giftNote
-          ? { submit: { message: `Hediye notu: ${giftNote}` } }
-          : undefined,
-      },
-      // Idempotency: a double-clicked "Pay" button can't create two sessions
-      // for the same attempt.
-      { idempotencyKey: randomUUID() },
-    );
+    const res = await fetch(PAYTR_TOKEN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: form.toString(),
+      cache: "no-store",
+    });
 
-    return NextResponse.json({ url: session.url });
+    const data: unknown = await res.json();
+    const result = data as { status?: string; token?: string; reason?: string };
+
+    if (result.status !== "success" || !result.token) {
+      console.error("[paytr/checkout] get-token failed", {
+        status: result.status,
+        reason: result.reason,
+      });
+      await cleanupPendingOrder();
+      return NextResponse.json(
+        { error: "Ödeme başlatılamadı. Lütfen tekrar dene." },
+        { status: 502 },
+      );
+    }
+
+    return NextResponse.json({
+      token: result.token,
+      merchantOid,
+      orderNumber,
+    });
   } catch (err) {
-    console.error("[checkout] stripe error", err);
+    console.error("[paytr/checkout] get-token request error", err);
+    await cleanupPendingOrder();
     return NextResponse.json(
-      { error: "Ödeme oturumu oluşturulamadı. Lütfen tekrar dene." },
+      { error: "Ödeme başlatılamadı. Lütfen tekrar dene." },
       { status: 502 },
     );
   }

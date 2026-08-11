@@ -24,12 +24,15 @@ const supabaseHost = (() => {
 // şey kilitli — object-src 'none', frame-ancestors 'none', base-uri 'self',
 // form-action 'self', connect-src yalnızca self + Supabase.
 //
-// Not: Stripe tarayıcıda GÖMÜLÜ DEĞİL (Stripe.js yok, sadece sunucu tarafı +
-// hosted Checkout'a redirect), o yüzden script-src/connect-src'e Stripe alanı
-// eklemeye gerek yok. Fontlar self-hosted (font-src 'self').
+// Not: Ödeme artık PayTR iFrame API ile GÖMÜLÜ (sepet sayfasında bir
+// <iframe src="https://www.paytr.com/odeme/guvenli/...">, artı boyutlandırma
+// için paytr.com'dan yüklenen iframeResizer.min.js). Bu yüzden script-src ve
+// frame-src'e yalnızca paytr.com eklendi; PayTR sunucudan sunucuya bildirim
+// (callback) gönderdiği için connect-src'e ihtiyaç yok. Fontlar self-hosted
+// (font-src 'self').
 const csp = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://www.paytr.com${isDev ? " 'unsafe-eval'" : ""}`,
   `style-src 'self' 'unsafe-inline'`,
   `img-src 'self' data: blob:`,
   `font-src 'self'`,
@@ -38,7 +41,7 @@ const csp = [
   `base-uri 'self'`,
   `form-action 'self'`,
   `frame-ancestors 'none'`,
-  `frame-src 'none'`,
+  `frame-src https://www.paytr.com`,
   `upgrade-insecure-requests`,
 ].join("; ").concat(";");
 

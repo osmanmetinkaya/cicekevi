@@ -77,7 +77,13 @@
     "dialogLabel": "Site search",
     "placeholder": "Search flowers, bouquets, orchids…",
     "popular": "POPULAR SEARCHES",
-    "popularTerms": ["Red rose", "Orchid", "Birthday", "Daisy", "Arrangement"]
+    "popularTerms": [
+      "Red rose",
+      "Orchid",
+      "Birthday",
+      "Daisy",
+      "Arrangement"
+    ]
   },
   "cart": {
     "openLabel": "Cart, {count} items",
@@ -112,8 +118,8 @@
     "total": "Total",
     "secureCheckout": "Proceed to secure checkout",
     "completeOrderDetails": "Complete order details",
-    "redirecting": "Redirecting…",
-    "sslNote": "Secure payment with 256-bit SSL · Stripe",
+    "redirecting": "Preparing payment…",
+    "sslNote": "Secure payment with 256-bit SSL · PayTR",
     "errorSelectDelivery": "Please choose a delivery date and time window.",
     "errorContract": "You must accept the Distance Sales Agreement to continue.",
     "errorCheckoutFailed": "Could not start checkout.",
@@ -135,7 +141,10 @@
     "recipientAddress": "Delivery address",
     "recipientAddressPlaceholder": "Neighbourhood, street, door number, and any other directions…",
     "errorSender": "Please fill in the sender's name and phone number.",
-    "errorRecipient": "Please fill in the recipient's name, phone number, and address."
+    "errorRecipient": "Please fill in the recipient's name, phone number, and address.",
+    "paymentTitle": "Payment",
+    "paymentText": "Enter your card details in the secure payment form below. You'll be taken to your order summary once the payment is complete.",
+    "cancelPayment": "Cancel and go back to order details"
   },
   "product": {
     "breadcrumbHome": "Home",
@@ -201,7 +210,12 @@
     "thanks": "Thank you! We're preparing your flowers with care.",
     "emailSent": "A confirmation email has been sent to {email}.",
     "continueShopping": "Continue shopping",
-    "fallbackItem": "Item"
+    "fallbackItem": "Item",
+    "pendingTitle": "Confirming your payment…",
+    "pendingText": "Your bank is confirming the payment. This page will refresh itself in a few seconds.",
+    "cancelledTitle": "Payment could not be completed",
+    "cancelledText": "We couldn't take your payment and no amount was charged to your card. Your cart is still there — feel free to try again or get in touch with us.",
+    "backToCart": "Back to cart"
   },
   "auth": {
     "loginTitle": "Sign in — Denizli Çiçekevi",

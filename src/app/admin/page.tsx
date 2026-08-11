@@ -9,7 +9,7 @@ export default async function AdminDashboard() {
   const { data } = await supabase
     .from("orders")
     .select(
-      "id, order_number, stripe_session_id, email, amount_total, items, delivery_date, delivery_window, gift_note, sender_name, sender_phone, sender_email, recipient_name, recipient_phone, recipient_address, status, created_at",
+      "id, order_number, stripe_session_id, paytr_merchant_oid, payment_provider, email, amount_total, items, delivery_date, delivery_window, gift_note, sender_name, sender_phone, sender_email, recipient_name, recipient_phone, recipient_address, status, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(200)

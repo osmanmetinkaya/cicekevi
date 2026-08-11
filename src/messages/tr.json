@@ -77,7 +77,13 @@
     "dialogLabel": "Site içi arama",
     "placeholder": "Çiçek, buket, orkide ara…",
     "popular": "POPÜLER ARAMALAR",
-    "popularTerms": ["Kırmızı gül", "Orkide", "Doğum günü", "Papatya", "Aranjman"]
+    "popularTerms": [
+      "Kırmızı gül",
+      "Orkide",
+      "Doğum günü",
+      "Papatya",
+      "Aranjman"
+    ]
   },
   "cart": {
     "openLabel": "Sepet, {count} ürün",
@@ -112,8 +118,8 @@
     "total": "Toplam",
     "secureCheckout": "Güvenli ödemeye geç",
     "completeOrderDetails": "Sipariş bilgilerini tamamla",
-    "redirecting": "Yönlendiriliyor…",
-    "sslNote": "256-bit SSL ile güvenli ödeme · Stripe",
+    "redirecting": "Ödeme hazırlanıyor…",
+    "sslNote": "256-bit SSL ile güvenli ödeme · PayTR",
     "errorSelectDelivery": "Lütfen teslimat tarihi ve saat aralığını seç.",
     "errorContract": "Devam etmek için Mesafeli Satış Sözleşmesi'ni onaylamalısın.",
     "errorCheckoutFailed": "Ödeme başlatılamadı.",
@@ -135,7 +141,10 @@
     "recipientAddress": "Teslimat adresi",
     "recipientAddressPlaceholder": "Mahalle, sokak, kapı no ve varsa diğer tarif bilgilerini yaz…",
     "errorSender": "Gönderen adı ve telefon numarasını eksiksiz gir.",
-    "errorRecipient": "Alıcı adı, telefon numarası ve adresini eksiksiz gir."
+    "errorRecipient": "Alıcı adı, telefon numarası ve adresini eksiksiz gir.",
+    "paymentTitle": "Ödeme",
+    "paymentText": "Kart bilgilerini aşağıdaki güvenli ödeme formuna gir. Ödeme tamamlandığında sipariş özetine yönlendirileceksin.",
+    "cancelPayment": "Vazgeç, sipariş bilgilerine dön"
   },
   "product": {
     "breadcrumbHome": "Ana sayfa",
@@ -201,7 +210,12 @@
     "thanks": "Teşekkürler! Çiçeklerini özenle hazırlıyoruz.",
     "emailSent": "Onay e-postası {email} adresine gönderildi.",
     "continueShopping": "Alışverişe devam et",
-    "fallbackItem": "Ürün"
+    "fallbackItem": "Ürün",
+    "pendingTitle": "Ödemen onaylanıyor…",
+    "pendingText": "Ödemen banka tarafından onaylanıyor. Bu sayfa birkaç saniye içinde kendini yenileyecek.",
+    "cancelledTitle": "Ödeme tamamlanamadı",
+    "cancelledText": "Ödemen alınamadı, kartından herhangi bir tutar çekilmedi. Sepetin duruyor; dilersen tekrar deneyebilir ya da bize ulaşabilirsin.",
+    "backToCart": "Sepete dön"
   },
   "auth": {
     "loginTitle": "Giriş yap — Denizli Çiçekevi",

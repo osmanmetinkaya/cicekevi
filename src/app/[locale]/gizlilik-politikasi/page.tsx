@@ -58,7 +58,7 @@ function PrivacyTr() {
           <li>Tüm veri iletimi 256-bit SSL/TLS ile şifrelenir.</li>
           <li>
             Kart bilgileriniz sunucularımızda hiçbir zaman saklanmaz; ödeme
-            işlemi PCI-DSS uyumlu ödeme kuruluşu (Stripe) üzerinden
+            işlemi PCI-DSS uyumlu ödeme kuruluşu (PayTR) üzerinden
             gerçekleştirilir.
           </li>
           <li>
@@ -73,7 +73,7 @@ function PrivacyTr() {
       <LegalSection title="3. Üçüncü Taraf Hizmet Sağlayıcılar">
         <p>
           Sitemizin çalışması için sınırlı sayıda güvenilir hizmet
-          sağlayıcıyla çalışıyoruz: ödeme altyapısı (Stripe), üyelik ve
+          sağlayıcıyla çalışıyoruz: ödeme altyapısı (PayTR), üyelik ve
           veritabanı (Supabase). Bu sağlayıcılar yalnızca hizmetin ifası
           için gerekli verilere erişebilir ve kendi gizlilik/güvenlik
           standartlarına tabidir.
@@ -149,7 +149,7 @@ function PrivacyEn() {
           <li>All data transmission is encrypted with 256-bit SSL/TLS.</li>
           <li>
             Your card details are never stored on our servers; payment is
-            processed through a PCI-DSS compliant payment institution (Stripe).
+            processed through a PCI-DSS compliant payment institution (PayTR).
           </li>
           <li>
             Our account and database infrastructure is hosted with a cloud
@@ -162,7 +162,7 @@ function PrivacyEn() {
       <LegalSection title="3. Third-Party Service Providers">
         <p>
           We work with a limited number of trusted service providers to run our
-          site: payment infrastructure (Stripe) and membership and database
+          site: payment infrastructure (PayTR) and membership and database
           (Supabase). These providers can access only the data necessary to
           perform the service and are subject to their own privacy/security
           standards.
