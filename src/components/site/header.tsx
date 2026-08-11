@@ -13,7 +13,7 @@ import { Logo } from "@/components/site/logo";
 export function Header() {
   const t = useTranslations("header");
   return (
-    <header className="sticky top-0 z-40 bg-cream/90 backdrop-blur">
+    <header className="sticky top-0 z-40 bg-cream/90 backdrop-blur will-change-transform">
       {/* Üst satır: logo + bilgi · arama · sepet · dil */}
       <div className="border-b border-line">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
