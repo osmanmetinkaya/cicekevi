@@ -3,7 +3,7 @@ import { Hero } from "@/components/site/hero";
 import { FeaturesBar } from "@/components/site/features-bar";
 import { ProductCard } from "@/components/product/product-card";
 import { getAllProducts } from "@/lib/products";
-import type { Product } from "@/lib/types";
+import type { Locale, Product } from "@/lib/types";
 
 export default async function Home({
   params,
@@ -20,7 +20,7 @@ export default async function Home({
 
   return (
     <>
-      <Hero />
+      <Hero locale={locale as Locale} />
       <FeaturesBar />
 
       <ProductSection

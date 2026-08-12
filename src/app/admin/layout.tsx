@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import localFont from "next/font/local";
-import { FolderTree, LayoutDashboard, Package, Sprout } from "lucide-react";
+import { FolderTree, Image, LayoutDashboard, Package, Sprout } from "lucide-react";
 import "../globals.css";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -75,6 +75,12 @@ export default async function AdminLayout({
             className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-4 py-2 text-ink transition-colors hover:border-blush-300 hover:text-rose-700"
           >
             <FolderTree size={15} /> Kategoriler
+          </Link>
+          <Link
+            href="/admin/icerik"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-4 py-2 text-ink transition-colors hover:border-blush-300 hover:text-rose-700"
+          >
+            <Image size={15} /> İçerik
           </Link>
         </nav>
       </div>
