@@ -1,4 +1,5 @@
-import { Gift, MapPin, Phone, UserRound } from "lucide-react";
+import Link from "next/link";
+import { Gift, MapPin, Phone, Printer, StickyNote, UserRound } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { formatDateTR, formatKurus } from "@/lib/format";
 import type { AdminOrderRow } from "@/lib/orders/types";
@@ -100,6 +101,22 @@ export default async function AdminOrdersPage() {
                 {formatKurus(o.amount_total)}
               </span>
               <StatusSelect orderId={o.id} status={o.status} />
+              <div className="flex items-center gap-1.5">
+                <Link
+                  href={`/admin/siparisler/${o.id}/fis`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs text-ink-muted transition-colors hover:border-blush-300 hover:text-rose-700"
+                >
+                  <Printer size={13} /> Fiş
+                </Link>
+                {o.gift_note && (
+                  <Link
+                    href={`/admin/siparisler/${o.id}/not`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs text-ink-muted transition-colors hover:border-blush-300 hover:text-rose-700"
+                  >
+                    <StickyNote size={13} /> Not
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </li>

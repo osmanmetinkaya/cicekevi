@@ -48,8 +48,8 @@ export default async function AdminLayout({
       className={`${manrope.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 print:max-w-none print:p-0">
+      <div className="flex flex-wrap items-center justify-between gap-4 print:hidden">
         <h1 className="font-serif text-3xl text-ink">Yönetim</h1>
         <nav aria-label="Yönetim menüsü" className="flex gap-2 text-sm">
           <Link
@@ -78,7 +78,7 @@ export default async function AdminLayout({
           </Link>
         </nav>
       </div>
-          <div className="mt-8">{children}</div>
+          <div className="mt-8 print:mt-0">{children}</div>
         </div>
       </body>
     </html>
