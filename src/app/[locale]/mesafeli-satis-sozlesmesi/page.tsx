@@ -47,6 +47,9 @@ function DistanceSalesTr() {
         <p>
           <span className="text-ink">Satıcı:</span> {LEGAL_ENTITY.legalName}
           <br />
+          Vergi Dairesi / Vergi No: {LEGAL_ENTITY.taxOffice} /{" "}
+          {LEGAL_ENTITY.taxId}
+          <br />
           Adres: {LEGAL_ENTITY.address}
           <br />
           E-posta: {LEGAL_ENTITY.supportEmail} · Telefon: {LEGAL_ENTITY.phone}
@@ -178,6 +181,9 @@ function DistanceSalesEn() {
       <LegalSection title="1. Parties">
         <p>
           <span className="text-ink">Seller:</span> {LEGAL_ENTITY_EN.legalName}
+          <br />
+          Tax Office / Tax ID: {LEGAL_ENTITY_EN.taxOffice} /{" "}
+          {LEGAL_ENTITY_EN.taxId}
           <br />
           Address: {LEGAL_ENTITY.address}
           <br />

@@ -263,6 +263,14 @@
     "authoritativeNote": "This is an English translation of the Turkish text and is provided for information only. The binding, legally authoritative version is the Turkish one.",
     "authoritativeLink": "View the Turkish version"
   },
+  "contactPage": {
+    "home": "Home",
+    "title": "Contact",
+    "subtitle": "Reach out through any of the channels below for questions, special order requests, or support.",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "addressLabel": "Address"
+  },
   "authErrors": {
     "notConfigured": "Membership infrastructure isn't configured yet.",
     "emailPasswordRequired": "Email and password are required.",

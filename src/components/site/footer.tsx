@@ -38,7 +38,7 @@ export function Footer() {
             { label: t("delivery"), href: "/mesafeli-satis-sozlesmesi" },
             { label: t("returns"), href: "/iptal-iade-kosullari" },
             { label: t("faq"), href: "#" },
-            { label: t("contact"), href: "#" },
+            { label: t("contact"), href: "/iletisim" },
           ]}
         />
         <FooterCol

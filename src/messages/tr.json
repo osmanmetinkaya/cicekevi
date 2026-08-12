@@ -263,6 +263,14 @@
     "authoritativeNote": "Bu, Türkçe metnin İngilizce çevirisidir ve yalnızca bilgilendirme amaçlıdır. Bağlayıcı ve hukuken geçerli olan metin Türkçe sürümdür.",
     "authoritativeLink": "Türkçe sürümü görüntüle"
   },
+  "contactPage": {
+    "home": "Ana sayfa",
+    "title": "İletişim",
+    "subtitle": "Sorularınız, siparişinizle ilgili özel istekleriniz ya da destek talepleriniz için bize aşağıdaki kanallardan ulaşabilirsiniz.",
+    "phoneLabel": "Telefon",
+    "emailLabel": "E-posta",
+    "addressLabel": "Adres"
+  },
   "authErrors": {
     "notConfigured": "Üyelik altyapısı henüz yapılandırılmadı.",
     "emailPasswordRequired": "E-posta ve şifre gerekli.",

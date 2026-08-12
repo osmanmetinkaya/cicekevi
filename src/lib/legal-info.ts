@@ -2,40 +2,31 @@ import { SITE_NAME } from "@/lib/site";
 
 /**
  * Yasal metinlerde (KVKK, gizlilik, sözleşmeler) kullanılan ortak şirket
- * bilgileri. Şu an PLACEHOLDER değerler içerir — siteyi yayına almadan önce
- * gerçek ticaret unvanı, MERSİS/vergi no ve adres ile doldurulmalı, ardından
- * bir hukuk danışmanına onaylatılmalıdır. Bu dosya tek kaynak olduğu için
- * güncelleme buradan tüm sayfalara yansır.
+ * bilgileri. Bu dosya tek kaynak olduğu için güncelleme buradan tüm
+ * sayfalara yansır.
+ *
+ * Şahıs işletmesi olarak faaliyet gösterildiğinden MERSİS No, Ticaret Sicil
+ * No ve KEP adresi kasıtlı olarak yok — bunlar yalnızca ticaret şirketleri
+ * (A.Ş./Ltd. Şti.) için uygulanır.
  */
 export const LEGAL_ENTITY = {
   brandName: SITE_NAME,
-  // TODO: gerçek ticaret unvanı ile değiştir (ör. "Çiçekevi Perakende Tic. Ltd. Şti.")
-  legalName: "[TİCARET UNVANI GİRİLECEK]",
-  mersisNo: "[MERSİS NO GİRİLECEK]",
-  tradeRegistryNo: "[TİCARET SİCİL NO GİRİLECEK]",
-  taxOffice: "[VERGİ DAİRESİ GİRİLECEK]",
-  taxId: "[VERGİ NUMARASI GİRİLECEK]",
+  legalName: "Denizli Çiçekevi",
+  taxOffice: "Gökpınar Vergi Dairesi",
+  taxId: "29729069778",
   address:
     "Yenişafak, 1029 Sk. No:9 D:B, 20040 Merkezefendi/Denizli, Türkiye",
-  email: "kvkk@cicekevi.com",
-  supportEmail: "destek@cicekevi.com",
+  email: "denizlicicekevi20@gmail.com",
+  supportEmail: "denizlicicekevi20@gmail.com",
   phone: "0545 729 01 08",
-  kepAddress: "[KEP ADRESİ GİRİLECEK]",
 } as const;
 
-/**
- * İngilizce yasal sayfalarda gösterilecek placeholder karşılıkları. Türkçe
- * köşeli parantezli TODO'larla aynı bilgiyi taşır (henüz doldurulmadı), fakat
- * İngilizce metinde okunabilir dursun diye ayrı tutulur.
- */
+/** İngilizce yasal sayfalarda gösterilecek karşılıklar. */
 export const LEGAL_ENTITY_EN = {
-  legalName: "[LEGAL ENTITY NAME TO BE ADDED]",
-  mersisNo: "[MERSIS NO TO BE ADDED]",
-  tradeRegistryNo: "[TRADE REGISTRY NO TO BE ADDED]",
-  taxOffice: "[TAX OFFICE TO BE ADDED]",
-  taxId: "[TAX ID TO BE ADDED]",
-  kepAddress: "[KEP (REGISTERED E-MAIL) ADDRESS TO BE ADDED]",
+  legalName: "Denizli Çiçekevi",
+  taxOffice: "Gökpınar Tax Office",
+  taxId: "29729069778",
 } as const;
 
-export const LEGAL_LAST_UPDATED = "9 Temmuz 2026";
-export const LEGAL_LAST_UPDATED_EN = "9 July 2026";
+export const LEGAL_LAST_UPDATED = "12 Ağustos 2026";
+export const LEGAL_LAST_UPDATED_EN = "12 August 2026";

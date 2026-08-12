@@ -48,10 +48,12 @@ function KvkkTr() {
         </p>
         <ul className="list-disc space-y-1 pl-5">
           <li>Adres: {LEGAL_ENTITY.address}</li>
-          <li>MERSİS No: {LEGAL_ENTITY.mersisNo}</li>
-          <li>Ticaret Sicil No: {LEGAL_ENTITY.tradeRegistryNo}</li>
+          <li>
+            Vergi Dairesi / Vergi No: {LEGAL_ENTITY.taxOffice} /{" "}
+            {LEGAL_ENTITY.taxId}
+          </li>
           <li>E-posta: {LEGAL_ENTITY.email}</li>
-          <li>KEP: {LEGAL_ENTITY.kepAddress}</li>
+          <li>Telefon: {LEGAL_ENTITY.phone}</li>
         </ul>
       </LegalSection>
 
@@ -160,17 +162,15 @@ function KvkkTr() {
         <p>
           Yukarıda sayılan haklarınıza ilişkin taleplerinizi,{" "}
           {LEGAL_ENTITY.email} adresine kimliğinizi tevsik edici bilgilerle
-          birlikte yazılı olarak iletebilir veya KEP adresimiz üzerinden (
-          {LEGAL_ENTITY.kepAddress}) başvurabilirsiniz. Talepleriniz, niteliğine
+          birlikte yazılı olarak iletebilirsiniz. Talepleriniz, niteliğine
           göre en geç 30 (otuz) gün içinde ücretsiz olarak sonuçlandırılır.
         </p>
       </LegalSection>
 
       <p className="text-xs text-ink-muted">
-        Bu metin genel bir şablon niteliğindedir; şirketinize özgü veri
-        işleme faaliyetleri doğrultusunda bir hukuk danışmanı tarafından
-        gözden geçirilmesi ve şirket bilgilerinin (unvan, MERSİS, adres vb.)
-        tamamlanması önerilir.
+        Bu metin genel bir şablon niteliğindedir; veri işleme faaliyetlerinde
+        önemli bir değişiklik olması hâlinde bir hukuk danışmanı tarafından
+        gözden geçirilmesi önerilir.
       </p>
     </LegalPage>
   );
@@ -195,10 +195,12 @@ function KvkkEn() {
         </p>
         <ul className="list-disc space-y-1 pl-5">
           <li>Address: {LEGAL_ENTITY.address}</li>
-          <li>MERSIS No: {LEGAL_ENTITY_EN.mersisNo}</li>
-          <li>Trade Registry No: {LEGAL_ENTITY_EN.tradeRegistryNo}</li>
+          <li>
+            Tax Office / Tax ID: {LEGAL_ENTITY_EN.taxOffice} /{" "}
+            {LEGAL_ENTITY_EN.taxId}
+          </li>
           <li>Email: {LEGAL_ENTITY.email}</li>
-          <li>KEP: {LEGAL_ENTITY_EN.kepAddress}</li>
+          <li>Phone: {LEGAL_ENTITY.phone}</li>
         </ul>
       </LegalSection>
 
@@ -323,17 +325,15 @@ function KvkkEn() {
         <p>
           You may submit requests regarding the rights listed above in writing
           to {LEGAL_ENTITY.email}, together with information verifying your
-          identity, or via our KEP address ({LEGAL_ENTITY_EN.kepAddress}). Your
-          requests will be concluded free of charge within a maximum of 30
-          (thirty) days, depending on their nature.
+          identity. Your requests will be concluded free of charge within a
+          maximum of 30 (thirty) days, depending on their nature.
         </p>
       </LegalSection>
 
       <p className="text-xs text-ink-muted">
         This text is a general template; it is recommended that it be reviewed
-        by a legal advisor in line with your company&rsquo;s specific data
-        processing activities and that the company details (trade name, MERSIS,
-        address, etc.) be completed.
+        by a legal advisor if there is a significant change to our data
+        processing activities.
       </p>
     </LegalPage>
   );
