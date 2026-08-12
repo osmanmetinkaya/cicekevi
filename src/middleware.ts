@@ -33,6 +33,50 @@ function withLocale(locale: string, path: string): string {
 }
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // /admin, next-intl'in locale routing'ine hiç sokulmaz: next-intl,
+  // [locale] altında olmayan bu statik rotayı bazı istek başlıklarıyla
+  // (ör. Accept-Language) çakıştırıp 404 üretebiliyordu (curl ile
+  // yeniden üretilemeyen, sadece gerçek tarayıcı isteklerinde görülen bir
+  // hataydı). Admin paneli zaten locale dışı kendi root layout'una sahip;
+  // burada yalnızca Supabase oturum/rol kontrolü yapılır.
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    const response = NextResponse.next();
+    if (!isSupabaseConfigured()) return response;
+
+    const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options),
+          );
+        },
+      },
+    });
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/giris";
+      url.searchParams.set("next", pathname);
+      return NextResponse.redirect(url);
+    }
+    if (user.app_metadata?.role !== "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/";
+      url.search = "";
+      return NextResponse.redirect(url);
+    }
+    return response;
+  }
+
   // Önce next-intl: locale tespiti + yönlendirme (ör. /tr/... -> /...).
   // Bu yanıt, doğru locale çerezini ve olası yönlendirmeyi taşır; Supabase
   // cookie güncellemelerini bunun üzerine yazacağız.
@@ -67,33 +111,15 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const path = request.nextUrl.pathname;
-  const { locale, rest } = splitLocale(path);
+  const { locale, rest } = splitLocale(pathname);
 
   // /hesap yalnızca giriş yapmış kullanıcıya açık (her iki locale'de).
   if (!user && rest.startsWith("/hesap")) {
     const url = request.nextUrl.clone();
     url.pathname = withLocale(locale, "/giris");
     // next hedefi de locale-öneki korunmuş orijinal yol olsun.
-    url.searchParams.set("next", path);
+    url.searchParams.set("next", pathname);
     return NextResponse.redirect(url);
-  }
-
-  // /admin yalnızca admin rolüne açık. Admin paneli locale dışıdır ama yine de
-  // güvenli olması için locale-öneksiz yol üzerinden kontrol ederiz.
-  if (rest.startsWith("/admin")) {
-    if (!user) {
-      const url = request.nextUrl.clone();
-      url.pathname = withLocale(locale, "/giris");
-      url.searchParams.set("next", path);
-      return NextResponse.redirect(url);
-    }
-    if (user.app_metadata?.role !== "admin") {
-      const url = request.nextUrl.clone();
-      url.pathname = withLocale(locale, "/");
-      url.search = "";
-      return NextResponse.redirect(url);
-    }
   }
 
   return response;
