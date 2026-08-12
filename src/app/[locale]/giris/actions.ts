@@ -123,11 +123,21 @@ export async function signUp(
 
   const marketingConsent = formData.get("marketingConsent") === "on";
 
+  // emailRedirectTo verilmezse Supabase, doğrulama linkine tıklanınca
+  // projenin varsayılan Site URL'ine döner — orada ?code=... parametresini
+  // işleyecek bir şey olmadığından oturum hiç kurulmaz (Google girişindeki
+  // /auth/callback ile aynı akış burada da kullanılmalı).
+  const h = await headers();
+  const origin =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host") ?? "denizlicicekevi.online"}`;
+
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
+      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
       data: {
         first_name: firstName,
         last_name: lastName,
