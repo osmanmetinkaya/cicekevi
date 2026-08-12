@@ -31,6 +31,8 @@ function fields(formData: FormData) {
   return { email, password, next: safeNext };
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function signIn(
   _prev: AuthState,
   formData: FormData,
@@ -39,19 +41,43 @@ export async function signIn(
   if (!isSupabaseConfigured()) {
     return { error: t("notConfigured") };
   }
-  const { email, password, next } = fields(formData);
-  if (!email || !password) {
+  const identifier = String(formData.get("identifier") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+  const nextRaw = String(formData.get("next") ?? "/hesap");
+  const next =
+    nextRaw.startsWith("/") && !nextRaw.startsWith("//") ? nextRaw : "/hesap";
+  if (!identifier || !password) {
     return { error: t("emailPasswordRequired") };
   }
 
-  // Brute-force koruması: IP+e-posta başına dakikada 5 giriş denemesi.
+  // Brute-force koruması: IP+kimlik başına dakikada 5 giriş denemesi.
   const ip = await requestIp();
-  const limit = rateLimit(`signin:${ip}:${email.toLowerCase()}`, 5, 60_000);
+  const limit = rateLimit(`signin:${ip}:${identifier.toLowerCase()}`, 5, 60_000);
   if (!limit.ok) {
     return { error: t("tooManySignin") };
   }
 
   const supabase = await createClient();
+
+  // Girilen değer e-posta formatında değilse telefon numarası kabul edilir;
+  // kayıt sırasında telefon auth kimliği değil user_metadata olarak
+  // tutulduğundan (bkz. signUp), önce e-postasını bulmamız gerekir.
+  let email = identifier;
+  if (!EMAIL_RE.test(identifier)) {
+    const phoneDigits = identifier.replace(/\D/g, "");
+    if (phoneDigits.length < 10) {
+      return { error: t("invalidCredentials") };
+    }
+    const { data: resolvedEmail, error: lookupError } = await supabase.rpc(
+      "email_by_phone",
+      { phone_digits: phoneDigits },
+    );
+    if (lookupError || !resolvedEmail) {
+      return { error: t("invalidCredentials") };
+    }
+    email = resolvedEmail as string;
+  }
+
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) {
     return { error: t("invalidCredentials") };

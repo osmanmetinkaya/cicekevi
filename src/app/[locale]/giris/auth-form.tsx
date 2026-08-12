@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { LogIn, UserPlus } from "lucide-react";
+import { Eye, EyeOff, LogIn, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { signIn, signUp, type AuthState } from "@/app/[locale]/giris/actions";
@@ -12,6 +12,7 @@ const INITIAL: AuthState = { error: null };
 export function AuthForm({ next }: { next: string }) {
   const t = useTranslations("auth");
   const [mode, setMode] = useState<"giris" | "kayit">("giris");
+  const [showPassword, setShowPassword] = useState(false);
   const [inState, signInAction, inPending] = useActionState(signIn, INITIAL);
   const [upState, signUpAction, upPending] = useActionState(signUp, INITIAL);
 
@@ -100,30 +101,51 @@ export function AuthForm({ next }: { next: string }) {
 
         <label className="block">
           <span className="mb-1.5 block text-sm text-ink-muted">
-            {t("email")}
+            {mode === "giris" ? t("emailOrPhone") : t("email")}
           </span>
-          <input
-            type="email"
-            name="email"
-            required
-            autoComplete="email"
-            placeholder={t("emailPlaceholder")}
-            className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
-          />
+          {mode === "giris" ? (
+            <input
+              type="text"
+              name="identifier"
+              required
+              autoComplete="username"
+              placeholder={t("emailOrPhonePlaceholder")}
+              className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
+            />
+          ) : (
+            <input
+              type="email"
+              name="email"
+              required
+              autoComplete="email"
+              placeholder={t("emailPlaceholder")}
+              className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
+            />
+          )}
         </label>
         <label className="mt-4 block">
           <span className="mb-1.5 block text-sm text-ink-muted">
             {t("password")}
           </span>
-          <input
-            type="password"
-            name="password"
-            required
-            minLength={mode === "kayit" ? 8 : undefined}
-            autoComplete={mode === "giris" ? "current-password" : "new-password"}
-            placeholder={mode === "kayit" ? t("passwordHintSignup") : "••••••••"}
-            className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              required
+              minLength={mode === "kayit" ? 8 : undefined}
+              autoComplete={mode === "giris" ? "current-password" : "new-password"}
+              placeholder={mode === "kayit" ? t("passwordHintSignup") : "••••••••"}
+              className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 pr-11 text-ink outline-none transition-colors focus:border-rose-500"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? t("hidePassword") : t("showPassword")}
+              className="absolute inset-y-0 right-0 flex items-center px-3 text-ink-muted transition-colors hover:text-rose-700"
+            >
+              {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+            </button>
+          </div>
         </label>
 
         {mode === "kayit" && (

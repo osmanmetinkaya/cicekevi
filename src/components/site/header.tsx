@@ -13,7 +13,12 @@ import { Logo } from "@/components/site/logo";
 export function Header() {
   const t = useTranslations("header");
   return (
-    <header className="sticky top-0 z-40 bg-cream/90 backdrop-blur will-change-transform">
+    // backdrop-blur bilerek kullanılmıyor: macOS Chrome'da, rozet sayısı
+    // (favoriler/sepet) değiştiğinde arka planı yeniden birleştirirken
+    // görsel bir "bulaşma" (repaint smear) hatasına yol açıyordu; tek
+    // will-change ipucu bunu çözmedi. Düz yarı saydam zemin aynı hissi
+    // verir ama backdrop-filter compositing'ine hiç girmez.
+    <header className="sticky top-0 z-40 bg-cream/95">
       {/* Üst satır: logo + bilgi · arama · sepet · dil */}
       <div className="border-b border-line">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
