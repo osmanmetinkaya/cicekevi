@@ -12,7 +12,7 @@ export function FavoritesButton() {
     <Link
       href="/favoriler"
       aria-label={t("favoritesLabel", { count })}
-      className="relative rounded-full p-2 text-ink transition-colors hover:bg-blush-100"
+      className="relative inline-flex items-center justify-center rounded-full p-2 text-ink transition-colors hover:bg-blush-100"
     >
       <Heart size={20} />
       {count > 0 && (
