@@ -7,6 +7,7 @@ import { saveProduct } from "@/app/admin/catalog-actions";
 import { createClient } from "@/lib/supabase/client";
 import { slugify } from "@/lib/slug";
 import { PRODUCT_ACCENTS } from "@/lib/types";
+import { ImageCropModal } from "@/components/admin/image-crop-modal";
 
 export interface CategoryOption {
   id: string;
@@ -105,6 +106,7 @@ export function ProductForm({
     initial?.imageUrl ?? null,
   );
   const [uploading, setUploading] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [isNew, setIsNew] = useState(initial?.isNew ?? false);
   const [isBestseller, setIsBestseller] = useState(
     initial?.isBestseller ?? false,
@@ -124,16 +126,16 @@ export function ProductForm({
     );
   }
 
-  async function handleUpload(file: File) {
+  async function handleUpload(file: Blob) {
     setError(null);
     setUploading(true);
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
     try {
       const supabase = createClient();
-      const ext = (file.name.split(".").pop() ?? "jpg").toLowerCase();
+      // Kırpma çıktısı her zaman JPEG (crop-image.ts).
       const base = slugify(effectiveSlug || nameTr) || "urun";
-      const path = `${base}-${Date.now()}.${ext}`;
+      const path = `${base}-${Date.now()}.jpg`;
       const { error: uploadError } = await supabase.storage
         .from("product-images")
         .upload(path, file, { cacheControl: "3600", upsert: true });
@@ -363,7 +365,8 @@ export function ProductForm({
                 disabled={uploading}
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) handleUpload(file);
+                  if (file) setPendingFile(file);
+                  e.target.value = "";
                 }}
               />
             </label>
@@ -456,6 +459,18 @@ export function ProductForm({
           Vazgeç
         </button>
       </div>
+
+      {pendingFile && (
+        <ImageCropModal
+          file={pendingFile}
+          aspect={1}
+          onCancel={() => setPendingFile(null)}
+          onConfirm={(blob) => {
+            setPendingFile(null);
+            handleUpload(blob);
+          }}
+        />
+      )}
     </form>
   );
 }

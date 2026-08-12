@@ -6,6 +6,7 @@ import { ImagePlus, Loader2, Save } from "lucide-react";
 import { saveHeroContent } from "@/app/admin/content-actions";
 import { createClient } from "@/lib/supabase/client";
 import type { HeroContent } from "@/lib/site-content";
+import { ImageCropModal } from "@/components/admin/image-crop-modal";
 
 const inputClass =
   "w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500";
@@ -83,16 +84,17 @@ export function HeroContentForm({ initial }: { initial: HeroContent }) {
   const [imageUrl, setImageUrl] = useState<string | null>(initial.imageUrl);
   const [preview, setPreview] = useState<string | null>(initial.imageUrl);
   const [uploading, setUploading] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
 
-  async function handleUpload(file: File) {
+  async function handleUpload(file: Blob) {
     setError(null);
     setUploading(true);
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
     try {
       const supabase = createClient();
-      const ext = (file.name.split(".").pop() ?? "jpg").toLowerCase();
-      const path = `hero-${Date.now()}.${ext}`;
+      // Kırpma çıktısı her zaman JPEG (crop-image.ts).
+      const path = `hero-${Date.now()}.jpg`;
       const { error: uploadError } = await supabase.storage
         .from("site-images")
         .upload(path, file, { cacheControl: "3600", upsert: true });
@@ -174,7 +176,8 @@ export function HeroContentForm({ initial }: { initial: HeroContent }) {
                 disabled={uploading}
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) handleUpload(file);
+                  if (file) setPendingFile(file);
+                  e.target.value = "";
                 }}
               />
             </label>
@@ -267,6 +270,18 @@ export function HeroContentForm({ initial }: { initial: HeroContent }) {
         )}
         {pending ? "Kaydediliyor…" : "Kaydet"}
       </button>
+
+      {pendingFile && (
+        <ImageCropModal
+          file={pendingFile}
+          aspect={4 / 3}
+          onCancel={() => setPendingFile(null)}
+          onConfirm={(blob) => {
+            setPendingFile(null);
+            handleUpload(blob);
+          }}
+        />
+      )}
     </form>
   );
 }
