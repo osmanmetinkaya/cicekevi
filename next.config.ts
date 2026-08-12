@@ -14,6 +14,17 @@ const supabaseHost = (() => {
   }
 })();
 
+// Ürün fotoğrafları Supabase Storage'ın public `product-images` bucket'ından
+// servis ediliyor; next/image bu host'u açıkça tanımak zorunda.
+const supabaseHostname = (() => {
+  try {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    return url ? new URL(url).hostname : "*.supabase.co";
+  } catch {
+    return "*.supabase.co";
+  }
+})();
+
 // Content-Security-Policy.
 //
 // Nonce tabanlı bir CSP tüm sayfaları dinamik render'a zorlar (statik vitrin
@@ -34,7 +45,7 @@ const csp = [
   `default-src 'self'`,
   `script-src 'self' 'unsafe-inline' https://www.paytr.com${isDev ? " 'unsafe-eval'" : ""}`,
   `style-src 'self' 'unsafe-inline'`,
-  `img-src 'self' data: blob:`,
+  `img-src 'self' data: blob: ${supabaseHost}`,
   `font-src 'self'`,
   `connect-src 'self' ${supabaseHost}${isDev ? " ws:" : ""}`,
   `object-src 'none'`,
@@ -65,6 +76,15 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   // Sunucu yazılımını ifşa eden "X-Powered-By: Next.js" başlığını kaldır.
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: supabaseHostname,
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

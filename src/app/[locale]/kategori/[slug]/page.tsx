@@ -4,11 +4,9 @@ import { ChevronRight } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import {
-  allCategorySlugs,
   categoryLabel,
   categoryTrail,
   getGroupBySlug,
-  CATEGORY_GROUPS,
 } from "@/lib/categories";
 import { getProductsByCategory, getProductsByGroup } from "@/lib/products";
 import { pick, type Locale } from "@/lib/types";
@@ -16,12 +14,9 @@ import { CategoryListing } from "@/components/category/category-listing";
 import { CategoryChips } from "@/components/category/category-chips";
 import { SITE_NAME } from "@/lib/site";
 
-export function generateStaticParams() {
-  return [
-    ...CATEGORY_GROUPS.map((g) => ({ slug: g.slug })),
-    ...allCategorySlugs().map((slug) => ({ slug })),
-  ];
-}
+// Kategoriler artık veritabanında ve admin panelinden değişebiliyor; sayfa
+// build-time'da statik üretilmez, her istekte güncel veriyle render edilir.
+// (generateStaticParams kaldırıldı — yeniden deploy beklemeden yayına girsin.)
 
 export async function generateMetadata({
   params,
@@ -30,8 +25,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   const loc = locale as Locale;
-  const group = getGroupBySlug(slug);
-  const label = group ? pick(group.label, loc) : categoryLabel(slug, loc);
+  const group = await getGroupBySlug(slug);
+  const label = group ? pick(group.label, loc) : await categoryLabel(slug, loc);
   if (!label) return { title: SITE_NAME };
   const t = await getTranslations({ locale, namespace: "category" });
   return {
@@ -57,7 +52,7 @@ export default async function CategoryPage({
   setRequestLocale(locale);
   const loc = locale as Locale;
   const t = await getTranslations("category");
-  const group = getGroupBySlug(slug);
+  const group = await getGroupBySlug(slug);
 
   // Grup sayfası (ör. /kategori/cicekler)
   if (group) {
@@ -82,16 +77,16 @@ export default async function CategoryPage({
 
         <CategoryChips group={group} />
 
-        <CategoryListing products={getProductsByGroup(group)} />
+        <CategoryListing products={await getProductsByGroup(group)} />
       </div>
     );
   }
 
   // Kategori sayfası (ör. /kategori/papatyalar)
-  const trail = categoryTrail(slug, loc);
+  const trail = await categoryTrail(slug, loc);
   if (!trail) notFound();
 
-  const siblingGroup = getGroupBySlug(trail.groupSlug);
+  const siblingGroup = await getGroupBySlug(trail.groupSlug);
   const activeChip = trail.parent?.slug ?? slug;
 
   return (
@@ -127,7 +122,7 @@ export default async function CategoryPage({
         <CategoryChips group={siblingGroup} activeSlug={activeChip} />
       )}
 
-      <CategoryListing products={getProductsByCategory(slug)} />
+      <CategoryListing products={await getProductsByCategory(slug)} />
     </div>
   );
 }

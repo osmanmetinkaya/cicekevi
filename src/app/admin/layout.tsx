@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import localFont from "next/font/local";
-import { LayoutDashboard, Package } from "lucide-react";
+import { FolderTree, LayoutDashboard, Package, Sprout } from "lucide-react";
 import "../globals.css";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -63,6 +63,18 @@ export default async function AdminLayout({
             className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-4 py-2 text-ink transition-colors hover:border-blush-300 hover:text-rose-700"
           >
             <Package size={15} /> Siparişler
+          </Link>
+          <Link
+            href="/admin/urunler"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-4 py-2 text-ink transition-colors hover:border-blush-300 hover:text-rose-700"
+          >
+            <Sprout size={15} /> Ürünler
+          </Link>
+          <Link
+            href="/admin/kategoriler"
+            className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-4 py-2 text-ink transition-colors hover:border-blush-300 hover:text-rose-700"
+          >
+            <FolderTree size={15} /> Kategoriler
           </Link>
         </nav>
       </div>

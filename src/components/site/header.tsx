@@ -1,5 +1,5 @@
 import { UserRound } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { CartButton } from "@/components/cart/cart-button";
 import { FavoritesButton } from "@/components/favorites/favorites-button";
@@ -9,9 +9,15 @@ import { BranchInfo } from "@/components/site/branch-info";
 import { CategoryNav } from "@/components/site/category-nav";
 import { MobileNav } from "@/components/site/mobile-nav";
 import { Logo } from "@/components/site/logo";
+import { getCategoryGroups } from "@/lib/categories";
 
-export function Header() {
-  const t = useTranslations("header");
+/**
+ * Kategoriler artık veritabanından geliyor; menüler istemci bileşeni olduğu
+ * için ağaç burada (sunucuda) çekilip prop olarak geçilir.
+ */
+export async function Header() {
+  const t = await getTranslations("header");
+  const categoryGroups = await getCategoryGroups();
   return (
     // backdrop-blur bilerek kullanılmıyor: macOS Chrome'da, rozet sayısı
     // (favoriler/sepet) değiştiğinde arka planı yeniden birleştirirken
@@ -23,7 +29,7 @@ export function Header() {
       <div className="border-b border-line">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2 sm:gap-4">
-            <MobileNav />
+            <MobileNav groups={categoryGroups} />
             <Logo className="text-lg sm:text-xl" />
             <span className="hidden h-5 w-px bg-line sm:block" />
             <BranchInfo />
@@ -50,7 +56,7 @@ export function Header() {
       </div>
 
       {/* Alt satır: kategoriler */}
-      <CategoryNav />
+      <CategoryNav groups={categoryGroups} />
     </header>
   );
 }

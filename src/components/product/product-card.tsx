@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { pick, type Locale, type Product } from "@/lib/types";
 import { formatKurus } from "@/lib/format";
 import { useCart } from "@/components/cart/cart-context";
-import { Artwork } from "@/components/product/artwork";
+import { ProductImage } from "@/components/product/product-image";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -22,9 +22,10 @@ export function ProductCard({ product }: { product: Product }) {
         className="relative block"
         aria-label={name}
       >
-        <Artwork
-          accent={product.accent}
+        <ProductImage
+          product={product}
           size={56}
+          sizes="(max-width: 768px) 50vw, 25vw"
           className="aspect-[4/3] w-full transition-transform duration-300 group-hover:scale-[1.03]"
         />
         {(product.isNew || product.bestseller) && (

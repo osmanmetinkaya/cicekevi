@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useCart } from "@/components/cart/cart-context";
 import { Artwork } from "@/components/product/artwork";
+import { ProductImage } from "@/components/product/product-image";
 import { formatKurus } from "@/lib/format";
 import { pick, type Locale } from "@/lib/types";
 
@@ -70,9 +71,10 @@ export function CartDrawer() {
             <ul className="scroll-soft flex-1 space-y-4 overflow-y-auto px-5 py-4">
               {lines.map((l) => (
                 <li key={l.product.id} className="flex gap-3">
-                  <Artwork
-                    accent={l.product.accent}
+                  <ProductImage
+                    product={l.product}
                     size={26}
+                    sizes="80px"
                     className="size-20 shrink-0 rounded-xl"
                   />
                   <div className="flex flex-1 flex-col">

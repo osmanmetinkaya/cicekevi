@@ -1,11 +1,25 @@
 import type { Product } from "@/lib/types";
 import { Artwork } from "@/components/product/artwork";
+import { ProductImage } from "@/components/product/product-image";
 
 /**
- * Ürün görselleri. Şimdilik placeholder; gerçek fotoğraflar gelince
- * <Artwork> yerine <Image> koyup aynı oran/çerçeveyi koru.
+ * Ürün görselleri. Fotoğraf yüklenmişse (products.image_url) gerçek görsel,
+ * yüklenmemişse <Artwork> placeholder'ı gösterilir. Ürün başına tek fotoğraf
+ * tutulduğu için küçük görsel şeridi yalnızca placeholder modunda çizilir.
  */
 export function ProductGallery({ product }: { product: Product }) {
+  if (product.imageUrl) {
+    return (
+      <ProductImage
+        product={product}
+        alt=""
+        priority
+        sizes="(max-width: 768px) 100vw, 50vw"
+        className="aspect-square w-full rounded-3xl"
+      />
+    );
+  }
+
   return (
     <div>
       <Artwork

@@ -25,10 +25,26 @@ export interface Product {
   categories: string[];
   flowers: LocalizedList;
   /** Tailwind theme color key used for the placeholder artwork. */
-  accent: "blush" | "leaf" | "rose" | "amber" | "teal";
+  accent: ProductAccent;
+  /**
+   * Supabase Storage'daki ürün fotoğrafının public URL'i. Boşsa arayüz
+   * <Artwork> placeholder'ına düşer (bkz. components/product/product-image).
+   */
+  imageUrl?: string | null;
   bestseller?: boolean;
   isNew?: boolean;
 }
+
+/** Fotoğrafı olmayan ürünlerin placeholder renk anahtarı. */
+export type ProductAccent = "blush" | "leaf" | "rose" | "amber" | "teal";
+
+export const PRODUCT_ACCENTS: ProductAccent[] = [
+  "blush",
+  "leaf",
+  "rose",
+  "amber",
+  "teal",
+];
 
 /** Aktif locale'e göre iki dilli metinden doğru dizeyi seç. */
 export function pick(value: Localized, locale: Locale): string {

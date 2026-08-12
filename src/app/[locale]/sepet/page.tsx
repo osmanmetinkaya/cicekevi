@@ -21,6 +21,7 @@ import { Link } from "@/i18n/navigation";
 import { ContractConsent } from "@/components/order/contract-consent";
 import { useCart } from "@/components/cart/cart-context";
 import { Artwork } from "@/components/product/artwork";
+import { ProductImage } from "@/components/product/product-image";
 import { formatKurus } from "@/lib/format";
 import { pick, type Locale } from "@/lib/types";
 import { DELIVERY_WINDOWS } from "@/lib/delivery";
@@ -214,9 +215,10 @@ export default function CartPage() {
           <ul className="divide-y divide-line rounded-2xl border border-line bg-white">
             {lines.map((l) => (
               <li key={l.product.id} className="flex gap-4 p-4">
-                <Artwork
-                  accent={l.product.accent}
+                <ProductImage
+                  product={l.product}
                   size={30}
+                  sizes="96px"
                   className="size-24 shrink-0 rounded-xl"
                 />
                 <div className="flex flex-1 flex-col">

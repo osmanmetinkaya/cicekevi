@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronRight, Truck } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { CATEGORY_GROUPS } from "@/lib/categories";
+import type { CategoryGroup } from "@/lib/categories";
 import { pick, type Locale } from "@/lib/types";
 import {
   CATEGORY_ICONS,
@@ -38,7 +38,7 @@ function MenuItem({
   );
 }
 
-export function CategoryNav() {
+export function CategoryNav({ groups }: { groups: CategoryGroup[] }) {
   const locale = useLocale() as Locale;
   const tHeader = useTranslations("header");
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -64,7 +64,7 @@ export function CategoryNav() {
       className="hidden border-b border-line bg-white md:block"
     >
       <ul className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-2.5 sm:px-6">
-        {CATEGORY_GROUPS.map((group) => {
+        {groups.map((group) => {
           const isOpen = openGroup === group.slug;
           return (
             <li

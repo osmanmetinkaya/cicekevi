@@ -2,7 +2,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Hero } from "@/components/site/hero";
 import { FeaturesBar } from "@/components/site/features-bar";
 import { ProductCard } from "@/components/product/product-card";
-import { PRODUCTS } from "@/lib/products";
+import { getAllProducts } from "@/lib/products";
+import type { Product } from "@/lib/types";
 
 export default async function Home({
   params,
@@ -13,8 +14,9 @@ export default async function Home({
   setRequestLocale(locale);
   const t = await getTranslations("home");
 
-  const bestsellers = PRODUCTS.filter((p) => p.bestseller);
-  const rest = PRODUCTS.filter((p) => !p.bestseller);
+  const products = await getAllProducts();
+  const bestsellers = products.filter((p) => p.bestseller);
+  const rest = products.filter((p) => !p.bestseller);
 
   return (
     <>
@@ -46,7 +48,7 @@ function ProductSection({
   id: string;
   eyebrow: string;
   title: string;
-  products: typeof PRODUCTS;
+  products: Product[];
 }) {
   return (
     <section id={id} className="mx-auto max-w-6xl px-4 py-10 sm:px-6">

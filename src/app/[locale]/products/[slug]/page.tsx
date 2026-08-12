@@ -4,7 +4,6 @@ import { Check, ChevronRight, Clock4, Leaf, ShieldCheck, Truck } from "lucide-re
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import {
-  PRODUCTS,
   getProduct,
   getRelatedProducts,
   primaryCategorySlug,
@@ -18,9 +17,9 @@ import { ProductCard } from "@/components/product/product-card";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { SITE_NAME } from "@/lib/site";
 
-export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ slug: p.slug }));
-}
+// Katalog artık veritabanında ve admin panelinden değişebiliyor; sayfa
+// build-time'da statik üretilmez, her istekte güncel veriyle render edilir.
+// (generateStaticParams kaldırıldı — yeniden deploy beklemeden yayına girsin.)
 
 export async function generateMetadata({
   params,
@@ -28,7 +27,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const product = getProduct(slug);
+  const product = await getProduct(slug);
   if (!product) return { title: SITE_NAME };
   const loc = locale as Locale;
   return {
@@ -45,15 +44,15 @@ export default async function ProductPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
   const loc = locale as Locale;
-  const product = getProduct(slug);
+  const product = await getProduct(slug);
   if (!product) notFound();
 
   const t = await getTranslations("product");
   const name = pick(product.name, loc);
 
-  const catSlug = primaryCategorySlug(product);
-  const catLabel = categoryLabel(catSlug, loc);
-  const related = getRelatedProducts(product);
+  const catSlug = await primaryCategorySlug(product);
+  const catLabel = catSlug ? await categoryLabel(catSlug, loc) : undefined;
+  const related = await getRelatedProducts(product);
 
   const delivery = [
     { Icon: Truck, text: t("delivery.sameDay") },
@@ -71,7 +70,7 @@ export default async function ProductPage({
         <Link href="/" className="transition-colors hover:text-rose-700">
           {t("breadcrumbHome")}
         </Link>
-        {catLabel && (
+        {catSlug && catLabel && (
           <>
             <ChevronRight size={14} className="text-line" />
             <Link

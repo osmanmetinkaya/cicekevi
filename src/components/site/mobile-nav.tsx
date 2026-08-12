@@ -14,7 +14,7 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { usePathname } from "@/i18n/navigation";
-import { CATEGORY_GROUPS } from "@/lib/categories";
+import type { CategoryGroup } from "@/lib/categories";
 import { pick, type Locale } from "@/lib/types";
 import {
   CATEGORY_ICONS,
@@ -29,7 +29,7 @@ const BRANCH_PHONE = "0545 729 01 08";
  * kategoriler akordeon olarak açılır. Arama modalıyla aynı örtü/kilit desenini
  * kullanır (body scroll kilidi + Esc ile kapanış).
  */
-export function MobileNav() {
+export function MobileNav({ groups }: { groups: CategoryGroup[] }) {
   const t = useTranslations("header");
   const tb = useTranslations("branch");
   const locale = useLocale() as Locale;
@@ -108,7 +108,7 @@ export function MobileNav() {
 
           <div className="flex-1 overflow-y-auto px-2 py-3">
             {/* Kategoriler — akordeon */}
-            {CATEGORY_GROUPS.map((group) => {
+            {groups.map((group) => {
               const isOpen = openGroup === group.slug;
               return (
                 <div key={group.slug} className="mb-1">

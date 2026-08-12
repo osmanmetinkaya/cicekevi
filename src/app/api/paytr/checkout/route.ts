@@ -170,7 +170,8 @@ export async function POST(request: Request) {
   const basketItems: { name: string; priceKurus: number; qty: number }[] = [];
   let amountTotal = 0;
   for (const item of items) {
-    const product = getProductById(item.id);
+    // Fiyat DAİMA sunucuda, veritabanındaki katalogdan çözülür.
+    const product = await getProductById(item.id);
     const qty = Math.floor(Number(item.qty));
     if (!product || !Number.isFinite(qty) || qty < 1 || qty > 50) {
       return NextResponse.json(
