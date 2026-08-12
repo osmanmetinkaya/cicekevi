@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Save } from "lucide-react";
 import { saveCategory } from "@/app/admin/catalog-actions";
@@ -39,6 +39,15 @@ export function CategoryForm({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Liste uzun olduğunda "Düzenle" formu görünür alanın altında kalıyordu;
+  // düzenlemeye başlarken forma kaydır (yeni kategori formunda gerek yok,
+  // zaten sayfanın altında sabit duruyor).
+  useEffect(() => {
+    if (initial) formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [labelTr, setLabelTr] = useState(initial?.labelTr ?? "");
   const [labelEn, setLabelEn] = useState(initial?.labelEn ?? "");
@@ -79,8 +88,9 @@ export function CategoryForm({
 
   return (
     <form
+      ref={formRef}
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-line bg-white p-5"
+      className="scroll-mt-24 rounded-2xl border border-line bg-white p-5"
     >
       <h3 className="font-serif text-xl text-ink">
         {initial ? `${initial.labelTr} — Düzenle` : "Yeni Kategori Ekle"}
