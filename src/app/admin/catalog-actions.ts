@@ -174,6 +174,27 @@ export async function deleteProduct(id: string): Promise<Result> {
   return { error: null };
 }
 
+/** Ürünü vitrinden gizler/geri getirir — veriler korunur, yalnızca satılabilirlik değişir. */
+export async function setProductActive(
+  id: string,
+  isActive: boolean,
+): Promise<Result> {
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: "Yetkin yok." };
+
+  const { error } = await supabase
+    .from("products")
+    .update({ is_active: isActive })
+    .eq("id", id);
+  if (error) {
+    console.error("[admin] product active toggle failed", error);
+    return { error: "Durum güncellenemedi." };
+  }
+
+  revalidateStorefront();
+  return { error: null };
+}
+
 // ---------------------------------------------------------------------------
 // Kategoriler
 // ---------------------------------------------------------------------------

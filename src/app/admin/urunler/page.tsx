@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Plus, Pencil } from "lucide-react";
-import { getProductRows, getProductCategoryMap } from "@/lib/products";
+import { getAllProductRowsForAdmin, getProductCategoryMap } from "@/lib/products";
 import {
   flattenCategoryRows,
   getCategoryRows,
@@ -9,6 +9,7 @@ import {
 import { formatKurus } from "@/lib/format";
 import { ProductImage } from "@/components/product/product-image";
 import { DeleteButton } from "@/components/admin/delete-button";
+import { ActiveToggle } from "@/components/admin/active-toggle";
 
 /** id -> kendisi + tüm alt kategorilerinin slug'ları (grup/kategori seçince alt kırılımlar da dahil olsun diye). */
 function buildDescendantSlugs(rows: CategoryRow[]): Map<string, Set<string>> {
@@ -42,7 +43,7 @@ export default async function AdminProductsPage({
 }) {
   const { kategori } = await searchParams;
   const [rows, categoryMap, categoryRows] = await Promise.all([
-    getProductRows(),
+    getAllProductRowsForAdmin(),
     getProductCategoryMap(),
     getCategoryRows(),
   ]);
@@ -169,7 +170,9 @@ export default async function AdminProductsPage({
                 return (
                   <li
                     key={row.id}
-                    className="flex flex-wrap items-center gap-4 rounded-2xl border border-line bg-white p-5"
+                    className={`flex flex-wrap items-center gap-4 rounded-2xl border border-line bg-white p-5 ${
+                      row.is_active ? "" : "opacity-60"
+                    }`}
                   >
                     <ProductImage
                       product={{ accent: row.accent, imageUrl: row.image_url }}
@@ -196,6 +199,11 @@ export default async function AdminProductsPage({
                         {!row.image_url && (
                           <span className="rounded-full bg-cream px-2 py-0.5 text-[11px] text-ink-muted">
                             Fotoğraf yok
+                          </span>
+                        )}
+                        {!row.is_active && (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] text-amber-800">
+                            Yayın dışı
                           </span>
                         )}
                       </div>
@@ -225,6 +233,7 @@ export default async function AdminProductsPage({
                       >
                         <Pencil size={14} /> Düzenle
                       </Link>
+                      <ActiveToggle id={row.id} active={row.is_active} />
                       <DeleteButton
                         kind="product"
                         id={row.id}

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { flattenCategoryRows, getCategoryRows } from "@/lib/categories";
-import { getProductCategoryMap, getProductRows } from "@/lib/products";
+import { getAllProductRowsForAdmin, getProductCategoryMap } from "@/lib/products";
 import { ProductForm } from "@/components/admin/product-form";
 
 export default async function EditProductPage({
@@ -14,7 +14,7 @@ export default async function EditProductPage({
   const productId = decodeURIComponent(id);
 
   const [rows, categoryRows, categoryMap] = await Promise.all([
-    getProductRows(),
+    getAllProductRowsForAdmin(),
     getCategoryRows(),
     getProductCategoryMap(),
   ]);

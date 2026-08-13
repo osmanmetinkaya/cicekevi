@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { flattenCategoryRows, getCategoryRows } from "@/lib/categories";
-import { getProductRows } from "@/lib/products";
+import { getAllProductRowsForAdmin } from "@/lib/products";
 import { ProductForm } from "@/components/admin/product-form";
 
 export default async function NewProductPage() {
   const [rows, products] = await Promise.all([
     getCategoryRows(),
-    getProductRows(),
+    getAllProductRowsForAdmin(),
   ]);
   const categories = flattenCategoryRows(rows).map((c) => ({
     id: c.id,

@@ -36,6 +36,7 @@ export interface ProductRow {
   image_url: string | null;
   is_new: boolean;
   is_bestseller: boolean;
+  is_active: boolean;
   sort_order: number;
 }
 
@@ -45,7 +46,7 @@ interface ProductCategoryRow {
 }
 
 const PRODUCT_SELECT =
-  "id, slug, name_tr, name_en, tagline_tr, tagline_en, description_tr, description_en, price_kurus, flowers_tr, flowers_en, accent, image_url, is_new, is_bestseller, sort_order";
+  "id, slug, name_tr, name_en, tagline_tr, tagline_en, description_tr, description_en, price_kurus, flowers_tr, flowers_en, accent, image_url, is_new, is_bestseller, is_active, sort_order";
 
 /** DB satırı → uygulamanın kullandığı iki dilli `Product` tipi. */
 export function mapProduct(row: ProductRow, categories: string[]): Product {
@@ -65,13 +66,14 @@ export function mapProduct(row: ProductRow, categories: string[]): Product {
   };
 }
 
-/** Ham ürün satırları (admin formu düzenleme ekranı için de kullanılır). */
+/** Vitrindeki ürün satırları — yalnızca yayında olanlar (is_active). */
 export const getProductRows = cache(async (): Promise<ProductRow[]> => {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("products")
     .select(PRODUCT_SELECT)
+    .eq("is_active", true)
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: true })
     .returns<ProductRow[]>();
@@ -82,6 +84,26 @@ export const getProductRows = cache(async (): Promise<ProductRow[]> => {
   }
   return data ?? [];
 });
+
+/** Admin panelindeki tüm ürün satırları — yayında olsun olmasın hepsi. */
+export const getAllProductRowsForAdmin = cache(
+  async (): Promise<ProductRow[]> => {
+    if (!isSupabaseConfigured()) return [];
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("products")
+      .select(PRODUCT_SELECT)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true })
+      .returns<ProductRow[]>();
+
+    if (error) {
+      console.error("[products] admin fetch failed", error.message);
+      return [];
+    }
+    return data ?? [];
+  },
+);
 
 const getProductCategoryRows = cache(
   async (): Promise<ProductCategoryRow[]> => {
