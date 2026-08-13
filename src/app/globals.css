@@ -96,11 +96,11 @@ body {
   100% { opacity: 1; }
 }
 
-/* Intro splash — plays once on the site's first (hard) page load. Gerçek
-   marka varlıkları: önce gül ikonu belirip büyür, sonra tam logo (gül +
-   "çiçekevi" yazısı) onun üzerinde çapraz geçişle belirir. Kasıtlı olarak
-   sade: krem zemin, tek bir giriş hareketi — premium markaların tercih
-   ettiği "az hareket, çok his" dili. */
+/* Intro splash — plays once on the site's first (hard) page load. Tam
+   logo (gül + "çiçekevi" yazısı) tek görsel olarak, sade bir büyüyüp
+   beliren hareketle görünür. Kasıtlı olarak sade: krem zemin, tek bir
+   giriş hareketi — premium markaların tercih ettiği "az hareket, çok
+   his" dili. */
 .intro-splash {
   position: fixed;
   inset: 0;
@@ -113,17 +113,6 @@ body {
   will-change: opacity;
   animation: intro-fade 1900ms ease forwards;
 }
-.intro-splash__mark {
-  position: relative;
-  display: grid;
-  place-items: center;
-}
-.intro-splash__mark > * {
-  grid-area: 1 / 1;
-}
-.intro-splash__rose {
-  animation: intro-rose 1900ms ease forwards;
-}
 .intro-splash__logo {
   animation: intro-logo 1900ms ease forwards;
 }
@@ -134,17 +123,10 @@ body {
   84% { opacity: 1; }
   100% { opacity: 0; }
 }
-@keyframes intro-rose {
-  0% { opacity: 0; transform: scale(0.72) rotate(-6deg); }
-  24% { opacity: 1; transform: scale(1) rotate(0deg); }
-  46% { opacity: 1; transform: scale(1) rotate(0deg); }
-  62% { opacity: 0; transform: scale(1.05) rotate(0deg); }
-  100% { opacity: 0; }
-}
 @keyframes intro-logo {
-  0%, 46% { opacity: 0; transform: scale(0.94) translateY(6px); }
-  66% { opacity: 1; transform: scale(1) translateY(0); }
-  100% { opacity: 1; }
+  0% { opacity: 0; transform: scale(0.88) translateY(6px); }
+  32% { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 /* Reduced motion: skip the splashes entirely. */
