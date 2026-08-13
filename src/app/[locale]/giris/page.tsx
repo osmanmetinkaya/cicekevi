@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Flower2 } from "lucide-react";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -42,10 +42,12 @@ export default async function LoginPage({
   return (
     <div className="mx-auto max-w-md px-4 py-14 sm:px-6">
       <div className="mb-8 text-center">
-        <Flower2
-          size={36}
-          strokeWidth={1.5}
-          className="mx-auto text-leaf-600"
+        <Image
+          src="/rose-icon.svg"
+          alt=""
+          width={40}
+          height={39}
+          className="mx-auto"
         />
         <h1 className="mt-3 font-serif text-3xl text-ink">{t("welcome")}</h1>
         <p className="mt-1.5 text-sm text-ink-muted">{t("welcomeSubtitle")}</p>

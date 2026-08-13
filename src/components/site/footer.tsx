@@ -20,7 +20,7 @@ export function Footer() {
     <footer className="mt-16 border-t border-line bg-white">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-4">
         <div>
-          <Logo size={22} className="text-lg" />
+          <Logo height={30} />
           <p className="mt-3 max-w-xs text-sm text-ink-muted">{t("tagline")}</p>
         </div>
         <FooterCol

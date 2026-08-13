@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { SITE_NAME } from "@/lib/site";
 
 /**
  * Sitenin ilk (sert) yüklenişinde bir kez oynayan logo animasyonu.
- * RouteTransition ile aynı çizim tekniğini paylaşır, fakat ayrı bir
- * bileşendir: RouteTransition kasıtlı olarak ilk render'da hiçbir şey
- * göstermez (yalnızca bölümler arası geçişlere özeldir). Kasıtlı olarak
- * sade: krem zemin ve tek bir çizgi-çiçek — premium markaların tercih
- * ettiği "az hareket, çok his" dili.
+ * Gerçek marka varlıkları kullanılır: önce rose-icon.svg (logodaki gül
+ * motifi) belirip büyür, sonra tam logo (gül + "çiçekevi" yazısı) onun
+ * yerini alır. Kasıtlı olarak sade: krem zemin, tek bir geçiş — premium
+ * markaların tercih ettiği "az hareket, çok his" dili.
  */
 export function IntroSplash() {
   const [show, setShow] = useState(true);
@@ -30,72 +30,24 @@ export function IntroSplash() {
         if (e.animationName === "intro-fade") setShow(false);
       }}
     >
-      <svg
-        className="intro-splash__flower"
-        viewBox="0 0 100 100"
-        width="120"
-        height="120"
-        aria-hidden="true"
-      >
-        {Array.from({ length: 6 }).map((_, i) => (
-          <g key={i} transform={`rotate(${i * 60} 50 44)`}>
-            <ellipse
-              className="s-petal"
-              data-draw
-              pathLength={1}
-              cx="50"
-              cy="24"
-              rx="8"
-              ry="15"
-              style={{ animationDelay: `${i * 55}ms` }}
-            />
-          </g>
-        ))}
-        <circle
-          className="s-center"
-          data-draw
-          pathLength={1}
-          cx="50"
-          cy="44"
-          r="7"
-          style={{ animationDelay: "360ms" }}
+      <div className="intro-splash__mark">
+        <Image
+          src="/rose-icon.svg"
+          alt=""
+          width={92}
+          height={89}
+          priority
+          className="intro-splash__rose"
         />
-        <line
-          className="s-stem"
-          data-draw
-          pathLength={1}
-          x1="50"
-          y1="51"
-          x2="50"
-          y2="88"
-          style={{ animationDelay: "480ms" }}
+        <Image
+          src="/logo.svg"
+          alt={SITE_NAME}
+          width={252}
+          height={97}
+          priority
+          className="intro-splash__logo"
         />
-        <g transform="rotate(-34 44 66)">
-          <ellipse
-            className="s-leaf"
-            data-draw
-            pathLength={1}
-            cx="44"
-            cy="66"
-            rx="9"
-            ry="4.2"
-            style={{ animationDelay: "600ms" }}
-          />
-        </g>
-        <g transform="rotate(34 57 77)">
-          <ellipse
-            className="s-leaf"
-            data-draw
-            pathLength={1}
-            cx="57"
-            cy="77"
-            rx="9"
-            ry="4.2"
-            style={{ animationDelay: "660ms" }}
-          />
-        </g>
-      </svg>
-      <span className="intro-splash__word">{SITE_NAME}</span>
+      </div>
     </div>
   );
 }

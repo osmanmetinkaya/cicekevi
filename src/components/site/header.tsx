@@ -30,7 +30,7 @@ export async function Header() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2 sm:gap-4">
             <MobileNav groups={categoryGroups} />
-            <Logo className="text-lg sm:text-xl" />
+            <Logo height={38} className="h-8 w-auto sm:h-[38px]" />
             <span className="hidden h-5 w-px bg-line sm:block" />
             <BranchInfo />
           </div>

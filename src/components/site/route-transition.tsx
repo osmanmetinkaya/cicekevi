@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { usePathname } from "@/i18n/navigation";
 import { SITE_NAME } from "@/lib/site";
 
@@ -53,75 +54,13 @@ export function RouteTransition() {
         if (e.animationName === "splash-fade") setShow(false);
       }}
     >
-      <svg
+      <Image
+        src="/rose-icon.svg"
+        alt=""
+        width={72}
+        height={70}
         className="route-splash__flower"
-        viewBox="0 0 100 100"
-        width="104"
-        height="104"
-        aria-hidden="true"
-      >
-        {/* Petals — drawn one after another */}
-        {Array.from({ length: 6 }).map((_, i) => (
-          <g key={i} transform={`rotate(${i * 60} 50 44)`}>
-            <ellipse
-              className="s-petal"
-              data-draw
-              pathLength={1}
-              cx="50"
-              cy="24"
-              rx="8"
-              ry="15"
-              style={{ animationDelay: `${i * 45}ms` }}
-            />
-          </g>
-        ))}
-        {/* Center */}
-        <circle
-          className="s-center"
-          data-draw
-          pathLength={1}
-          cx="50"
-          cy="44"
-          r="7"
-          style={{ animationDelay: "300ms" }}
-        />
-        {/* Stem */}
-        <line
-          className="s-stem"
-          data-draw
-          pathLength={1}
-          x1="50"
-          y1="51"
-          x2="50"
-          y2="88"
-          style={{ animationDelay: "400ms" }}
-        />
-        {/* Leaves */}
-        <g transform="rotate(-34 44 66)">
-          <ellipse
-            className="s-leaf"
-            data-draw
-            pathLength={1}
-            cx="44"
-            cy="66"
-            rx="9"
-            ry="4.2"
-            style={{ animationDelay: "500ms" }}
-          />
-        </g>
-        <g transform="rotate(34 57 77)">
-          <ellipse
-            className="s-leaf"
-            data-draw
-            pathLength={1}
-            cx="57"
-            cy="77"
-            rx="9"
-            ry="4.2"
-            style={{ animationDelay: "560ms" }}
-          />
-        </g>
-      </svg>
+      />
       <span className="route-splash__word">{SITE_NAME}</span>
     </div>
   );
