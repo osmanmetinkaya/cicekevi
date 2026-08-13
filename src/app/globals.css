@@ -129,10 +129,23 @@ body {
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
+/* Hero slider — slaytlar arası basit fade-in (tam bileşen yalnızca aktif
+   slaytı DOM'da tutar; yükseklik her slaytın içeriğine göre doğal oturur). */
+.hero-slide {
+  animation: hero-fade-in 550ms ease;
+}
+@keyframes hero-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 /* Reduced motion: skip the splashes entirely. */
 @media (prefers-reduced-motion: reduce) {
   .route-splash,
   .intro-splash {
     display: none;
+  }
+  .hero-slide {
+    animation: none;
   }
 }

@@ -3,9 +3,9 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ImagePlus, Loader2, Save } from "lucide-react";
-import { saveHeroContent } from "@/app/admin/content-actions";
+import { saveHeroSlide } from "@/app/admin/content-actions";
 import { createClient } from "@/lib/supabase/client";
-import type { HeroContent } from "@/lib/site-content";
+import type { HeroSlide } from "@/lib/site-content";
 import { ImageCropModal } from "@/components/admin/image-crop-modal";
 
 const inputClass =
@@ -59,30 +59,37 @@ function FieldPair({
   );
 }
 
-export function HeroContentForm({ initial }: { initial: HeroContent }) {
+export function HeroSlideForm({ initial }: { initial: HeroSlide | null }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
 
-  const [eyebrowTr, setEyebrowTr] = useState(initial.eyebrow.tr);
-  const [eyebrowEn, setEyebrowEn] = useState(initial.eyebrow.en);
-  const [title1Tr, setTitle1Tr] = useState(initial.title1.tr);
-  const [title1En, setTitle1En] = useState(initial.title1.en);
-  const [title2Tr, setTitle2Tr] = useState(initial.title2.tr);
-  const [title2En, setTitle2En] = useState(initial.title2.en);
-  const [subtitleTr, setSubtitleTr] = useState(initial.subtitle.tr);
-  const [subtitleEn, setSubtitleEn] = useState(initial.subtitle.en);
-  const [ctaExploreTr, setCtaExploreTr] = useState(initial.ctaExplore.tr);
-  const [ctaExploreEn, setCtaExploreEn] = useState(initial.ctaExplore.en);
+  const [eyebrowTr, setEyebrowTr] = useState(initial?.eyebrow.tr ?? "");
+  const [eyebrowEn, setEyebrowEn] = useState(initial?.eyebrow.en ?? "");
+  const [title1Tr, setTitle1Tr] = useState(initial?.title1.tr ?? "");
+  const [title1En, setTitle1En] = useState(initial?.title1.en ?? "");
+  const [title2Tr, setTitle2Tr] = useState(initial?.title2.tr ?? "");
+  const [title2En, setTitle2En] = useState(initial?.title2.en ?? "");
+  const [subtitleTr, setSubtitleTr] = useState(initial?.subtitle.tr ?? "");
+  const [subtitleEn, setSubtitleEn] = useState(initial?.subtitle.en ?? "");
+  const [ctaExploreTr, setCtaExploreTr] = useState(
+    initial?.ctaExplore.tr ?? "",
+  );
+  const [ctaExploreEn, setCtaExploreEn] = useState(
+    initial?.ctaExplore.en ?? "",
+  );
   const [ctaBestsellersTr, setCtaBestsellersTr] = useState(
-    initial.ctaBestsellers.tr,
+    initial?.ctaBestsellers.tr ?? "",
   );
   const [ctaBestsellersEn, setCtaBestsellersEn] = useState(
-    initial.ctaBestsellers.en,
+    initial?.ctaBestsellers.en ?? "",
   );
-  const [imageUrl, setImageUrl] = useState<string | null>(initial.imageUrl);
-  const [preview, setPreview] = useState<string | null>(initial.imageUrl);
+  const [imageUrl, setImageUrl] = useState<string | null>(
+    initial?.imageUrl ?? null,
+  );
+  const [preview, setPreview] = useState<string | null>(
+    initial?.imageUrl ?? null,
+  );
   const [uploading, setUploading] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
 
@@ -115,9 +122,9 @@ export function HeroContentForm({ initial }: { initial: HeroContent }) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setSaved(false);
     startTransition(async () => {
-      const res = await saveHeroContent({
+      const res = await saveHeroSlide({
+        id: initial?.id,
         eyebrowTr,
         eyebrowEn,
         title1Tr,
@@ -136,7 +143,7 @@ export function HeroContentForm({ initial }: { initial: HeroContent }) {
         setError(res.error);
         return;
       }
-      setSaved(true);
+      router.push("/admin/icerik");
       router.refresh();
     });
   }
@@ -146,7 +153,7 @@ export function HeroContentForm({ initial }: { initial: HeroContent }) {
       <section className="rounded-2xl border border-line bg-white p-5">
         <h2 className="font-serif text-xl text-ink">Görsel</h2>
         <p className="mt-1 text-sm text-ink-muted">
-          Yüklenmezse mevcut çiçek ikonu gösterilmeye devam eder.
+          Yüklenmezse çiçek ikonu gösterilir.
         </p>
 
         <div className="mt-4 flex flex-wrap items-start gap-5">
@@ -254,22 +261,28 @@ export function HeroContentForm({ initial }: { initial: HeroContent }) {
           {error}
         </p>
       )}
-      {saved && !error && (
-        <p className="text-sm text-leaf-600">Kaydedildi.</p>
-      )}
 
-      <button
-        type="submit"
-        disabled={pending || uploading}
-        className="inline-flex items-center gap-2 rounded-full bg-rose-700 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-rose-900 disabled:opacity-60"
-      >
-        {pending ? (
-          <Loader2 size={16} className="animate-spin" />
-        ) : (
-          <Save size={16} />
-        )}
-        {pending ? "Kaydediliyor…" : "Kaydet"}
-      </button>
+      <div className="flex items-center gap-3">
+        <button
+          type="submit"
+          disabled={pending || uploading}
+          className="inline-flex items-center gap-2 rounded-full bg-rose-700 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-rose-900 disabled:opacity-60"
+        >
+          {pending ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Save size={16} />
+          )}
+          {pending ? "Kaydediliyor…" : "Kaydet"}
+        </button>
+        <button
+          type="button"
+          onClick={() => router.push("/admin/icerik")}
+          className="rounded-full border border-line px-6 py-3 text-sm text-ink transition-colors hover:border-blush-300 hover:text-rose-700"
+        >
+          Vazgeç
+        </button>
+      </div>
 
       {pendingFile && (
         <ImageCropModal
