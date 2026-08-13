@@ -14,6 +14,10 @@ const supabaseHost = (() => {
   }
 })();
 
+// Supabase Realtime, wss:// üzerinden bağlanır (admin panelindeki sipariş
+// bildirim sesi bunu kullanır) — connect-src'te ayrıca izin verilmeli.
+const supabaseWsHost = supabaseHost.replace(/^https:/, "wss:");
+
 // Ürün fotoğrafları Supabase Storage'ın public `product-images` bucket'ından
 // servis ediliyor; next/image bu host'u açıkça tanımak zorunda.
 const supabaseHostname = (() => {
@@ -47,7 +51,7 @@ const csp = [
   `style-src 'self' 'unsafe-inline'`,
   `img-src 'self' data: blob: ${supabaseHost}`,
   `font-src 'self'`,
-  `connect-src 'self' ${supabaseHost}${isDev ? " ws:" : ""}`,
+  `connect-src 'self' ${supabaseHost} ${supabaseWsHost}${isDev ? " ws:" : ""}`,
   `object-src 'none'`,
   `base-uri 'self'`,
   `form-action 'self'`,

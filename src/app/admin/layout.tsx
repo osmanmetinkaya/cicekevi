@@ -7,6 +7,7 @@ import "../globals.css";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { SITE_NAME } from "@/lib/site";
+import { OrderNotifier } from "@/components/admin/order-notifier";
 
 const manrope = localFont({
   src: "../fonts/Manrope-Variable.ttf",
@@ -86,6 +87,7 @@ export default async function AdminLayout({
       </div>
           <div className="mt-8 print:mt-0">{children}</div>
         </div>
+        <OrderNotifier />
       </body>
     </html>
   );
