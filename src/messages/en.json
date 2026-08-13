@@ -23,7 +23,7 @@
     "eyebrow": "SAME-DAY DELIVERY · WITHIN DENİZLİ",
     "titleLine1": "Fresh flowers,",
     "titleLine2": "at your door today.",
-    "subtitle": "Seasonal bouquets, arranged by hand by our florists. Orders placed by 3 p.m. arrive the same day.",
+    "subtitle": "Seasonal bouquets, arranged by hand by our florists. Orders placed by 8 p.m. arrive the same day.",
     "ctaExplore": "Explore bouquets",
     "ctaBestsellers": "Bestsellers"
   },
@@ -162,7 +162,7 @@
     "related": "Similar flowers",
     "delivery": {
       "sameDay": "Same-day delivery within Denizli",
-      "cutoff": "Orders placed by 3 p.m. arrive today",
+      "cutoff": "Orders placed by 8 p.m. arrive today",
       "fresh": "Fresh, seasonally picked flowers",
       "ssl": "Secure payment with 256-bit SSL"
     }

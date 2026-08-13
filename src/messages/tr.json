@@ -23,7 +23,7 @@
     "eyebrow": "AYNI GÜN TESLİMAT · DENİZLİ İÇİ",
     "titleLine1": "Taze çiçekler,",
     "titleLine2": "bugün kapında.",
-    "subtitle": "Mevsiminde toplanan buketler ustalarımızın elinden çıkar. Saat 15.00'e kadar verilen siparişler aynı gün ulaşır.",
+    "subtitle": "Mevsiminde toplanan buketler ustalarımızın elinden çıkar. Saat 20.00'ye kadar verilen siparişler aynı gün ulaşır.",
     "ctaExplore": "Buketleri keşfet",
     "ctaBestsellers": "Çok satanlar"
   },
@@ -162,7 +162,7 @@
     "related": "Benzer çiçekler",
     "delivery": {
       "sameDay": "Denizli içi aynı gün teslimat",
-      "cutoff": "Saat 15.00'e kadar verilen siparişler bugün ulaşır",
+      "cutoff": "Saat 20.00'ye kadar verilen siparişler bugün ulaşır",
       "fresh": "Mevsiminde toplanan taze çiçekler",
       "ssl": "256-bit SSL ile güvenli ödeme"
     }

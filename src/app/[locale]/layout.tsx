@@ -14,6 +14,7 @@ import { PageShell } from "@/components/site/page-shell";
 import { RouteTransition } from "@/components/site/route-transition";
 import { IntroSplash } from "@/components/site/intro-splash";
 import { CookieNotice } from "@/components/site/cookie-notice";
+import { WhatsAppButton } from "@/components/site/whatsapp-button";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 
@@ -81,6 +82,7 @@ export default async function LocaleLayout({
                 <CartDrawer />
                 <RouteTransition />
                 <CookieNotice />
+                <WhatsAppButton />
               </SearchProvider>
             </FavoritesProvider>
           </CartProvider>
