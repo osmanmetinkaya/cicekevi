@@ -27,8 +27,8 @@ export const DEFAULT_HERO_CONTENT: HeroContent = {
   title1: { tr: "Taze çiçekler,", en: "Fresh flowers," },
   title2: { tr: "bugün kapında.", en: "at your door today." },
   subtitle: {
-    tr: "Mevsiminde toplanan buketler ustalarımızın elinden çıkar. Saat 16.00'ya kadar verilen siparişler aynı gün ulaşır.",
-    en: "Seasonal bouquets, arranged by hand by our florists. Orders placed by 4 p.m. arrive the same day.",
+    tr: "Mevsiminde toplanan buketler ustalarımızın elinden çıkar. Saat 15.00'e kadar verilen siparişler aynı gün ulaşır.",
+    en: "Seasonal bouquets, arranged by hand by our florists. Orders placed by 3 p.m. arrive the same day.",
   },
   ctaExplore: { tr: "Buketleri keşfet", en: "Explore bouquets" },
   ctaBestsellers: { tr: "Çok satanlar", en: "Bestsellers" },
