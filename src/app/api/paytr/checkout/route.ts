@@ -280,8 +280,8 @@ export async function POST(request: Request) {
   const noInstallment = "0";
   const maxInstallment = "0";
   const currency = "TL";
-  // Kullanıcı test modunda kurulum istedi; canlıya geçerken "0" yapılacak.
-  const testMode = "1";
+  // Mağaza PayTR'de canlı moda alındı — gerçek ödemeler için "0".
+  const testMode = "0";
 
   const paytrToken = paytrTokenHash(creds, {
     merchantOid,
