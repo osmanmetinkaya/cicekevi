@@ -27,10 +27,13 @@ export interface Product {
   /** Tailwind theme color key used for the placeholder artwork. */
   accent: ProductAccent;
   /**
-   * Supabase Storage'daki ürün fotoğrafının public URL'i. Boşsa arayüz
-   * <Artwork> placeholder'ına düşer (bkz. components/product/product-image).
+   * Kapak fotoğrafı (imageUrls[0]) — sepet/kart/liste gibi tekil-görsel
+   * bağlamlarda kullanılır. Boşsa arayüz <Artwork> placeholder'ına düşer
+   * (bkz. components/product/product-image).
    */
   imageUrl?: string | null;
+  /** Ürün detay sayfasındaki galeri — Supabase Storage public URL'leri. */
+  imageUrls: string[];
   bestseller?: boolean;
   isNew?: boolean;
 }

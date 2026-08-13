@@ -2,7 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ImagePlus, Loader2, Save } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ImagePlus,
+  Loader2,
+  Save,
+  X,
+} from "lucide-react";
 import { saveProduct } from "@/app/admin/catalog-actions";
 import { createClient } from "@/lib/supabase/client";
 import { slugify } from "@/lib/slug";
@@ -29,7 +36,7 @@ export interface ProductFormInitial {
   flowersTr: string[];
   flowersEn: string[];
   accent: string;
-  imageUrl: string | null;
+  imageUrls: string[];
   isNew: boolean;
   isBestseller: boolean;
   sortOrder: number;
@@ -62,10 +69,11 @@ function Field({
 /**
  * Ürün ekleme/düzenleme formu.
  *
- * Fotoğraf tarayıcıdan doğrudan Supabase Storage'a (`product-images`)
- * yüklenir; kaydedilen tek şey public URL. Ürün `id`'si düzenlemede
- * DEĞİŞTİRİLEMEZ — müşterilerin localStorage sepet/favori kayıtları bu
- * id'ye referans veriyor.
+ * Fotoğraflar tarayıcıdan doğrudan Supabase Storage'a (`product-images`)
+ * yüklenir; kaydedilen tek şey public URL listesi. İlk fotoğraf kapak
+ * (kart/sepet/liste) olarak kullanılır — sıralama ok butonlarıyla
+ * değişebilir. Ürün `id`'si düzenlemede DEĞİŞTİRİLEMEZ — müşterilerin
+ * localStorage sepet/favori kayıtları bu id'ye referans veriyor.
  */
 export function ProductForm({
   initial,
@@ -99,11 +107,8 @@ export function ProductForm({
     (initial?.flowersEn ?? []).join(", "),
   );
   const [accent, setAccent] = useState(initial?.accent ?? "blush");
-  const [imageUrl, setImageUrl] = useState<string | null>(
-    initial?.imageUrl ?? null,
-  );
-  const [preview, setPreview] = useState<string | null>(
-    initial?.imageUrl ?? null,
+  const [imageUrls, setImageUrls] = useState<string[]>(
+    initial?.imageUrls ?? [],
   );
   const [uploading, setUploading] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -126,11 +131,23 @@ export function ProductForm({
     );
   }
 
+  function moveImage(index: number, direction: -1 | 1) {
+    setImageUrls((prev) => {
+      const target = index + direction;
+      if (target < 0 || target >= prev.length) return prev;
+      const next = [...prev];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  }
+
+  function removeImage(index: number) {
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
+  }
+
   async function handleUpload(file: Blob) {
     setError(null);
     setUploading(true);
-    const objectUrl = URL.createObjectURL(file);
-    setPreview(objectUrl);
     try {
       const supabase = createClient();
       // Kırpma çıktısı her zaman JPEG (crop-image.ts).
@@ -143,14 +160,11 @@ export function ProductForm({
       const { data } = supabase.storage
         .from("product-images")
         .getPublicUrl(path);
-      setImageUrl(data.publicUrl);
-      setPreview(data.publicUrl);
+      setImageUrls((prev) => [...prev, data.publicUrl]);
     } catch (err) {
       console.error("[admin] image upload failed", err);
       setError("Fotoğraf yüklenemedi. Tekrar dene.");
-      setPreview(imageUrl);
     } finally {
-      URL.revokeObjectURL(objectUrl);
       setUploading(false);
     }
   }
@@ -179,7 +193,7 @@ export function ProductForm({
         flowersTr: flowersTr.split(",").map((s) => s.trim()),
         flowersEn: flowersEn.split(",").map((s) => s.trim()),
         accent,
-        imageUrl,
+        imageUrls,
         isNew,
         isBestseller,
         sortOrder: Number(sortOrder) || 0,
@@ -328,76 +342,96 @@ export function ProductForm({
       </section>
 
       <section className="rounded-2xl border border-line bg-white p-5">
-        <h2 className="font-serif text-xl text-ink">Fotoğraf</h2>
+        <h2 className="font-serif text-xl text-ink">Fotoğraflar</h2>
         <p className="mt-1 text-sm text-ink-muted">
-          Fotoğraf yüklemezsen ürün, renk temasına göre çizilen placeholder
-          görselle gösterilir.
+          İlk fotoğraf kapak görseli olur (kart, sepet, liste). Fotoğraf
+          eklemezsen ürün, renk temasına göre çizilen placeholder görselle
+          gösterilir.
         </p>
 
-        <div className="mt-4 flex flex-wrap items-start gap-5">
-          <div className="size-32 shrink-0 overflow-hidden rounded-2xl border border-line bg-cream">
-            {preview ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={preview}
-                alt=""
-                className="size-full object-cover"
-              />
-            ) : (
-              <div className="flex size-full items-center justify-center text-ink-muted">
-                <ImagePlus size={26} />
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-3">
-            <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-sm text-ink transition-colors hover:border-blush-300 hover:text-rose-700">
-              {uploading ? (
-                <Loader2 size={15} className="animate-spin" />
-              ) : (
-                <ImagePlus size={15} />
+        <div className="mt-4 flex flex-wrap gap-4">
+          {imageUrls.map((url, i) => (
+            <div
+              key={url}
+              className="relative size-32 shrink-0 overflow-hidden rounded-2xl border border-line bg-cream"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={url} alt="" className="size-full object-cover" />
+              {i === 0 && (
+                <span className="absolute top-1.5 left-1.5 rounded-full bg-rose-700 px-2 py-0.5 text-[10px] font-medium text-white">
+                  Kapak
+                </span>
               )}
-              {uploading ? "Yükleniyor…" : "Fotoğraf seç"}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                disabled={uploading}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) setPendingFile(file);
-                  e.target.value = "";
-                }}
-              />
-            </label>
+              <div className="absolute right-1.5 bottom-1.5 flex gap-1">
+                {i > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => moveImage(i, -1)}
+                    aria-label="Öne taşı"
+                    className="rounded-full bg-white/90 p-1 text-ink shadow-sm hover:bg-white"
+                  >
+                    <ChevronLeft size={13} />
+                  </button>
+                )}
+                {i < imageUrls.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={() => moveImage(i, 1)}
+                    aria-label="Geriye taşı"
+                    className="rounded-full bg-white/90 p-1 text-ink shadow-sm hover:bg-white"
+                  >
+                    <ChevronRight size={13} />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => removeImage(i)}
+                  aria-label="Fotoğrafı kaldır"
+                  className="rounded-full bg-white/90 p-1 text-rose-700 shadow-sm hover:bg-white"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+            </div>
+          ))}
 
-            {imageUrl && (
-              <button
-                type="button"
-                onClick={() => {
-                  setImageUrl(null);
-                  setPreview(null);
-                }}
-                className="block text-sm text-ink-muted underline underline-offset-4 transition-colors hover:text-rose-700"
-              >
-                Fotoğrafı kaldır (placeholder&apos;a dön)
-              </button>
+          <label className="flex size-32 shrink-0 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-line text-ink-muted transition-colors hover:border-blush-300 hover:text-rose-700">
+            {uploading ? (
+              <Loader2 size={20} className="animate-spin" />
+            ) : (
+              <ImagePlus size={20} />
             )}
+            <span className="text-xs">
+              {uploading ? "Yükleniyor…" : "Fotoğraf ekle"}
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) setPendingFile(file);
+                e.target.value = "";
+              }}
+            />
+          </label>
+        </div>
 
-            <Field label="Placeholder rengi" hint="fotoğraf yokken kullanılır">
-              <select
-                value={accent}
-                onChange={(e) => setAccent(e.target.value)}
-                className={`${inputClass} cursor-pointer`}
-              >
-                {PRODUCT_ACCENTS.map((a) => (
-                  <option key={a} value={a}>
-                    {a}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
+        <div className="mt-4 max-w-xs">
+          <Field label="Placeholder rengi" hint="fotoğraf yokken kullanılır">
+            <select
+              value={accent}
+              onChange={(e) => setAccent(e.target.value)}
+              className={`${inputClass} cursor-pointer`}
+            >
+              {PRODUCT_ACCENTS.map((a) => (
+                <option key={a} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+          </Field>
         </div>
       </section>
 

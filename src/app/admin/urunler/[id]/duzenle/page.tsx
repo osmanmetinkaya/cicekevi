@@ -54,7 +54,7 @@ export default async function EditProductPage({
           flowersTr: row.flowers_tr ?? [],
           flowersEn: row.flowers_en ?? [],
           accent: row.accent,
-          imageUrl: row.image_url,
+          imageUrls: row.image_urls,
           isNew: row.is_new,
           isBestseller: row.is_bestseller,
           sortOrder: row.sort_order,

@@ -28,7 +28,7 @@ export interface ProductInput {
   flowersTr: string[];
   flowersEn: string[];
   accent: string;
-  imageUrl: string | null;
+  imageUrls: string[];
   isNew: boolean;
   isBestseller: boolean;
   sortOrder: number;
@@ -114,7 +114,7 @@ export async function saveProduct(
     flowers_tr: cleanList(input.flowersTr),
     flowers_en: cleanList(input.flowersEn),
     accent: input.accent,
-    image_url: input.imageUrl?.trim() || null,
+    image_urls: cleanList(input.imageUrls),
     is_new: input.isNew,
     is_bestseller: input.isBestseller,
     sort_order: Number.isFinite(input.sortOrder) ? input.sortOrder : 0,

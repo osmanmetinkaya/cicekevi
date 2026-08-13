@@ -33,7 +33,7 @@ export interface ProductRow {
   flowers_tr: string[];
   flowers_en: string[];
   accent: ProductAccent;
-  image_url: string | null;
+  image_urls: string[];
   is_new: boolean;
   is_bestseller: boolean;
   is_active: boolean;
@@ -46,10 +46,11 @@ interface ProductCategoryRow {
 }
 
 const PRODUCT_SELECT =
-  "id, slug, name_tr, name_en, tagline_tr, tagline_en, description_tr, description_en, price_kurus, flowers_tr, flowers_en, accent, image_url, is_new, is_bestseller, is_active, sort_order";
+  "id, slug, name_tr, name_en, tagline_tr, tagline_en, description_tr, description_en, price_kurus, flowers_tr, flowers_en, accent, image_urls, is_new, is_bestseller, is_active, sort_order";
 
 /** DB satırı → uygulamanın kullandığı iki dilli `Product` tipi. */
 export function mapProduct(row: ProductRow, categories: string[]): Product {
+  const imageUrls = row.image_urls ?? [];
   return {
     id: row.id,
     slug: row.slug,
@@ -60,7 +61,8 @@ export function mapProduct(row: ProductRow, categories: string[]): Product {
     categories,
     flowers: { tr: row.flowers_tr ?? [], en: row.flowers_en ?? [] },
     accent: row.accent,
-    imageUrl: row.image_url,
+    imageUrl: imageUrls[0] ?? null,
+    imageUrls,
     isNew: row.is_new,
     bestseller: row.is_bestseller,
   };

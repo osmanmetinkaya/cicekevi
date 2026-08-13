@@ -3,10 +3,10 @@ import type { Product } from "@/lib/types";
 import { Artwork } from "@/components/product/artwork";
 
 /**
- * Ürün görseli. Fotoğraf yüklendiyse (products.image_url — Supabase Storage
- * `product-images` bucket'ı) gerçek <Image>, yüklenmediyse mevcut <Artwork>
- * placeholder'ı gösterilir. `className` her iki durumda da aynı oran/köşe
- * çerçevesini taşır, böylece yerleşim değişmez.
+ * Ürün kapak görseli. Fotoğraf yüklendiyse (products.image_urls[0] —
+ * Supabase Storage `product-images` bucket'ı) gerçek <Image>, yüklenmediyse
+ * mevcut <Artwork> placeholder'ı gösterilir. `className` her iki durumda da
+ * aynı oran/köşe çerçevesini taşır, böylece yerleşim değişmez.
  */
 export function ProductImage({
   product,

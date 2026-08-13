@@ -175,7 +175,10 @@ export default async function AdminProductsPage({
                     }`}
                   >
                     <ProductImage
-                      product={{ accent: row.accent, imageUrl: row.image_url }}
+                      product={{
+                        accent: row.accent,
+                        imageUrl: row.image_urls[0] ?? null,
+                      }}
                       size={22}
                       sizes="64px"
                       className="size-16 shrink-0 rounded-xl"
@@ -196,7 +199,7 @@ export default async function AdminProductsPage({
                             Çok satan
                           </span>
                         )}
-                        {!row.image_url && (
+                        {row.image_urls.length === 0 && (
                           <span className="rounded-full bg-cream px-2 py-0.5 text-[11px] text-ink-muted">
                             Fotoğraf yok
                           </span>

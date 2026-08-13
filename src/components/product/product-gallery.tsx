@@ -1,20 +1,24 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
 import type { Product } from "@/lib/types";
 import { Artwork } from "@/components/product/artwork";
-import { ProductImage } from "@/components/product/product-image";
 
 /**
- * Ürün görselleri. Fotoğraf yüklenmişse (products.image_url) gerçek görsel,
- * yüklenmemişse <Artwork> placeholder'ı gösterilir. Ürün başına tek fotoğraf
- * tutulduğu için küçük görsel şeridi yalnızca placeholder modunda çizilir.
+ * Ürün görselleri. Birden fazla fotoğraf yüklenmişse (products.image_urls)
+ * altta küçük bir şerit üzerinden seçilebilen bir galeri gösterilir;
+ * hiç fotoğraf yoksa <Artwork> placeholder'ına düşer.
  */
 export function ProductGallery({ product }: { product: Product }) {
-  if (product.imageUrl) {
+  const images = product.imageUrls ?? [];
+  const [active, setActive] = useState(0);
+
+  if (images.length === 0) {
     return (
-      <ProductImage
-        product={product}
-        alt=""
-        priority
-        sizes="(max-width: 768px) 100vw, 50vw"
+      <Artwork
+        accent={product.accent}
+        size={128}
         className="aspect-square w-full rounded-3xl"
       />
     );
@@ -22,23 +26,37 @@ export function ProductGallery({ product }: { product: Product }) {
 
   return (
     <div>
-      <Artwork
-        accent={product.accent}
-        size={128}
-        className="aspect-square w-full rounded-3xl"
-      />
-      <div className="mt-3 grid grid-cols-4 gap-3">
-        {[0, 1, 2, 3].map((i) => (
-          <Artwork
-            key={i}
-            accent={product.accent}
-            size={26}
-            className={`aspect-square w-full rounded-xl ${
-              i === 0 ? "ring-2 ring-rose-500" : "opacity-70"
-            }`}
-          />
-        ))}
+      <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-blush-100">
+        <Image
+          src={images[active]}
+          alt=""
+          fill
+          priority
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover"
+        />
       </div>
+
+      {images.length > 1 && (
+        <div className="mt-3 grid grid-cols-4 gap-3">
+          {images.map((url, i) => (
+            <button
+              key={url}
+              type="button"
+              onClick={() => setActive(i)}
+              aria-label={`${i + 1}. fotoğraf`}
+              aria-current={i === active}
+              className={`relative aspect-square w-full overflow-hidden rounded-xl transition-opacity ${
+                i === active
+                  ? "ring-2 ring-rose-500"
+                  : "opacity-70 hover:opacity-100"
+              }`}
+            >
+              <Image src={url} alt="" fill sizes="120px" className="object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
