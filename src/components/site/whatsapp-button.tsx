@@ -20,7 +20,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="WhatsApp'tan bize yazın"
-      className="fixed right-5 bottom-24 z-[60] flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform duration-200 hover:scale-105 sm:right-6"
+      className="fixed right-5 bottom-24 z-40 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform duration-200 hover:scale-105 sm:right-6"
     >
       <svg
         viewBox="0 0 24 24"

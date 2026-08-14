@@ -98,11 +98,14 @@ export function HeroCarousel({
 
       {count > 1 && (
         <>
+          {/* Mobilde metin + görsel dikey yığılıp bölüm çok uzadığı için
+              "ortada" konumlanan oklar CTA butonlarının üzerine biniyordu;
+              sm ve üzeri (yan yana düzen) yeterli, mobilde noktalar kalır. */}
           <button
             type="button"
             onClick={() => go(index - 1)}
             aria-label="Önceki slayt"
-            className="absolute top-1/2 left-3 z-10 -translate-y-1/2 rounded-full bg-white/85 p-2 text-ink shadow-sm transition-colors hover:bg-white"
+            className="absolute top-1/2 left-3 z-10 hidden -translate-y-1/2 rounded-full bg-white/85 p-2 text-ink shadow-sm transition-colors hover:bg-white sm:block"
           >
             <ChevronLeft size={20} />
           </button>
@@ -110,7 +113,7 @@ export function HeroCarousel({
             type="button"
             onClick={() => go(index + 1)}
             aria-label="Sonraki slayt"
-            className="absolute top-1/2 right-3 z-10 -translate-y-1/2 rounded-full bg-white/85 p-2 text-ink shadow-sm transition-colors hover:bg-white"
+            className="absolute top-1/2 right-3 z-10 hidden -translate-y-1/2 rounded-full bg-white/85 p-2 text-ink shadow-sm transition-colors hover:bg-white sm:block"
           >
             <ChevronRight size={20} />
           </button>
