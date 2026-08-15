@@ -313,7 +313,10 @@ export async function POST(request: Request) {
     merchant_ok_url: okUrl.slice(0, 400),
     merchant_fail_url: okUrl.slice(0, 400),
     test_mode: testMode,
-    debug_on: "1",
+    // PayTR dokümantasyonu: "debug_on" canlıda 0 olmalı — açık kalması
+    // hataları arayüze döktürür ve üretimde beklenmeyen davranışlara
+    // (ör. 3D Secure adımında) yol açabilir.
+    debug_on: "0",
     timeout_limit: "30",
     lang: locale === "en" ? "en" : "tr",
     paytr_token: paytrToken,
