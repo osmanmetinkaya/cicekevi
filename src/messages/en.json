@@ -141,10 +141,7 @@
     "recipientAddress": "Delivery address",
     "recipientAddressPlaceholder": "Neighbourhood, street, door number, and any other directions…",
     "errorSender": "Please fill in the sender's name and phone number.",
-    "errorRecipient": "Please fill in the recipient's name, phone number, and address.",
-    "paymentTitle": "Payment",
-    "paymentText": "Enter your card details in the secure payment form below. You'll be taken to your order summary once the payment is complete.",
-    "cancelPayment": "Cancel and go back to order details"
+    "errorRecipient": "Please fill in the recipient's name, phone number, and address."
   },
   "product": {
     "breadcrumbHome": "Home",

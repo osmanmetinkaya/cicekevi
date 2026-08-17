@@ -39,15 +39,16 @@ const supabaseHostname = (() => {
 // şey kilitli — object-src 'none', frame-ancestors 'none', base-uri 'self',
 // form-action 'self', connect-src yalnızca self + Supabase.
 //
-// Not: Ödeme artık PayTR iFrame API ile GÖMÜLÜ (sepet sayfasında bir
-// <iframe src="https://www.paytr.com/odeme/guvenli/...">, artı boyutlandırma
-// için paytr.com'dan yüklenen iframeResizer.min.js). Bu yüzden script-src ve
-// frame-src'e yalnızca paytr.com eklendi; PayTR sunucudan sunucuya bildirim
-// (callback) gönderdiği için connect-src'e ihtiyaç yok. Fontlar self-hosted
-// (font-src 'self').
+// Not: Ödeme PayTR'nin ödeme sayfasına TAM SAYFA yönlendirmeyle yapılıyor
+// (iframe DEĞİL — 3D Secure adımı bankanın sayfasını iç içe iframe içinde
+// açmaya çalışırken tarayıcılarca engellenip müşteriyi "lütfen bekleyiniz"de
+// takılı bırakıyordu). Bu yüzden frame-src/script-src'e paytr.com eklemeye
+// gerek yok; top-level yönlendirme CSP'den etkilenmez. PayTR bildirimi
+// (callback) sunucudan sunucuya geldiği için connect-src'e de gerek yok.
+// Fontlar self-hosted (font-src 'self').
 const csp = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline' https://www.paytr.com${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   `style-src 'self' 'unsafe-inline'`,
   `img-src 'self' data: blob: ${supabaseHost}`,
   `font-src 'self'`,
@@ -56,7 +57,6 @@ const csp = [
   `base-uri 'self'`,
   `form-action 'self'`,
   `frame-ancestors 'none'`,
-  `frame-src https://www.paytr.com`,
   `upgrade-insecure-requests`,
 ].join("; ").concat(";");
 

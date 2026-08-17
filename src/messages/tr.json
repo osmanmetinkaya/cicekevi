@@ -141,10 +141,7 @@
     "recipientAddress": "Teslimat adresi",
     "recipientAddressPlaceholder": "Mahalle, sokak, kapı no ve varsa diğer tarif bilgilerini yaz…",
     "errorSender": "Gönderen adı ve telefon numarasını eksiksiz gir.",
-    "errorRecipient": "Alıcı adı, telefon numarası ve adresini eksiksiz gir.",
-    "paymentTitle": "Ödeme",
-    "paymentText": "Kart bilgilerini aşağıdaki güvenli ödeme formuna gir. Ödeme tamamlandığında sipariş özetine yönlendirileceksin.",
-    "cancelPayment": "Vazgeç, sipariş bilgilerine dön"
+    "errorRecipient": "Alıcı adı, telefon numarası ve adresini eksiksiz gir."
   },
   "product": {
     "breadcrumbHome": "Ana sayfa",
