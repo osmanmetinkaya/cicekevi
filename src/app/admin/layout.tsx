@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import localFont from "next/font/local";
 import { FolderTree, Image, LayoutDashboard, Package, Sprout } from "lucide-react";
 import "../globals.css";
-import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { SITE_NAME } from "@/lib/site";
 import { OrderNotifier } from "@/components/admin/order-notifier";
@@ -34,14 +33,10 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Middleware zaten koruyor; bu ikinci katman (defense in depth).
+  // Yetki kontrolü middleware'de yapılıyor (her /admin isteğinde Supabase'e
+  // sorup rolü doğruluyor) — burada aynı kontrolü tekrarlamak yalnızca her
+  // sayfa/geçişte ekstra bir ağ isteği eklerdi, ek bir koruma sağlamazdı.
   if (!isSupabaseConfigured()) redirect("/");
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/giris?next=/admin");
-  if (user.app_metadata?.role !== "admin") redirect("/");
 
   return (
     <html

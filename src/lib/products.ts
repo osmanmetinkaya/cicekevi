@@ -107,6 +107,43 @@ export const getAllProductRowsForAdmin = cache(
   },
 );
 
+/** Tek bir ürün satırı (id ile) — admin düzenleme sayfası tüm kataloğu
+ * çekmek zorunda kalmasın diye. is_active filtresi yok (admin görebilmeli). */
+export async function getProductRowById(
+  id: string,
+): Promise<ProductRow | null> {
+  if (!isSupabaseConfigured()) return null;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select(PRODUCT_SELECT)
+    .eq("id", id)
+    .maybeSingle<ProductRow>();
+
+  if (error) {
+    console.error("[products] admin single fetch failed", error.message);
+    return null;
+  }
+  return data;
+}
+
+/** Bir ürünün kategori id'leri (admin düzenleme formundaki checkbox'lar için). */
+export async function getProductCategoryIds(id: string): Promise<string[]> {
+  if (!isSupabaseConfigured()) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("product_categories")
+    .select("category_id")
+    .eq("product_id", id)
+    .returns<{ category_id: string }[]>();
+
+  if (error) {
+    console.error("[products] product category ids fetch failed", error.message);
+    return [];
+  }
+  return (data ?? []).map((r) => r.category_id);
+}
+
 const getProductCategoryRows = cache(
   async (): Promise<ProductCategoryRow[]> => {
     if (!isSupabaseConfigured()) return [];

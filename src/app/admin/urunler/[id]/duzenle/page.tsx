@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { flattenCategoryRows, getCategoryRows } from "@/lib/categories";
-import { getAllProductRowsForAdmin, getProductCategoryMap } from "@/lib/products";
+import { getProductCategoryIds, getProductRowById } from "@/lib/products";
 import { ProductForm } from "@/components/admin/product-form";
 
 export default async function EditProductPage({
@@ -13,20 +13,16 @@ export default async function EditProductPage({
   const { id } = await params;
   const productId = decodeURIComponent(id);
 
-  const [rows, categoryRows, categoryMap] = await Promise.all([
-    getAllProductRowsForAdmin(),
+  // Sadece bu ürün + kategori listesi çekilir — tüm katalog gerekmez.
+  const [row, categoryRows, selected] = await Promise.all([
+    getProductRowById(productId),
     getCategoryRows(),
-    getProductCategoryMap(),
+    getProductCategoryIds(productId),
   ]);
 
-  const row = rows.find((p) => p.id === productId);
   if (!row) notFound();
 
   const flat = flattenCategoryRows(categoryRows);
-  const idBySlug = new Map(categoryRows.map((c) => [c.slug, c.id]));
-  const selected = (categoryMap.get(row.id) ?? [])
-    .map((slug) => idBySlug.get(slug))
-    .filter((v) => v !== undefined);
 
   return (
     <div>
