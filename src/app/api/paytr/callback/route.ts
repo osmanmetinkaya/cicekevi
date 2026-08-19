@@ -1,5 +1,24 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPaytrCredentials, paytrCallbackHash } from "@/lib/paytr";
+import { sendOrderEmails, type OrderEmailItem } from "@/lib/email";
+
+interface OrderRow {
+  id: string;
+  status: string;
+  amount_total: number;
+  order_number: string;
+  email: string;
+  items: OrderEmailItem[];
+  delivery_date: string | null;
+  delivery_window: string | null;
+  gift_note: string | null;
+  sender_name: string | null;
+  sender_phone: string | null;
+  sender_email: string | null;
+  recipient_name: string | null;
+  recipient_phone: string | null;
+  recipient_address: string | null;
+}
 
 /**
  * PayTR bildirim (callback) URL'i — SUNUCUDAN SUNUCUYA POST.
@@ -67,9 +86,11 @@ export async function POST(request: Request) {
 
     const { data: order, error: selectError } = await admin
       .from("orders")
-      .select("id, status, amount_total")
+      .select(
+        "id, status, amount_total, order_number, email, items, delivery_date, delivery_window, gift_note, sender_name, sender_phone, sender_email, recipient_name, recipient_phone, recipient_address",
+      )
       .eq("paytr_merchant_oid", merchantOid)
-      .maybeSingle();
+      .maybeSingle<OrderRow>();
 
     if (selectError) {
       console.error("[paytr/callback] order lookup failed", selectError);
@@ -100,7 +121,32 @@ export async function POST(request: Request) {
         .from("orders")
         .update({ status: "paid" })
         .eq("id", order.id);
-      if (error) console.error("[paytr/callback] mark paid failed", error);
+      if (error) {
+        console.error("[paytr/callback] mark paid failed", error);
+      } else {
+        // Mail gönderimi kendi içinde hataları yutar (bkz. sendOrderEmails);
+        // burada da sarmalanır ki en ufak beklenmedik durum bile PayTR'e
+        // dönen zorunlu "OK" yanıtını asla etkilemesin.
+        try {
+          await sendOrderEmails({
+            orderNumber: order.order_number,
+            email: order.email,
+            items: order.items,
+            amountTotal: order.amount_total,
+            deliveryDate: order.delivery_date,
+            deliveryWindow: order.delivery_window,
+            giftNote: order.gift_note,
+            senderName: order.sender_name,
+            senderPhone: order.sender_phone,
+            senderEmail: order.sender_email,
+            recipientName: order.recipient_name,
+            recipientPhone: order.recipient_phone,
+            recipientAddress: order.recipient_address,
+          });
+        } catch (err) {
+          console.error("[paytr/callback] order emails failed", err);
+        }
+      }
     } else {
       console.warn("[paytr/callback] payment failed", {
         merchantOid,
