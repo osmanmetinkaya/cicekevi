@@ -33,6 +33,18 @@ export interface OrderEmailData {
   recipientAddress: string | null;
 }
 
+/** Sipariş durumu güncelleme maillerinin ihtiyaç duyduğu minimal alan seti. */
+export interface OrderStatusEmailData {
+  orderNumber: string;
+  email: string;
+  senderEmail: string | null;
+  recipientName: string | null;
+  deliveryDate: string | null;
+  deliveryWindow: string | null;
+}
+
+export type OrderStatusStep = "preparing" | "on_delivery" | "delivered";
+
 interface EmailConfig {
   apiKey: string;
   from: string;
@@ -57,6 +69,12 @@ function siteOrigin(): string {
  * müşteri maili göndermenin bir anlamı yok. */
 function isPlaceholderEmail(email: string): boolean {
   return email.endsWith("@misafir.denizlicicekevi.online");
+}
+
+/** Gönderenin girdiği e-posta varsa o, yoksa (misafir yer tutucusu değilse)
+ * sipariş e-postası; ikisi de yoksa boş string döner (mail atlanır). */
+function resolveCustomerEmail(order: { email: string; senderEmail: string | null }): string {
+  return order.senderEmail || (!isPlaceholderEmail(order.email) ? order.email : "");
 }
 
 async function sendEmail(
@@ -110,18 +128,10 @@ function detailRow(label: string, value: string | null): string {
     </tr>`;
 }
 
-/** Hem admin bildirimi hem müşteri fişi aynı fiş görünümünü paylaşır; yalnızca
- * başlık/karşılama metni ve gösterilen ekstra satırlar değişir. */
-function receiptHtml(
-  order: OrderEmailData,
-  opts: { title: string; intro: string; extraRows?: string },
-): string {
+/** Tüm sipariş maillerinin paylaştığı dış çerçeve (logo + kapanış) —
+ * yalnızca başlık/gövde içeriği (`bodyHtml`) şablondan şablona değişir. */
+function emailShell(orderNumber: string, title: string, intro: string, bodyHtml: string): string {
   const logoUrl = `${siteOrigin()}/apple-icon.png`;
-  const deliveryLine =
-    order.deliveryDate && order.deliveryWindow
-      ? `${formatDate(order.deliveryDate)} · ${order.deliveryWindow}`
-      : null;
-
   return `<!doctype html>
 <html lang="tr">
   <body style="margin:0;padding:32px 16px;background:#faf5f1;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
@@ -134,15 +144,38 @@ function receiptHtml(
       </tr>
       <tr>
         <td style="padding:24px 32px 8px;">
-          <div style="font-size:16px;font-weight:600;color:#3a2b26;">${escapeHtml(opts.title)}</div>
-          <p style="margin:6px 0 0;font-size:14px;color:#6b5c56;line-height:1.5;">${opts.intro}</p>
+          <div style="font-size:16px;font-weight:600;color:#3a2b26;">${escapeHtml(title)}</div>
+          <p style="margin:6px 0 0;font-size:14px;color:#6b5c56;line-height:1.5;">${intro}</p>
         </td>
       </tr>
       <tr>
         <td style="padding:12px 32px 0;">
-          <div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#c2847a;font-weight:600;">Sipariş ${escapeHtml(order.orderNumber)}</div>
+          <div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#c2847a;font-weight:600;">Sipariş ${escapeHtml(orderNumber)}</div>
         </td>
       </tr>
+      ${bodyHtml}
+      <tr>
+        <td style="padding:28px 32px 28px;text-align:center;">
+          <div style="font-size:12px;color:#b3a49d;">${escapeHtml(SITE_NAME)} · denizlicicekevi.online</div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+}
+
+/** Hem admin bildirimi hem müşteri fişi aynı fiş gövdesini paylaşır; yalnızca
+ * başlık/karşılama metni ve gösterilen ekstra satırlar değişir. */
+function receiptHtml(
+  order: OrderEmailData,
+  opts: { title: string; intro: string; extraRows?: string },
+): string {
+  const deliveryLine =
+    order.deliveryDate && order.deliveryWindow
+      ? `${formatDate(order.deliveryDate)} · ${order.deliveryWindow}`
+      : null;
+
+  const body = `
       <tr>
         <td style="padding:12px 32px 0;">
           <table role="presentation" width="100%" style="border-collapse:collapse;">
@@ -165,15 +198,9 @@ function receiptHtml(
             ${opts.extraRows ?? ""}
           </table>
         </td>
-      </tr>
-      <tr>
-        <td style="padding:28px 32px 28px;text-align:center;">
-          <div style="font-size:12px;color:#b3a49d;">${escapeHtml(SITE_NAME)} · denizlicicekevi.online</div>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`;
+      </tr>`;
+
+  return emailShell(order.orderNumber, opts.title, opts.intro, body);
 }
 
 /** Müşteriye giden fiş — gönderilir gönderilmez müşteri kendi siparişini
@@ -200,6 +227,51 @@ function adminNotificationHtml(order: OrderEmailData): string {
       detailRow("Gönderen e-posta", order.senderEmail) +
       detailRow("Sipariş e-postası", order.email),
   });
+}
+
+const STATUS_EMAIL_COPY: Record<
+  OrderStatusStep,
+  { subject: string; title: string; intro: string }
+> = {
+  preparing: {
+    subject: "Siparişiniz hazırlanıyor",
+    title: "Siparişiniz hazırlanıyor",
+    intro: "Çiçekleriniz florist ekibimiz tarafından özenle hazırlanıyor.",
+  },
+  on_delivery: {
+    subject: "Siparişiniz yola çıktı",
+    title: "Siparişiniz yola çıktı",
+    intro:
+      "Çiçekleriniz kurye ile yola çıktı, teslimat penceresi içinde adresine ulaşacak.",
+  },
+  delivered: {
+    subject: "Siparişiniz teslim edildi",
+    title: "Siparişiniz teslim edildi",
+    intro: "Siparişiniz teslim edildi. Bizi tercih ettiğiniz için teşekkür ederiz!",
+  },
+};
+
+/** Admin panelinde sipariş durumu değiştikçe (hazırlanıyor / yolda / teslim
+ * edildi) müşteriye giden kısa bilgilendirme maili — tam fiş değil, yalnızca
+ * durum + teslimat özeti. */
+function statusUpdateHtml(order: OrderStatusEmailData, step: OrderStatusStep): string {
+  const copy = STATUS_EMAIL_COPY[step];
+  const deliveryLine =
+    order.deliveryDate && order.deliveryWindow
+      ? `${formatDate(order.deliveryDate)} · ${order.deliveryWindow}`
+      : null;
+
+  const body = `
+      <tr>
+        <td style="padding:16px 32px 0;">
+          <table role="presentation" width="100%" style="border-collapse:collapse;">
+            ${detailRow("Teslimat", deliveryLine)}
+            ${detailRow("Alıcı", order.recipientName)}
+          </table>
+        </td>
+      </tr>`;
+
+  return emailShell(order.orderNumber, copy.title, copy.intro, body);
 }
 
 /**
@@ -229,7 +301,7 @@ export async function sendOrderEmails(order: OrderEmailData): Promise<void> {
     );
   }
 
-  const customerEmail = order.senderEmail || (!isPlaceholderEmail(order.email) ? order.email : "");
+  const customerEmail = resolveCustomerEmail(order);
   if (customerEmail) {
     tasks.push(
       sendEmail(config, {
@@ -243,4 +315,34 @@ export async function sendOrderEmails(order: OrderEmailData): Promise<void> {
   }
 
   await Promise.all(tasks);
+}
+
+/**
+ * Admin panelinde sipariş durumu "Hazırlanıyor" / "Yolda" / "Teslim edildi"
+ * olarak değiştirildiğinde çağrılır (bkz. src/app/admin/actions.ts). Hata
+ * yutar — durum güncellemesi mail gönderiminin başarısına bağlı olmamalı.
+ */
+export async function sendOrderStatusEmail(
+  order: OrderStatusEmailData,
+  step: OrderStatusStep,
+): Promise<void> {
+  const config = getEmailConfig();
+  if (!config) {
+    console.warn("[email] RESEND_API_KEY/EMAIL_FROM tanımlı değil, durum maili atlanıyor");
+    return;
+  }
+
+  const customerEmail = resolveCustomerEmail(order);
+  if (!customerEmail) return;
+
+  const copy = STATUS_EMAIL_COPY[step];
+  try {
+    await sendEmail(config, {
+      to: [customerEmail],
+      subject: `${copy.subject} — ${order.orderNumber}`,
+      html: statusUpdateHtml(order, step),
+    });
+  } catch (err) {
+    console.error("[email] status update email failed", err);
+  }
 }

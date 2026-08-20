@@ -19,7 +19,7 @@ export const ADMIN_SELECTABLE_STATUSES = ORDER_STATUSES.filter(
 
 export const STATUS_LABELS: Record<OrderStatus, string> = {
   pending: "Ödeme bekleniyor",
-  paid: "Ödendi",
+  paid: "Aktif sipariş",
   preparing: "Hazırlanıyor",
   on_delivery: "Yolda",
   delivered: "Teslim edildi",
