@@ -88,6 +88,15 @@ const nextConfig: NextConfig = {
         pathname: "/storage/v1/object/public/**",
       },
     ],
+    // Vercel'in Image Optimization kotası (Hobby plan) ürün fotoğrafı
+    // sayısı arttıkça aşılıyordu: kota dolunca /_next/image 402 dönüyor,
+    // önbellekte olmayan her görsel müşteriye kırık/boş çıkıyordu (bkz.
+    // "bazı görseller yüklenmiyor" şikayeti). Supabase Storage zaten kendi
+    // CDN'i üzerinden servis ediyor; optimizasyonu kapatmak bu kotaya olan
+    // bağımlılığı tamamen kaldırır. Yükleme anında kırpma artık makul bir
+    // çözünürlüğe küçültüyor (bkz. src/lib/crop-image.ts) ki bu adımdan
+    // sonra sayfa ağırlığı yine de kontrol altında kalsın.
+    unoptimized: true,
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

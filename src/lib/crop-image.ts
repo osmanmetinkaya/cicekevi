@@ -14,17 +14,23 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-/** react-easy-crop'un verdiği piksel kırpma alanını canvas ile gerçek bir görsele (blob) çevirir. */
+/** react-easy-crop'un verdiği piksel kırpma alanını canvas ile gerçek bir görsele (blob) çevirir.
+ * Çıktı, telefon fotoğraflarının çözünürlüğüyle (ör. 4000×3000) sınırsız
+ * büyümesin diye `maxDimension`'a göre orantılı küçültülür — Next.js artık
+ * görselleri optimize etmediğinden (bkz. next.config.ts) bu, sayfa
+ * ağırlığını makul tutan tek adım. */
 export async function getCroppedImageBlob(
   imageSrc: string,
   crop: PixelCrop,
   mimeType = "image/jpeg",
   quality = 0.92,
+  maxDimension = 1600,
 ): Promise<Blob> {
   const image = await loadImage(imageSrc);
+  const scale = Math.min(1, maxDimension / Math.max(crop.width, crop.height));
   const canvas = document.createElement("canvas");
-  canvas.width = Math.round(crop.width);
-  canvas.height = Math.round(crop.height);
+  canvas.width = Math.round(crop.width * scale);
+  canvas.height = Math.round(crop.height * scale);
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas oluşturulamadı.");
 
