@@ -138,10 +138,14 @@
     "recipientName": "Ad soyad",
     "recipientNamePlaceholder": "Teslim edilecek kişinin adı soyadı",
     "recipientPhone": "Telefon numarası",
+    "deliveryZone": "Teslimat bölgesi",
+    "deliveryZoneNone": "Şehir merkezi (ek ücret yok)",
+    "deliveryZoneHint": "Bazı bölgelere ek teslimat ücreti uygulanır.",
     "recipientAddress": "Teslimat adresi",
     "recipientAddressPlaceholder": "Mahalle, sokak, kapı no ve varsa diğer tarif bilgilerini yaz…",
     "errorSender": "Gönderen adı ve telefon numarasını eksiksiz gir.",
-    "errorRecipient": "Alıcı adı, telefon numarası ve adresini eksiksiz gir."
+    "errorRecipient": "Alıcı adı, telefon numarası ve adresini eksiksiz gir.",
+    "errorDeliveryZone": "Geçersiz teslimat bölgesi seçildi."
   },
   "product": {
     "breadcrumbHome": "Ana sayfa",

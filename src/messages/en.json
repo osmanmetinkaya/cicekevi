@@ -138,10 +138,14 @@
     "recipientName": "Full name",
     "recipientNamePlaceholder": "Full name of the person receiving it",
     "recipientPhone": "Phone number",
+    "deliveryZone": "Delivery zone",
+    "deliveryZoneNone": "City centre (no extra fee)",
+    "deliveryZoneHint": "Some areas have an extra delivery fee.",
     "recipientAddress": "Delivery address",
     "recipientAddressPlaceholder": "Neighbourhood, street, door number, and any other directions…",
     "errorSender": "Please fill in the sender's name and phone number.",
-    "errorRecipient": "Please fill in the recipient's name, phone number, and address."
+    "errorRecipient": "Please fill in the recipient's name, phone number, and address.",
+    "errorDeliveryZone": "An invalid delivery zone was selected."
   },
   "product": {
     "breadcrumbHome": "Home",

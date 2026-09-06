@@ -23,7 +23,7 @@ import { Artwork } from "@/components/product/artwork";
 import { ProductImage } from "@/components/product/product-image";
 import { formatKurus } from "@/lib/format";
 import { pick, type Locale } from "@/lib/types";
-import { DELIVERY_WINDOWS } from "@/lib/delivery";
+import { DELIVERY_WINDOWS, DELIVERY_ZONES, getDeliveryZone } from "@/lib/delivery";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/client";
 import { isValidPhone } from "@/lib/phone";
@@ -49,7 +49,10 @@ export default function CartPage() {
   const [senderEmail, setSenderEmail] = useState("");
   const [recipientName, setRecipientName] = useState("");
   const [recipientPhone, setRecipientPhone] = useState("");
+  const [deliveryZone, setDeliveryZone] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
+  const deliveryFeeKurus = getDeliveryZone(deliveryZone)?.feeKurus ?? 0;
+  const grandTotalKurus = totalKurus + deliveryFeeKurus;
   const [contractAccepted, setContractAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -122,6 +125,7 @@ export default function CartPage() {
             phone: recipientPhone.trim(),
             address: recipientAddress.trim(),
           },
+          deliveryZone: deliveryZone || undefined,
           giftNote: note,
           contractAccepted,
           locale,
@@ -311,6 +315,26 @@ export default function CartPage() {
               </label>
               <label className="block sm:col-span-2">
                 <span className="mb-1.5 block text-sm text-ink-muted">
+                  {t("deliveryZone")}
+                </span>
+                <select
+                  value={deliveryZone}
+                  onChange={(e) => setDeliveryZone(e.target.value)}
+                  className="w-full rounded-xl border border-line bg-cream px-3 py-2.5 text-ink outline-none transition-colors focus:border-rose-500"
+                >
+                  <option value="">{t("deliveryZoneNone")}</option>
+                  {DELIVERY_ZONES.map((z) => (
+                    <option key={z.id} value={z.id}>
+                      {z.label} · {formatKurus(z.feeKurus)}
+                    </option>
+                  ))}
+                </select>
+                <span className="mt-1.5 block text-xs text-ink-muted">
+                  {t("deliveryZoneHint")}
+                </span>
+              </label>
+              <label className="block sm:col-span-2">
+                <span className="mb-1.5 block text-sm text-ink-muted">
                   {t("recipientAddress")}
                 </span>
                 <textarea
@@ -392,12 +416,16 @@ export default function CartPage() {
           </div>
           <div className="mt-2 flex items-center justify-between text-sm">
             <span className="text-ink-muted">{t("delivery")}</span>
-            <span className="text-ink-muted">{t("deliveryAtCheckout")}</span>
+            <span className="text-ink-muted">
+              {deliveryZone
+                ? formatKurus(deliveryFeeKurus)
+                : t("deliveryAtCheckout")}
+            </span>
           </div>
           <div className="mt-4 flex items-center justify-between border-t border-line pt-4">
             <span className="font-medium text-ink">{t("total")}</span>
             <span className="font-serif text-2xl text-ink">
-              {formatKurus(totalKurus)}
+              {formatKurus(grandTotalKurus)}
             </span>
           </div>
 

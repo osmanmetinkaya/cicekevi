@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
-import { DELIVERY_WINDOWS } from "@/lib/delivery";
+import { DELIVERY_WINDOWS, getDeliveryZone } from "@/lib/delivery";
 import { isValidPhone, digitsOnly } from "@/lib/phone";
 import {
   PAYTR_TOKEN_URL,
@@ -117,6 +117,7 @@ export async function POST(request: Request) {
     delivery?: IncomingDelivery;
     sender?: IncomingSender;
     recipient?: IncomingRecipient;
+    deliveryZone?: string;
     giftNote?: string;
     contractAccepted?: boolean;
     locale?: string;
@@ -164,6 +165,20 @@ export async function POST(request: Request) {
     );
   }
 
+  // Bölge seçimi opsiyoneldir (merkez ilçe ücretsiz); seçiliyse sunucuda
+  // bilinen bölge listesine göre doğrulanır — istemcinin ücreti kendisi
+  // belirlemesine asla izin verilmez.
+  let deliveryZone: ReturnType<typeof getDeliveryZone> = null;
+  if (typeof body.deliveryZone === "string" && body.deliveryZone) {
+    deliveryZone = getDeliveryZone(body.deliveryZone);
+    if (!deliveryZone) {
+      return NextResponse.json(
+        { error: "Geçersiz teslimat bölgesi." },
+        { status: 400 },
+      );
+    }
+  }
+
   // Never trust client-supplied prices: resolve every line from our own
   // catalogue and build the amounts server-side.
   const orderItems: { name: string; qty: number; amount: number }[] = [];
@@ -183,6 +198,17 @@ export async function POST(request: Request) {
     amountTotal += product.priceKurus * qty;
     orderItems.push({ name, qty, amount: product.priceKurus * qty });
     basketItems.push({ name, priceKurus: product.priceKurus, qty });
+  }
+
+  // Teslimat ücreti ayrı bir sepet/kalem satırı olarak eklenir — PayTR'ye
+  // giden sepet toplamı payment_amount ile birebir eşleşmeli, ayrıca bu
+  // sayede admin panelinde/faturada/e-postada ekstra bir alan gerekmeden
+  // hangi bölge için ne kadar ücret alındığı görünür.
+  if (deliveryZone) {
+    amountTotal += deliveryZone.feeKurus;
+    const feeName = `Teslimat ücreti (${deliveryZone.label})`;
+    orderItems.push({ name: feeName, qty: 1, amount: deliveryZone.feeKurus });
+    basketItems.push({ name: feeName, priceKurus: deliveryZone.feeKurus, qty: 1 });
   }
 
   const creds = getPaytrCredentials();
