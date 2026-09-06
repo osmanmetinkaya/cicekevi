@@ -1,3 +1,4 @@
+import { after } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPaytrCredentials, paytrCallbackHash } from "@/lib/paytr";
 import { sendOrderEmails, type OrderEmailItem } from "@/lib/email";
@@ -124,28 +125,34 @@ export async function POST(request: Request) {
       if (error) {
         console.error("[paytr/callback] mark paid failed", error);
       } else {
-        // Mail gönderimi kendi içinde hataları yutar (bkz. sendOrderEmails);
-        // burada da sarmalanır ki en ufak beklenmedik durum bile PayTR'e
-        // dönen zorunlu "OK" yanıtını asla etkilemesin.
-        try {
-          await sendOrderEmails({
-            orderNumber: order.order_number,
-            email: order.email,
-            items: order.items,
-            amountTotal: order.amount_total,
-            deliveryDate: order.delivery_date,
-            deliveryWindow: order.delivery_window,
-            giftNote: order.gift_note,
-            senderName: order.sender_name,
-            senderPhone: order.sender_phone,
-            senderEmail: order.sender_email,
-            recipientName: order.recipient_name,
-            recipientPhone: order.recipient_phone,
-            recipientAddress: order.recipient_address,
-          });
-        } catch (err) {
-          console.error("[paytr/callback] order emails failed", err);
-        }
+        // Mail gönderimi `after()` ile yanıt döndükten SONRAYA ertelenir.
+        // PayTR'nin bildirim isteği belirli bir süre içinde "OK" bekliyor;
+        // Resend'e giden istek(ler) yavaşlarsa yanıt gecikir, PayTR bunu
+        // başarısız sayıp bildirimi DAKİKALAR sonra tekrar dener — mail o
+        // zaman gönderilir ve müşteriye "çok geç" ulaşmış gibi görünür.
+        // `after` PayTR'ye yanıtı hemen döndürüp mail gönderimini arkada
+        // tamamlar, bu gecikme sınıfını tamamen ortadan kaldırır.
+        after(async () => {
+          try {
+            await sendOrderEmails({
+              orderNumber: order.order_number,
+              email: order.email,
+              items: order.items,
+              amountTotal: order.amount_total,
+              deliveryDate: order.delivery_date,
+              deliveryWindow: order.delivery_window,
+              giftNote: order.gift_note,
+              senderName: order.sender_name,
+              senderPhone: order.sender_phone,
+              senderEmail: order.sender_email,
+              recipientName: order.recipient_name,
+              recipientPhone: order.recipient_phone,
+              recipientAddress: order.recipient_address,
+            });
+          } catch (err) {
+            console.error("[paytr/callback] order emails failed", err);
+          }
+        });
       }
     } else {
       console.warn("[paytr/callback] payment failed", {
