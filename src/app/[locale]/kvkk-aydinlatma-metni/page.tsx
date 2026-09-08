@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { LegalPage, LegalSection } from "@/components/legal/legal-page";
 import { LEGAL_ENTITY, LEGAL_ENTITY_EN } from "@/lib/legal-info";
 import { SITE_NAME } from "@/lib/site";
@@ -111,7 +112,18 @@ function KvkkTr() {
           hizmet sağlayıcısına (Supabase), teslimat için anlaşmalı kurye/lojistik
           firmalarına ve yasal zorunluluk hâlinde yetkili kamu kurum ve
           kuruluşlarına, KVKK&rsquo;nın 8. ve 9. maddelerinde belirtilen
-          şartlar çerçevesinde aktarılabilmektedir.
+          şartlar çerçevesinde aktarılabilmektedir. Ayrıca, çerez bildiriminde
+          açık rızanızı vermeniz hâlinde, site kullanım ve reklam performansı
+          verileriniz (ör. IP adresi) analiz ve reklam hizmeti sağlayıcısına
+          (Google Ireland Limited / Google LLC) yurt dışına aktarılabilir; bu
+          aktarımın hukuki sebebi açık rızanızdır ve detayları{" "}
+          <Link
+            href="/cerez-politikasi"
+            className="text-rose-700 underline underline-offset-2"
+          >
+            Çerez Politikası
+          </Link>
+          &rsquo;nda yer almaktadır.
         </p>
       </LegalSection>
 
@@ -259,6 +271,18 @@ function KvkkEn() {
           database infrastructure, to contracted courier/logistics firms for
           delivery, and, where legally required, to authorised public
           institutions, within the framework of Articles 8 and 9 of the KVKK.
+          Additionally, if you give explicit consent in the cookie notice,
+          your site usage and advertising performance data (e.g. IP address)
+          may be transferred abroad to our analytics and advertising provider
+          (Google Ireland Limited / Google LLC); the legal basis for this
+          transfer is your explicit consent, and details are available in the{" "}
+          <Link
+            href="/cerez-politikasi"
+            className="text-rose-700 underline underline-offset-2"
+          >
+            Cookie Policy
+          </Link>
+          .
         </p>
       </LegalSection>
 

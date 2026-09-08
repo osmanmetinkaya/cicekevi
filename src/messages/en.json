@@ -66,9 +66,10 @@
     "terms": "Terms of Use"
   },
   "cookieNotice": {
-    "text": "We only use cookies that are strictly necessary for the site to function.",
+    "text": "Besides the cookies required for the site to work, with your consent we may use analytics cookies to measure site performance.",
     "policyLink": "Cookie Policy",
-    "accept": "Got it"
+    "accept": "Accept",
+    "reject": "Decline"
   },
   "search": {
     "trigger": "Search",

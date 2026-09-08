@@ -66,9 +66,10 @@
     "terms": "Kullanım Koşulları"
   },
   "cookieNotice": {
-    "text": "Sitemizde yalnızca sitenin çalışması için gerekli çerezleri kullanıyoruz.",
+    "text": "Sitenin çalışması için gerekli çerezlere ek olarak, onayınızla site performansını ölçmek için analiz çerezleri kullanabiliriz.",
     "policyLink": "Çerez Politikası",
-    "accept": "Anladım"
+    "accept": "Kabul et",
+    "reject": "Reddet"
   },
   "search": {
     "trigger": "Ara",

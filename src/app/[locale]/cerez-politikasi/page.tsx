@@ -22,8 +22,22 @@ const COOKIES_TR = [
   {
     name: "cicekevi-cerez-bildirimi",
     type: "Zorunlu (tercih — localStorage)",
-    purpose: "Çerez bildirimini kapattığınızın hatırlanması.",
+    purpose: "Çerez bildirimindeki tercihinizin (kabul/reddet) hatırlanması.",
     duration: "1 yıl",
+  },
+  {
+    name: "_ga, _ga_*",
+    type: "Onaya bağlı (analiz — Google Analytics)",
+    purpose:
+      "Site trafiğinin ve kullanımının ölçülmesi. Yalnızca çerez bildiriminde \"Kabul et\" dediyseniz yüklenir.",
+    duration: "Google tarafından belirlenir (yaklaşık 13 ay/2 yıl)",
+  },
+  {
+    name: "_gcl_au ve benzeri Google Ads çerezleri",
+    type: "Onaya bağlı (reklam — Google Ads)",
+    purpose:
+      "Reklam performansının ve dönüşümlerin ölçülmesi. Yalnızca çerez bildiriminde \"Kabul et\" dediyseniz yüklenir.",
+    duration: "Google tarafından belirlenir (yaklaşık 90 gün)",
   },
 ];
 
@@ -43,8 +57,22 @@ const COOKIES_EN = [
   {
     name: "cicekevi-cerez-bildirimi",
     type: "Strictly necessary (preference — localStorage)",
-    purpose: "Remembering that you dismissed the cookie notice.",
+    purpose: "Remembering your cookie notice choice (accept/decline).",
     duration: "1 year",
+  },
+  {
+    name: "_ga, _ga_*",
+    type: "Consent-based (analytics — Google Analytics)",
+    purpose:
+      "Measuring site traffic and usage. Only loaded if you chose \"Accept\" in the cookie notice.",
+    duration: "Set by Google (approx. 13 months/2 years)",
+  },
+  {
+    name: "_gcl_au and similar Google Ads cookies",
+    type: "Consent-based (advertising — Google Ads)",
+    purpose:
+      "Measuring ad performance and conversions. Only loaded if you chose \"Accept\" in the cookie notice.",
+    duration: "Set by Google (approx. 90 days)",
   },
 ];
 
@@ -81,10 +109,11 @@ function CookieTr() {
       <LegalSection title="1. Çerez Nedir?">
         <p>
           Çerezler, ziyaret ettiğiniz internet siteleri tarafından
-          tarayıcınıza kaydedilen küçük metin dosyalarıdır. Sitemiz şu an
-          yalnızca sitenin çalışması için gerekli olan zorunlu/fonksiyonel
-          çerezleri ve tarayıcı depolamasını (localStorage) kullanmaktadır;
-          reklam veya üçüncü taraf analitik/izleme çerezi kullanılmamaktadır.
+          tarayıcınıza kaydedilen küçük metin dosyalarıdır. Sitemiz, çalışması
+          için gerekli olan zorunlu/fonksiyonel çerezlerin yanı sıra;
+          yalnızca çerez bildiriminde açık rızanızı verdiğiniz takdirde Google
+          Analytics ve Google Ads tarafından sağlanan analiz/reklam çerezlerini
+          kullanır. Rıza vermediğiniz sürece bu çerezler hiç yüklenmez.
         </p>
       </LegalSection>
 
@@ -95,21 +124,33 @@ function CookieTr() {
         />
       </LegalSection>
 
-      <LegalSection title="3. Zorunlu Çerezleri Nasıl Yönetebilirsiniz?">
+      <LegalSection title="3. Çerez Tercihinizi Nasıl Yönetebilirsiniz?">
         <p>
-          Zorunlu çerezler, sitenin temel işlevleri (giriş, sepet) için
+          Zorunlu çerezler sitenin temel işlevleri (giriş, sepet) için
           gereklidir ve kapatılmaları hâlinde site düzgün çalışmayabilir.
-          Tarayıcı ayarlarınızdan tüm çerezleri silebilir veya
-          engelleyebilirsiniz; bu durumda oturumunuz ve sepetiniz
-          korunamayabilir.
+          Analiz/reklam çerezleri ise tamamen tercihinize bağlıdır: çerez
+          bildiriminde &quot;Reddet&quot;i seçerek bunların hiç yüklenmemesini
+          sağlayabilir, tarayıcı ayarlarınızdan istediğiniz zaman mevcut
+          çerezleri silebilir veya engelleyebilirsiniz.
         </p>
       </LegalSection>
 
-      <LegalSection title="4. İleride Eklenebilecek Çerezler">
+      <LegalSection title="4. Google Analytics ve Google Ads">
         <p>
-          İlerleyen dönemde site performansını ölçmek amacıyla analitik
-          çerezler eklememiz hâlinde, bu sayfa güncellenecek ve gerekli
-          hâllerde açık rızanız istenecektir.
+          Onay vermeniz hâlinde site kullanımınız ve reklam performansımız
+          Google Analytics ve Google Ads aracılığıyla ölçülür; bu kapsamda
+          IP adresiniz gibi bazı veriler Google&rsquo;ın (Google Ireland
+          Limited / Google LLC) sunucularına, yurt dışına aktarılabilir.
+          Google&rsquo;ın bu verileri nasıl işlediği hakkında bilgi için{" "}
+          <a
+            href="https://policies.google.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-rose-700 underline underline-offset-2"
+          >
+            Google Gizlilik Politikası
+          </a>
+          &rsquo;nı inceleyebilirsiniz.
         </p>
       </LegalSection>
     </LegalPage>
@@ -127,11 +168,12 @@ function CookieEn() {
 
       <LegalSection title="1. What Is a Cookie?">
         <p>
-          Cookies are small text files saved to your browser by the websites you
-          visit. Our site currently uses only the strictly necessary/functional
-          cookies and browser storage (localStorage) required for the site to
-          work; no advertising or third-party analytics/tracking cookies are
-          used.
+          Cookies are small text files saved to your browser by the websites
+          you visit. Alongside the strictly necessary/functional cookies
+          required for the site to work, we use analytics/advertising cookies
+          provided by Google Analytics and Google Ads — but only if you give
+          explicit consent in the cookie notice. These cookies are never
+          loaded unless you consent.
         </p>
       </LegalSection>
 
@@ -142,20 +184,32 @@ function CookieEn() {
         />
       </LegalSection>
 
-      <LegalSection title="3. How Can You Manage Strictly Necessary Cookies?">
+      <LegalSection title="3. How Can You Manage Your Cookie Preferences?">
         <p>
           Strictly necessary cookies are required for the site&rsquo;s core
           functions (sign-in, cart) and the site may not work properly if they
-          are disabled. You can delete or block all cookies from your browser
-          settings; in that case your session and cart may not be preserved.
+          are disabled. Analytics/advertising cookies are entirely optional:
+          choose &quot;Decline&quot; in the cookie notice to prevent them from
+          loading at all, or delete/block existing cookies at any time from
+          your browser settings.
         </p>
       </LegalSection>
 
-      <LegalSection title="4. Cookies That May Be Added in Future">
+      <LegalSection title="4. Google Analytics and Google Ads">
         <p>
-          If we add analytics cookies in the future to measure site performance,
-          this page will be updated and your explicit consent will be requested
-          where required.
+          If you consent, your site usage and our advertising performance are
+          measured via Google Analytics and Google Ads; as part of this, some
+          data such as your IP address may be transferred to Google&rsquo;s
+          (Google Ireland Limited / Google LLC) servers abroad. See the{" "}
+          <a
+            href="https://policies.google.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-rose-700 underline underline-offset-2"
+          >
+            Google Privacy Policy
+          </a>{" "}
+          for details on how Google processes this data.
         </p>
       </LegalSection>
     </LegalPage>

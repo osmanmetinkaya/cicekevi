@@ -29,6 +29,20 @@ const supabaseHostname = (() => {
   }
 })();
 
+// Google Analytics (GA4) / Google Ads dönüşüm izleme yalnızca ilgili ortam
+// değişkenleri tanımlıysa VE ziyaretçi çerez bildiriminde onay verdiyse
+// yüklenir (bkz. src/lib/gtag.ts, src/components/site/analytics-loader.tsx).
+// CSP'ye gerekli Google host'ları da yalnızca bu özellik açıkken eklenir —
+// yapılandırılmadığında ekstra bir izin genişletmesi olmasın diye.
+const analyticsConfigured = Boolean(
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ||
+    process.env.NEXT_PUBLIC_GOOGLE_ADS_ID,
+);
+const gtagScriptHost = "https://www.googletagmanager.com";
+const gtagConnectHosts =
+  "https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://googleads.g.doubleclick.net https://www.google.com";
+const gtagImgHosts = "https://www.google-analytics.com https://www.google.com";
+
 // Content-Security-Policy.
 //
 // Nonce tabanlı bir CSP tüm sayfaları dinamik render'a zorlar (statik vitrin
@@ -37,7 +51,7 @@ const supabaseHostname = (() => {
 // kullanıyoruz: script/style için 'unsafe-inline' (Next satır içi bootstrap
 // script'leri ve Tailwind satır içi stilleri için gerekli), ama geri kalan her
 // şey kilitli — object-src 'none', frame-ancestors 'none', base-uri 'self',
-// form-action 'self', connect-src yalnızca self + Supabase.
+// form-action 'self', connect-src yalnızca self + Supabase (+ onaylı analiz).
 //
 // Not: Ödeme PayTR'nin ödeme sayfasına TAM SAYFA yönlendirmeyle yapılıyor
 // (iframe DEĞİL — 3D Secure adımı bankanın sayfasını iç içe iframe içinde
@@ -48,11 +62,11 @@ const supabaseHostname = (() => {
 // Fontlar self-hosted (font-src 'self').
 const csp = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}${analyticsConfigured ? ` ${gtagScriptHost}` : ""}`,
   `style-src 'self' 'unsafe-inline'`,
-  `img-src 'self' data: blob: ${supabaseHost}`,
+  `img-src 'self' data: blob: ${supabaseHost}${analyticsConfigured ? ` ${gtagImgHosts}` : ""}`,
   `font-src 'self'`,
-  `connect-src 'self' ${supabaseHost} ${supabaseWsHost}${isDev ? " ws:" : ""}`,
+  `connect-src 'self' ${supabaseHost} ${supabaseWsHost}${isDev ? " ws:" : ""}${analyticsConfigured ? ` ${gtagConnectHosts}` : ""}`,
   `object-src 'none'`,
   `base-uri 'self'`,
   `form-action 'self'`,

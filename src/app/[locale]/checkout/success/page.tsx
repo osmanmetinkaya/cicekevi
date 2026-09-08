@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ClearCart } from "@/components/cart/clear-cart";
 import { OrderSummary, type OrderView } from "@/components/order/order-summary";
+import { PurchaseTracker } from "@/components/order/purchase-tracker";
 import type { OrderStatus } from "@/lib/orders/status";
 
 interface OrderRow {
@@ -125,6 +126,13 @@ export default async function SuccessPage({
       </p>
 
       {order && !isFailed && <OrderSummary order={order} />}
+      {order && !isPending && !isFailed && (
+        <PurchaseTracker
+          transactionId={order.ref}
+          valueTRY={order.totalKurus !== null ? order.totalKurus / 100 : 0}
+          items={order.items}
+        />
+      )}
 
       <div className="mt-10 flex flex-wrap justify-center gap-3">
         {isFailed && (

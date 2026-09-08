@@ -4,19 +4,18 @@ import { useEffect, useState } from "react";
 import { Cookie } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-
-const KEY = "cicekevi-cerez-bildirimi";
+import { getStoredConsent, setStoredConsent } from "@/lib/consent";
 
 export function CookieNotice() {
   const t = useTranslations("cookieNotice");
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!localStorage.getItem(KEY)) setVisible(true);
+    if (!getStoredConsent()) setVisible(true);
   }, []);
 
-  function dismiss() {
-    localStorage.setItem(KEY, "1");
+  function choose(state: "granted" | "denied") {
+    setStoredConsent(state);
     setVisible(false);
   }
 
@@ -35,13 +34,22 @@ export function CookieNotice() {
             {t("policyLink")}
           </Link>
         </p>
-        <button
-          type="button"
-          onClick={dismiss}
-          className="shrink-0 rounded-full bg-rose-700 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-900"
-        >
-          {t("accept")}
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={() => choose("denied")}
+            className="rounded-full border border-line px-5 py-2 text-sm font-medium text-ink transition-colors hover:border-blush-300 hover:text-rose-700"
+          >
+            {t("reject")}
+          </button>
+          <button
+            type="button"
+            onClick={() => choose("granted")}
+            className="rounded-full bg-rose-700 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-rose-900"
+          >
+            {t("accept")}
+          </button>
+        </div>
       </div>
     </div>
   );
