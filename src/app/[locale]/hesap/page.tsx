@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { signOut } from "@/app/[locale]/giris/actions";
 import { OrderSummary, type OrderView } from "@/components/order/order-summary";
+import { formatDateTime } from "@/lib/format";
 
 export async function generateMetadata({
   params,
@@ -151,10 +152,7 @@ async function OrderSummaryWithDate({ row }: { row: OrderRow }) {
     <div>
       <OrderSummary order={order} />
       <p className="mt-1.5 text-right text-xs text-ink-muted">
-        {new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "tr-TR", {
-          dateStyle: "long",
-          timeStyle: "short",
-        }).format(new Date(row.created_at))}
+        {formatDateTime(row.created_at, locale)}
       </p>
     </div>
   );

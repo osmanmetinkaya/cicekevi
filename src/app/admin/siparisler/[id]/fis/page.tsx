@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { formatDateTR, formatKurus } from "@/lib/format";
+import { formatDateTR, formatDateTime, formatKurus } from "@/lib/format";
 import { STATUS_LABELS } from "@/lib/orders/status";
 import type { AdminOrderRow } from "@/lib/orders/types";
 import { SITE_NAME } from "@/lib/site";
@@ -48,10 +48,7 @@ export default async function OrderReceiptPage({
           <div className="text-right">
             <p className="font-medium text-ink">#{o.order_number}</p>
             <p className="text-sm text-ink-muted">
-              {new Intl.DateTimeFormat("tr-TR", {
-                dateStyle: "medium",
-                timeStyle: "short",
-              }).format(new Date(o.created_at))}
+              {formatDateTime(o.created_at)}
             </p>
           </div>
         </header>

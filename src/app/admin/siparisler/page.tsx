@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Gift, MapPin, Phone, Printer, StickyNote, UserRound } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { formatDateTR, formatKurus } from "@/lib/format";
+import { formatDateTR, formatDateTime, formatKurus } from "@/lib/format";
 import type { AdminOrderRow } from "@/lib/orders/types";
 import { StatusSelect } from "@/components/admin/status-select";
 
@@ -38,10 +38,7 @@ export default async function AdminOrdersPage() {
                 </span>
                 <span className="text-sm text-ink-muted">{o.email}</span>
                 <span className="text-xs text-ink-muted">
-                  {new Intl.DateTimeFormat("tr-TR", {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  }).format(new Date(o.created_at))}
+                  {formatDateTime(o.created_at)}
                 </span>
               </div>
 

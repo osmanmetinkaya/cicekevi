@@ -2,15 +2,20 @@ import { CheckCircle2, Clock4, XCircle } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getPaytrCredentials, queryPaytrStatus } from "@/lib/paytr";
+import { markOrderPaid } from "@/lib/orders/mark-paid";
 import { ClearCart } from "@/components/cart/clear-cart";
 import { OrderSummary, type OrderView } from "@/components/order/order-summary";
 import { PurchaseTracker } from "@/components/order/purchase-tracker";
 import type { OrderStatus } from "@/lib/orders/status";
 
 interface OrderRow {
+  id: string;
   order_number: string;
   email: string;
   sender_email: string | null;
+  sender_name: string | null;
+  sender_phone: string | null;
   amount_total: number;
   items: { name: string; qty: number; amount: number }[];
   delivery_date: string | null;
@@ -20,7 +25,15 @@ interface OrderRow {
   recipient_phone: string | null;
   recipient_address: string | null;
   status: OrderStatus;
+  created_at: string;
 }
+
+/** Bu süreden önce yalnızca webhook'u bekleriz (genelde saniyeler içinde
+ * düşer). Aktif sorguyu erken/gereksiz yere PayTR'ye açmamak için. */
+const ACTIVE_CHECK_AFTER_MS = 15_000;
+/** Bu süreden sonra aktif sorguyu da bırakırız — muhtemelen ödeme hiç
+ * tamamlanmadı, sonsuz otomatik yenilemeyle kaynak tüketmeye gerek yok. */
+const GIVE_UP_AFTER_MS = 3 * 60_000;
 
 /**
  * Ödeme dönüş sayfası. PayTR, merchant_ok_url/merchant_fail_url olarak buraya
@@ -45,6 +58,9 @@ export default async function SuccessPage({
   const { merchant_oid } = await searchParams;
 
   let row: OrderRow | null = null;
+  // Webhook'un gecikip müşteriyi süresiz "onaylanıyor" ekranında bırakmasını
+  // önlemek için — bkz. dosya başındaki eşik sabitleri ve queryPaytrStatus.
+  let gaveUpWaiting = false;
 
   if (merchant_oid) {
     const admin = createAdminClient();
@@ -52,11 +68,31 @@ export default async function SuccessPage({
       const { data } = await admin
         .from("orders")
         .select(
-          "order_number, email, sender_email, amount_total, items, delivery_date, delivery_window, gift_note, recipient_name, recipient_phone, recipient_address, status",
+          "id, order_number, email, sender_email, sender_name, sender_phone, amount_total, items, delivery_date, delivery_window, gift_note, recipient_name, recipient_phone, recipient_address, status, created_at",
         )
         .eq("paytr_merchant_oid", merchant_oid)
         .maybeSingle<OrderRow>();
       row = data ?? null;
+
+      if (row && row.status === "pending") {
+        const ageMs = Date.now() - new Date(row.created_at).getTime();
+        if (ageMs >= GIVE_UP_AFTER_MS) {
+          gaveUpWaiting = true;
+        } else if (ageMs >= ACTIVE_CHECK_AFTER_MS) {
+          const creds = getPaytrCredentials();
+          if (creds) {
+            const result = await queryPaytrStatus(creds, merchant_oid);
+            if (result === "paid") {
+              const { error } = await markOrderPaid(admin, row);
+              if (error) {
+                console.error("[checkout/success] mark paid failed", error);
+              } else {
+                row = { ...row, status: "paid" };
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -90,8 +126,10 @@ export default async function SuccessPage({
       {/* Ödeme başarısızsa sepet korunur ki müşteri tekrar deneyebilsin. */}
       {!isFailed && <ClearCart />}
 
-      {/* Bildirim (callback) birkaç saniye içinde düşer; sayfayı tazele. */}
-      {isPending && <meta httpEquiv="refresh" content="4" />}
+      {/* Bildirim (callback) birkaç saniye içinde düşer; sayfayı tazele.
+          GIVE_UP_AFTER_MS'i geçtiysek otomatik yenilemeyi durdururuz —
+          bkz. pendingText/pendingTextLong. */}
+      {isPending && !gaveUpWaiting && <meta httpEquiv="refresh" content="4" />}
 
       {isPending ? (
         <Clock4 size={64} strokeWidth={1.4} className="mx-auto text-amber-500" />
@@ -114,7 +152,7 @@ export default async function SuccessPage({
       </h1>
       <p className="mt-3 text-ink-muted">
         {isPending ? (
-          t("pendingText")
+          gaveUpWaiting ? t("pendingTextLong") : t("pendingText")
         ) : isFailed ? (
           t("cancelledText")
         ) : (

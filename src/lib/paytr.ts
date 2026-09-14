@@ -105,6 +105,56 @@ export function paytrCallbackHash(
   return hmacBase64(hashStr, creds.merchantKey);
 }
 
+export const PAYTR_STATUS_QUERY_URL = "https://www.paytr.com/odeme/durum-sorgu";
+
+/**
+ * STEP 3 (opsiyonel) — durum sorgu imzası.
+ * hashSTR = merchant_id + merchant_oid + merchant_salt
+ * token   = HMAC-SHA256(hashSTR, merchant_key) → base64
+ */
+export function paytrStatusQueryHash(
+  creds: PaytrCredentials,
+  merchantOid: string,
+): string {
+  const hashStr = creds.merchantId + merchantOid + creds.merchantSalt;
+  return hmacBase64(hashStr, creds.merchantKey);
+}
+
+/**
+ * PayTR'nin bildirim (callback) webhook'u kaybolabilir/gecikebilir — bu,
+ * müşterinin "Ödemen onaylanıyor…" ekranında süresiz beklemesine yol açar.
+ * Bu fonksiyon PayTR'ye AKTİF olarak sorar: ödeme gerçekten tamamlanmış mı?
+ * Yalnızca PayTR "success" derse "paid" döner; her türlü belirsizlik veya
+ * hata "not_paid" sayılır — asla temkinsizce ödendi işaretlenmez, webhook
+ * (tek otorite) her zaman kendi yoluyla da çalışmaya devam eder.
+ */
+export async function queryPaytrStatus(
+  creds: PaytrCredentials,
+  merchantOid: string,
+): Promise<"paid" | "not_paid"> {
+  const paytrToken = paytrStatusQueryHash(creds, merchantOid);
+  const form = new URLSearchParams({
+    merchant_id: creds.merchantId,
+    merchant_oid: merchantOid,
+    paytr_token: paytrToken,
+  });
+
+  try {
+    const res = await fetch(PAYTR_STATUS_QUERY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: form.toString(),
+      cache: "no-store",
+    });
+    const data: unknown = await res.json();
+    const result = data as { status?: string };
+    return result.status === "success" ? "paid" : "not_paid";
+  } catch (err) {
+    console.error("[paytr] status query request failed", err);
+    return "not_paid";
+  }
+}
+
 /** Kuruş → PayTR sepetinin beklediği "549.00" biçimi. */
 export function kurusToBasketPrice(kurus: number): string {
   return (kurus / 100).toFixed(2);

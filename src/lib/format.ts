@@ -38,3 +38,28 @@ export function formatDate(iso: string, locale: string = "tr"): string {
 export function formatDateTR(iso: string): string {
   return formatDate(iso, "tr");
 }
+
+const dateTimeFormatters: Record<string, Intl.DateTimeFormat> = {
+  tr: new Intl.DateTimeFormat("tr-TR", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Europe/Istanbul",
+  }),
+  en: new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Europe/Istanbul",
+  }),
+};
+
+/**
+ * `timestamptz` (ör. orders.created_at) -> Türkiye saatiyle tarih + saat.
+ * `timeZone: "Europe/Istanbul"` AÇIKÇA verilir — Vercel'in sunucu saati
+ * UTC'dir, bu olmadan Intl.DateTimeFormat("tr-TR", ...) yalnızca ay/gün
+ * biçimini Türkçeleştirir, SAATİ UTC'de gösterir (ör. 11:39 yerine 08:39).
+ */
+export function formatDateTime(iso: string, locale: string = "tr"): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return (dateTimeFormatters[locale] ?? dateTimeFormatters.tr).format(d);
+}

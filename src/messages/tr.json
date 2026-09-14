@@ -215,6 +215,7 @@
     "fallbackItem": "Ürün",
     "pendingTitle": "Ödemen onaylanıyor…",
     "pendingText": "Ödemen banka tarafından onaylanıyor. Bu sayfa birkaç saniye içinde kendini yenileyecek.",
+    "pendingTextLong": "Onay beklenenden uzun sürüyor. Ödemen tamamlandığında e-posta ile bilgilendirileceksin; bu sayfayı kapatabilirsin.",
     "cancelledTitle": "Ödeme tamamlanamadı",
     "cancelledText": "Ödemen alınamadı, kartından herhangi bir tutar çekilmedi. Sepetin duruyor; dilersen tekrar deneyebilir ya da bize ulaşabilirsin.",
     "backToCart": "Sepete dön"

@@ -215,6 +215,7 @@
     "fallbackItem": "Item",
     "pendingTitle": "Confirming your payment…",
     "pendingText": "Your bank is confirming the payment. This page will refresh itself in a few seconds.",
+    "pendingTextLong": "Confirmation is taking longer than usual. We'll email you once your payment is complete; you can close this page.",
     "cancelledTitle": "Payment could not be completed",
     "cancelledText": "We couldn't take your payment and no amount was charged to your card. Your cart is still there — feel free to try again or get in touch with us.",
     "backToCart": "Back to cart"
