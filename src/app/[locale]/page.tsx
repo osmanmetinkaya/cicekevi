@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Hero } from "@/components/site/hero";
+import { TeachersDayBanner } from "@/components/site/teachers-day-banner";
 import { FeaturesBar } from "@/components/site/features-bar";
 import { ProductCard } from "@/components/product/product-card";
 import { getAllProducts } from "@/lib/products";
@@ -21,6 +22,7 @@ export default async function Home({
   return (
     <>
       <Hero locale={locale as Locale} />
+      <TeachersDayBanner />
       <FeaturesBar />
 
       <ProductSection
