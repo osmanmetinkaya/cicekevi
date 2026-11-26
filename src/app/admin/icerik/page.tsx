@@ -1,14 +1,34 @@
 import Link from "next/link";
 import { Plus, Pencil } from "lucide-react";
-import { getHeroContent } from "@/lib/site-content";
+import { getHeroContent, getPromoBanner } from "@/lib/site-content";
+import { getCategoryRows, getSpecialDayRows } from "@/lib/categories";
+import { PromoBannerForm } from "@/components/admin/promo-banner-form";
 import { ProductImage } from "@/components/product/product-image";
 import { HeroSlideActions } from "@/components/admin/hero-slide-actions";
 
 export default async function AdminContentPage() {
-  const { slides } = await getHeroContent();
+  const [{ slides }, promo, categoryRows] = await Promise.all([
+    getHeroContent(),
+    getPromoBanner(),
+    getCategoryRows(),
+  ]);
+  const days = getSpecialDayRows(categoryRows).map((r) => ({
+    slug: r.slug,
+    label: r.label_tr,
+  }));
 
   return (
     <div>
+      {days.length > 0 && (
+        <div className="mb-10">
+          <PromoBannerForm
+            days={days}
+            initialActive={promo.active}
+            initialSlug={promo.categorySlug}
+          />
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="font-serif text-2xl text-ink">İçerik</h2>

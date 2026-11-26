@@ -27,9 +27,8 @@
     "ctaExplore": "Explore bouquets",
     "ctaBestsellers": "Bestsellers"
   },
-  "teachersDay": {
-    "eyebrow": "24 NOVEMBER · TEACHERS' DAY",
-    "text": "Discover our Teachers' Day specials.",
+  "promoBanner": {
+    "text": "Discover our {day} specials.",
     "cta": "Shop now"
   },
   "features": {

@@ -1,9 +1,26 @@
-import { ArrowRight, GraduationCap } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { ArrowRight, Gift } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
-export function TeachersDayBanner() {
-  const t = useTranslations("teachersDay");
+/** "Sevgililer Günü" -> "Sevgililer Gününe" (yönelme hâli). Özel gün
+ * kategorilerinin hepsi "Günü" ile biter; olmayanlar olduğu gibi kalır. */
+function trDative(label: string): string {
+  return label.endsWith("Günü") ? `${label}ne` : label;
+}
+
+export function PromoBanner({
+  slug,
+  labelTr,
+  labelEn,
+}: {
+  slug: string;
+  labelTr: string;
+  labelEn: string;
+}) {
+  const t = useTranslations("promoBanner");
+  const locale = useLocale();
+  const isEn = locale === "en";
+  const label = isEn ? labelEn : labelTr;
 
   return (
     <section className="px-4 py-8 sm:px-6 sm:py-10">
@@ -13,16 +30,16 @@ export function TeachersDayBanner() {
 
         <div className="relative flex flex-col items-center">
           <span className="flex size-14 items-center justify-center rounded-full bg-white/15 text-white">
-            <GraduationCap size={30} strokeWidth={1.5} />
+            <Gift size={30} strokeWidth={1.5} />
           </span>
           <p className="mt-4 text-xs font-medium tracking-[0.2em] text-blush-200">
-            {t("eyebrow")}
+            {label.toLocaleUpperCase(isEn ? "en-GB" : "tr-TR")}
           </p>
           <h2 className="mt-3 max-w-2xl text-balance font-serif text-3xl leading-tight text-white sm:text-5xl">
-            {t("text")}
+            {t("text", { day: isEn ? labelEn : trDative(labelTr) })}
           </h2>
           <Link
-            href="/kategori/ogretmenler-gunu"
+            href={`/kategori/${slug}`}
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-base font-medium text-rose-700 shadow-md transition-all hover:-translate-y-0.5 hover:bg-blush-50 hover:shadow-lg"
           >
             {t("cta")} <ArrowRight size={18} />

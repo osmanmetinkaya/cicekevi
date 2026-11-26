@@ -27,9 +27,8 @@
     "ctaExplore": "Buketleri keşfet",
     "ctaBestsellers": "Çok satanlar"
   },
-  "teachersDay": {
-    "eyebrow": "24 KASIM · ÖĞRETMENLER GÜNÜ",
-    "text": "Öğretmenler gününe özel ürünleri keşfet.",
+  "promoBanner": {
+    "text": "{day} özel ürünleri keşfet.",
     "cta": "Ürünlere git"
   },
   "features": {

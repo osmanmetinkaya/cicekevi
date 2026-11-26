@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { HeroSlide } from "@/lib/site-content";
+import { getSpecialDayRows, type CategoryRow } from "@/lib/categories";
 
 /**
  * Site içeriği (ana sayfa hero slider'ı) yazma işlemleri. Slaytlar
@@ -155,6 +156,40 @@ export async function moveHeroSlide(
   if (error) {
     console.error("[admin] hero slide reorder failed", error);
     return { error: "Sıra güncellenemedi." };
+  }
+
+  revalidateStorefront();
+  return { error: null };
+}
+
+/** Ana sayfadaki özel gün promosyon alanını açar/kapatır ve hangi özel gün
+ * için gösterileceğini seçer. */
+export async function savePromoBanner(input: {
+  active: boolean;
+  categorySlug: string;
+}): Promise<Result> {
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: "Yetkin yok." };
+
+  const { data: rows } = await supabase
+    .from("categories")
+    .select("id, slug, label_tr, label_en, parent_id, sort_order")
+    .returns<CategoryRow[]>();
+  const valid = getSpecialDayRows(rows ?? []).some(
+    (r) => r.slug === input.categorySlug,
+  );
+  if (!valid) return { error: "Geçersiz özel gün seçimi." };
+
+  const { error } = await supabase.from("site_content").upsert(
+    {
+      key: "promo",
+      value: { active: input.active, categorySlug: input.categorySlug },
+    },
+    { onConflict: "key" },
+  );
+  if (error) {
+    console.error("[admin] promo banner save failed", error);
+    return { error: "Kaydedilemedi." };
   }
 
   revalidateStorefront();

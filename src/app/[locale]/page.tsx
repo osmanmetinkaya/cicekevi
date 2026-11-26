@@ -1,6 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Hero } from "@/components/site/hero";
-import { TeachersDayBanner } from "@/components/site/teachers-day-banner";
+import { PromoBanner } from "@/components/site/promo-banner";
+import { getCategoryRows, getSpecialDayRows } from "@/lib/categories";
+import { getPromoBanner } from "@/lib/site-content";
 import { FeaturesBar } from "@/components/site/features-bar";
 import { ProductCard } from "@/components/product/product-card";
 import { getAllProducts } from "@/lib/products";
@@ -15,6 +17,14 @@ export default async function Home({
   setRequestLocale(locale);
   const t = await getTranslations("home");
 
+  const [promo, categoryRows] = await Promise.all([
+    getPromoBanner(),
+    getCategoryRows(),
+  ]);
+  const promoDay = promo.active
+    ? getSpecialDayRows(categoryRows).find((r) => r.slug === promo.categorySlug)
+    : undefined;
+
   const products = await getAllProducts();
   const bestsellers = products.filter((p) => p.bestseller);
   const rest = products.filter((p) => !p.bestseller);
@@ -22,7 +32,13 @@ export default async function Home({
   return (
     <>
       <Hero locale={locale as Locale} />
-      <TeachersDayBanner />
+      {promoDay && (
+        <PromoBanner
+          slug={promoDay.slug}
+          labelTr={promoDay.label_tr}
+          labelEn={promoDay.label_en}
+        />
+      )}
       <FeaturesBar />
 
       <ProductSection

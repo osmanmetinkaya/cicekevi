@@ -75,3 +75,35 @@ export const getHeroContent = cache(async (): Promise<HeroContent> => {
   if (error || !data) return DEFAULT_HERO_CONTENT;
   return normalize(data.value);
 });
+
+/** Ana sayfa hero'nun altındaki özel gün promosyon alanı. `site_content`
+ * tablosunda key='promo'. Satır yoksa alan KAPALI sayılır. */
+export interface PromoBanner {
+  active: boolean;
+  /** Özel gün kategorisinin slug'ı (ör. "sevgililer-gunu"). */
+  categorySlug: string;
+}
+
+export const DEFAULT_PROMO_BANNER: PromoBanner = {
+  active: false,
+  categorySlug: "",
+};
+
+export const getPromoBanner = cache(async (): Promise<PromoBanner> => {
+  if (!isSupabaseConfigured()) return DEFAULT_PROMO_BANNER;
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("site_content")
+    .select("value")
+    .eq("key", "promo")
+    .maybeSingle<{ value: Partial<PromoBanner> }>();
+
+  if (error || !data) return DEFAULT_PROMO_BANNER;
+  return {
+    active: data.value?.active === true,
+    categorySlug:
+      typeof data.value?.categorySlug === "string"
+        ? data.value.categorySlug
+        : "",
+  };
+});

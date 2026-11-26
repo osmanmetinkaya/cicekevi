@@ -206,3 +206,11 @@ export async function allCategorySlugs(): Promise<string[]> {
   );
   return rows.map((r) => r.slug).filter((s) => !topLevel.has(s));
 }
+
+/** "Özel Günler" kategorisinin alt kategorileri (Sevgililer Günü, Anneler
+ * Günü...) — ana sayfa promosyon alanının seçenekleri. */
+export function getSpecialDayRows(rows: CategoryRow[]): CategoryRow[] {
+  const parent = rows.find((r) => r.slug === "ozel-gunler");
+  if (!parent) return [];
+  return rows.filter((r) => r.parent_id === parent.id);
+}
